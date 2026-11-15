@@ -11,16 +11,26 @@ if (empty($_SESSION['token'])) {
 // Antispam: contacto.php rechaza envíos hechos en menos de 3 segundos desde que se cargó el formulario
 $_SESSION['form_contacto_desde'] = time();
 
-/* Conferencias de Marcela Pacheco Parra en YouTube: se muestran en la sección "Conferencias corporativas".
-   Para agregar una, copia el código del video (lo que va después de "watch?v=" en el enlace) y su título.
-   Ejemplo: ['id' => 'abcdEFGhijk', 'titulo' => 'Bienestar emocional en el trabajo']. Sin videos, el bloque no aparece. */
+// Sitio de demostración (Render pone APP_ENV=demo): ahí se ven también los ejemplos marcados 'solo_demo'
+$es_demo = (($_ENV['APP_ENV'] ?? '') === 'demo');
+
 /* Testimonios REALES de clientes (solo con su autorización): se muestran en la sección "Proyectos".
    Formato: ['nombre' => 'Nombre Apellido', 'cargo' => 'Cargo', 'organizacion' => 'Empresa o entidad',
              'proyecto' => 'Proyecto que se hizo', 'texto' => 'Lo que dijo el cliente', 'enlace' => 'https://... (evidencia, opcional)'].
-   Sin testimonios, el bloque no aparece. */
+   Con 'solo_demo' => true la entrada solo aparece en la demo, marcada como ejemplo. Sin testimonios, el bloque no aparece. */
 $testimonios = array_values(array_filter([
-], function ($t) { return trim((string) ($t['nombre'] ?? '')) !== '' && trim((string) ($t['texto'] ?? '')) !== ''; }));
+    // EJEMPLO para la demo: reemplazar por la reseña real de TourMountain Adventure (con su autorización) y quitar 'solo_demo'
+    ['nombre' => 'Nombre de quien da la reseña', 'cargo' => 'Cargo', 'organizacion' => 'TourMountain Adventure',
+     'proyecto' => 'Proyecto realizado para TourMountain Adventure',
+     'texto' => 'Aquí va la reseña real de TourMountain Adventure, en sus palabras: qué necesitaban, qué hicimos y qué resultados obtuvieron.',
+     'solo_demo' => true],
+], function ($t) use ($es_demo) {
+    return trim((string) ($t['nombre'] ?? '')) !== '' && trim((string) ($t['texto'] ?? '')) !== '' && ($es_demo || empty($t['solo_demo']));
+}));
 
+/* Conferencias de Marcela Pacheco Parra en YouTube: se muestran en la sección "Conferencias corporativas".
+   Para agregar una, copia el código del video (lo que va después de "watch?v=" en el enlace) y su título.
+   Ejemplo: ['id' => 'abcdEFGhijk', 'titulo' => 'Bienestar emocional en el trabajo']. Sin videos, el bloque no aparece. */
 $videos_marcela = array_values(array_filter([
     // TEMPORAL: ejemplos mientras llegan los videos de Marcela (uno de ONU Derechos Humanos y dos del canal de Luis, youtube.com/@LUISGUILLERMONIETO)
     ['id' => 'MkR7aCgOkUc', 'titulo' => 'Principios Rectores sobre las Empresas y los Derechos Humanos (ONU Derechos Humanos)'],
@@ -343,6 +353,25 @@ $videos_marcela = array_values(array_filter([
           </div>
         </div>
       </article>
+
+      <?php if ($es_demo): ?>
+      <!-- EJEMPLO solo para la demo: reemplazar con la información real del proyecto de TourMountain Adventure -->
+      <article class="proyecto-tarjeta proyecto-ejemplo">
+        <div class="proyecto-media proyecto-media-icono" aria-hidden="true">
+          <i class="fas fa-mountain-sun"></i>
+          <span>TourMountain Adventure</span>
+        </div>
+        <div class="proyecto-cuerpo">
+          <span class="etiqueta-ejemplo">Ejemplo · solo en la demo</span>
+          <span class="proyecto-area"><i class="fas fa-route"></i>Turismo</span>
+          <h3>Proyecto para TourMountain Adventure</h3>
+          <p>Aquí va la descripción real del proyecto: qué necesitaba TourMountain Adventure, qué construimos y qué resultados obtuvo, con un enlace a la evidencia (sitio, tablero o video).</p>
+          <div class="proyecto-acciones">
+            <a href="#contacto" class="btn-team" data-proyecto="el proyecto de TourMountain Adventure" data-servicio="DSW">Quiero un proyecto así</a>
+          </div>
+        </div>
+      </article>
+      <?php endif; ?>
     </div>
 
     <?php if ($testimonios): ?>
@@ -350,7 +379,8 @@ $videos_marcela = array_values(array_filter([
       <h3 class="testimonios-titulo">Lo que dicen quienes han trabajado con nosotros</h3>
       <div class="testimonios-rejilla">
         <?php foreach ($testimonios as $t): ?>
-        <figure class="testimonio">
+        <figure class="testimonio<?= !empty($t['solo_demo']) ? ' testimonio-ejemplo' : '' ?>">
+          <?php if (!empty($t['solo_demo'])): ?><span class="etiqueta-ejemplo">Ejemplo · solo en la demo</span><?php endif; ?>
           <i class="fas fa-quote-left testimonio-comillas" aria-hidden="true"></i>
           <blockquote><?= esc($t['texto']) ?></blockquote>
           <figcaption>

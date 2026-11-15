@@ -840,3 +840,12 @@ select.form-input option {
   .header-content nav a { margin-left: 14px; font-size: .88rem; }
   .header-content nav a.btn-login-pro { padding: 7px 16px; }
 }
+
+/* Ejemplos que solo se ven en la demo */
+.etiqueta-ejemplo { display: inline-block; align-self: flex-start; margin-bottom: 12px; padding: 4px 12px; border-radius: 50px;
+  background: #fef3c7; color: #92400e; font-size: .78rem; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; }
+.proyecto-ejemplo, .testimonio-ejemplo { border: 2px dashed #f59e0b; }
+.proyecto-ejemplo .proyecto-media-icono { background: linear-gradient(135deg, #7c2d12 0%, #b45309 100%); }
+.proyecto-ejemplo .proyecto-media-icono i { color: #fde68a; }
+/* Con cuatro proyectos: dos por fila en computador */
+@media (min-width: 900px) { .proyectos-rejilla:has(> .proyecto-tarjeta:nth-child(4)) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
