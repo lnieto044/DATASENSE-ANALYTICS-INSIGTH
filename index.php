@@ -21,13 +21,13 @@ $es_demo = (($_ENV['APP_ENV'] ?? '') === 'demo');
    Con 'solo_demo' => true la entrada solo aparece en la demo, marcada como ejemplo. Sin testimonios, el bloque no aparece. */
 $testimonios = array_values(array_filter([
     // Autorizadas por los clientes (texto libre y 5 estrellas), según Luis, el 15/11/2026
-    ['nombre' => 'Laura Roja', 'cargo' => 'Coordinadora de Inventario', 'organizacion' => 'Colsubsidio', 'proyecto' => 'CuentaVoz: inventario por voz con agente inteligente', 'calificacion' => 5,
+    ['nombre' => 'Laura Roja', 'imagen' => 'cuentavoz.jpg', 'cargo' => 'Coordinadora de Inventario', 'organizacion' => 'Colsubsidio', 'proyecto' => 'CuentaVoz: inventario por voz con agente inteligente', 'calificacion' => 5,
      'texto' => 'CuentaVoz cambió la forma en que contamos el inventario: el equipo dicta los conteos por voz en cada bodega y el agente nos responde al instante. Con el panel gerencial vemos de inmediato las alertas, los saldos por corregir y los tiempos de conteo. Una solución práctica, moderna y pensada para la operación real.',
      'enlace' => 'https://www.youtube.com/watch?v=V-ZtG-wGlo4'],
-    ['nombre' => 'Andrés Soto', 'cargo' => 'Gerente', 'organizacion' => 'Tour Mountain Adventure', 'proyecto' => 'Plataforma web de caminatas guiadas', 'calificacion' => 5,
+    ['nombre' => 'Andrés Soto', 'imagen' => 'tour-mountain-adventure.jpg', 'cargo' => 'Gerente', 'organizacion' => 'Tour Mountain Adventure', 'proyecto' => 'Plataforma web de caminatas guiadas', 'calificacion' => 5,
      'texto' => 'DataSense nos dio una plataforma a la altura de una empresa: los viajeros consultan las caminatas y el calendario de salidas, las empresas cotizan sus salidas en línea y dejamos atrás el trabajo manual de responder y organizar cada solicitud. Hoy proyectamos una imagen mucho más profesional.',
      'enlace' => 'https://tour-mountain-adventure.onrender.com/'],
-    ['nombre' => 'Diana Linares', 'cargo' => 'Apoyo de Gerencia de Fraude', 'organizacion' => 'Colpensiones', 'proyecto' => 'Tablero de indicadores para la Gerencia de Fraude', 'calificacion' => 5,
+    ['nombre' => 'Diana Linares', 'imagen' => 'colpensiones-fraude.jpg', 'cargo' => 'Apoyo de Gerencia de Fraude', 'organizacion' => 'Colpensiones', 'proyecto' => 'Tablero de indicadores para la Gerencia de Fraude', 'calificacion' => 5,
      'texto' => 'El tablero que construyó DataSense le dio a la Gerencia de Fraude una vista clara y actualizada de los casos y las alertas. Ahora priorizamos con datos, identificamos más rápido los patrones que requieren revisión y presentamos la información a la dirección sin armar informes a mano.'],
 ], function ($t) use ($es_demo) {
     return trim((string) ($t['nombre'] ?? '')) !== '' && trim((string) ($t['texto'] ?? '')) !== '' && ($es_demo || empty($t['solo_demo']));
@@ -416,28 +416,52 @@ $videos_marcela = array_values(array_filter([
 
     </div>
 
-    <?php if ($testimonios): ?>
+    <?php if ($testimonios):
+      $notas = array_filter(array_map(function ($t) { return (int) ($t['calificacion'] ?? 0); }, $testimonios), function ($n) { return $n >= 1 && $n <= 5; });
+      $promedio = $notas ? array_sum($notas) / count($notas) : 0; ?>
     <div class="testimonios" id="testimonios">
-      <h3 class="testimonios-titulo">Lo que dicen quienes han trabajado con nosotros</h3>
+      <div class="testimonios-cabecera">
+        <div>
+          <span class="testimonios-etiqueta">Clientes</span>
+          <h3 class="testimonios-titulo">Lo que dicen quienes han trabajado con nosotros</h3>
+        </div>
+        <?php if ($notas): ?>
+        <div class="testimonios-resumen" role="img" aria-label="Calificación promedio <?= number_format($promedio, 1, ',', '') ?> de 5 en <?= count($notas) ?> reseñas">
+          <span class="resumen-nota"><?= number_format($promedio, 1, ',', '') ?></span>
+          <span class="resumen-detalle">
+            <span class="resumen-estrellas" aria-hidden="true"><?php for ($e = 1; $e <= 5; $e++): ?><i class="fa<?= $e <= round($promedio) ? 's' : 'r' ?> fa-star"></i><?php endfor; ?></span>
+            <span><?= count($notas) ?> reseña<?= count($notas) === 1 ? '' : 's' ?> de clientes</span>
+          </span>
+        </div>
+        <?php endif; ?>
+      </div>
       <div class="testimonios-rejilla">
-        <?php foreach ($testimonios as $t): ?>
-        <figure class="testimonio<?= !empty($t['solo_demo']) ? ' testimonio-ejemplo' : '' ?>">
-          <?php if (!empty($t['solo_demo'])): ?><span class="etiqueta-ejemplo">Ejemplo · solo en la demo</span><?php endif; ?>
-          <?php $cal = (int) ($t['calificacion'] ?? 0); if ($cal >= 1 && $cal <= 5): ?>
-          <div class="testimonio-estrellas" role="img" aria-label="Calificación: <?= $cal ?> de 5"><?php for ($e = 1; $e <= 5; $e++): ?><i class="fa<?= $e <= $cal ? 's' : 'r' ?> fa-star" aria-hidden="true"></i><?php endfor; ?></div>
-          <?php else: ?>
-          <i class="fas fa-quote-left testimonio-comillas" aria-hidden="true"></i>
+        <?php foreach ($testimonios as $t): $cal = (int) ($t['calificacion'] ?? 0); $tiene_enlace = !empty($t['enlace']) && preg_match('#^https://#i', $t['enlace']); ?>
+        <figure class="testimonio">
+          <?php if (!empty($t['imagen']) && preg_match('/^[a-z0-9-]+\.(jpg|png|webp)$/', $t['imagen'])): ?>
+          <div class="testimonio-media">
+            <img src="img/proyectos/<?= esc($t['imagen']) ?>" alt="<?= esc($t['proyecto'] ?? '') ?>" loading="lazy">
+            <span class="testimonio-empresa"><?= esc($t['organizacion'] ?? '') ?></span>
+          </div>
           <?php endif; ?>
-          <blockquote><?= esc($t['texto']) ?></blockquote>
-          <figcaption>
-            <span class="testimonio-inicial" aria-hidden="true"><?= esc(mb_strtoupper(mb_substr(trim($t['nombre']), 0, 1))) ?></span>
-            <span>
-              <b><?= esc($t['nombre']) ?></b>
-              <?= esc(trim(($t['cargo'] ?? '') . (!empty($t['cargo']) && !empty($t['organizacion']) ? ' · ' : '') . ($t['organizacion'] ?? ''))) ?>
-              <?php if (!empty($t['proyecto'])): ?><small>Proyecto: <?= esc($t['proyecto']) ?></small><?php endif; ?>
-              <?php if (!empty($t['enlace']) && preg_match('#^https://#i', $t['enlace'])): ?><a href="<?= esc($t['enlace']) ?>" target="_blank" rel="noopener noreferrer">Ver evidencia</a><?php endif; ?>
-            </span>
-          </figcaption>
+          <div class="testimonio-cuerpo">
+            <?php if ($cal >= 1 && $cal <= 5): ?>
+            <div class="testimonio-estrellas" role="img" aria-label="Calificación: <?= $cal ?> de 5"><?php for ($e = 1; $e <= 5; $e++): ?><i class="fa<?= $e <= $cal ? 's' : 'r' ?> fa-star" aria-hidden="true"></i><?php endfor; ?></div>
+            <?php endif; ?>
+            <blockquote>“<?= esc($t['texto']) ?>”</blockquote>
+            <figcaption>
+              <span class="testimonio-inicial" aria-hidden="true"><?= esc(mb_strtoupper(mb_substr(trim($t['nombre']), 0, 1))) ?></span>
+              <span class="testimonio-autor">
+                <b><?= esc($t['nombre']) ?></b>
+                <span><?= esc($t['cargo'] ?? '') ?></span>
+                <strong><?= esc($t['organizacion'] ?? '') ?></strong>
+              </span>
+            </figcaption>
+            <div class="testimonio-pie">
+              <?php if (!empty($t['proyecto'])): ?><span><i class="fas fa-briefcase"></i><?= esc($t['proyecto']) ?></span><?php endif; ?>
+              <?php if ($tiene_enlace): ?><a href="<?= esc($t['enlace']) ?>" target="_blank" rel="noopener noreferrer">Ver evidencia <i class="fas fa-arrow-up-right-from-square"></i></a><?php endif; ?>
+            </div>
+          </div>
         </figure>
         <?php endforeach; ?>
       </div>
