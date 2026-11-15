@@ -19,11 +19,6 @@ $es_demo = (($_ENV['APP_ENV'] ?? '') === 'demo');
              'proyecto' => 'Proyecto que se hizo', 'texto' => 'Lo que dijo el cliente', 'enlace' => 'https://... (evidencia, opcional)'].
    Con 'solo_demo' => true la entrada solo aparece en la demo, marcada como ejemplo. Sin testimonios, el bloque no aparece. */
 $testimonios = array_values(array_filter([
-    // EJEMPLO para la demo: reemplazar por la reseña real de TourMountain Adventure (con su autorización) y quitar 'solo_demo'
-    ['nombre' => 'Nombre de quien da la reseña', 'cargo' => 'Cargo', 'organizacion' => 'TourMountain Adventure',
-     'proyecto' => 'Proyecto realizado para TourMountain Adventure',
-     'texto' => 'Aquí va la reseña real de TourMountain Adventure, en sus palabras: qué necesitaban, qué hicimos y qué resultados obtuvieron.',
-     'solo_demo' => true],
 ], function ($t) use ($es_demo) {
     return trim((string) ($t['nombre'] ?? '')) !== '' && trim((string) ($t['texto'] ?? '')) !== '' && ($es_demo || empty($t['solo_demo']));
 }));
@@ -322,8 +317,7 @@ $videos_marcela = array_values(array_filter([
     </div>
 
     <div class="proyectos-rejilla">
-      <?php if ($es_demo): ?>
-      <!-- CuentaVoz (Colsubsidio): por ahora solo en la demo, hasta confirmar si se puede nombrar a Colsubsidio en producción -->
+      <!-- CuentaVoz (Colsubsidio) -->
       <article class="proyecto-tarjeta proyecto-destacado" data-areas="analitica software">
         <div class="proyecto-media"><img src="img/proyectos/cuentavoz.jpg" alt="CuentaVoz: reportes de análisis de consumo con recomendación automática del agente" loading="lazy"></div>
         <div class="proyecto-cuerpo">
@@ -337,7 +331,20 @@ $videos_marcela = array_values(array_filter([
           </div>
         </div>
       </article>
-      <?php endif; ?>
+
+      <article class="proyecto-tarjeta" data-areas="software">
+        <div class="proyecto-media"><img src="img/proyectos/tour-mountain-adventure.jpg" alt="Sitio web de Tour Mountain Adventure: caminatas guiadas por Cundinamarca" loading="lazy"></div>
+        <div class="proyecto-cuerpo">
+          <span class="proyecto-cliente"><i class="fas fa-mountain-sun"></i>Tour Mountain Adventure</span>
+          <span class="proyecto-area"><i class="fas fa-code"></i>Desarrollo web · Turismo</span>
+          <h3>Plataforma web de caminatas guiadas por Cundinamarca</h3>
+          <p>Sitio de la agencia con catálogo de caminatas por tipo de aventura, calendario de salidas, cotización de salidas empresariales, tienda, blog y cuentas para los viajeros.</p>
+          <div class="proyecto-acciones">
+            <a href="#contacto" class="btn-team" data-proyecto="la plataforma web de Tour Mountain Adventure" data-servicio="DSW">Quiero un proyecto así</a>
+            <a href="https://tour-mountain-adventure.onrender.com/" class="btn-proyecto-sec" target="_blank" rel="noopener noreferrer"><i class="fas fa-arrow-up-right-from-square"></i>Visitar el sitio</a>
+          </div>
+        </div>
+      </article>
 
       <article class="proyecto-tarjeta" data-areas="software publico">
         <div class="proyecto-media"><img src="img/proyectos/plataforma-datasense.jpg" alt="Panel de la plataforma DataSense con sus módulos de operación, mesa de servicios, PQRSD, facturación y contabilidad" loading="lazy"></div>
@@ -381,52 +388,7 @@ $videos_marcela = array_values(array_filter([
         </div>
       </article>
 
-      <?php if ($es_demo): ?>
-      <!-- EJEMPLO solo para la demo: reemplazar con la información real del proyecto de TourMountain Adventure -->
-      <article class="proyecto-tarjeta proyecto-ejemplo" data-areas="software">
-        <div class="proyecto-media proyecto-media-icono" aria-hidden="true">
-          <i class="fas fa-mountain-sun"></i>
-          <span>TourMountain Adventure</span>
-        </div>
-        <div class="proyecto-cuerpo">
-          <span class="etiqueta-ejemplo">Ejemplo · solo en la demo</span>
-          <span class="proyecto-area"><i class="fas fa-route"></i>Turismo</span>
-          <h3>Proyecto para TourMountain Adventure</h3>
-          <p>Aquí va la descripción real del proyecto: qué necesitaba TourMountain Adventure, qué construimos y qué resultados obtuvo, con un enlace a la evidencia (sitio, tablero o video).</p>
-          <div class="proyecto-acciones">
-            <a href="#contacto" class="btn-team" data-proyecto="el proyecto de TourMountain Adventure" data-servicio="DSW">Quiero un proyecto así</a>
-          </div>
-        </div>
-      </article>
-      <?php endif; ?>
 
-      <?php
-      /* Portafolio de Luis (diseño, marketing y desarrollo web). Por ahora solo en la demo: las imágenes son recortes de una
-         captura; con las originales se puede quitar la condición $es_demo. Áreas: analitica, publico, software, diseno, humano, hackaton */
-      $portafolio = [
-          ['titulo' => 'Diseño de identidad visual – Tecnológicas', 'imagen' => 'portafolio-tecnologicas.jpg', 'areas' => 'diseno', 'etiquetas' => ['Diseño gráfico', 'Adobe Photoshop']],
-          ['titulo' => 'Diseño de identidad visual – Band Music', 'imagen' => 'portafolio-bandmusic.jpg', 'areas' => 'diseno', 'etiquetas' => ['Diseño gráfico', 'Adobe Photoshop']],
-          ['titulo' => 'Tiendita: e-commerce de productos frescos', 'imagen' => 'portafolio-tiendita.jpg', 'areas' => 'software diseno', 'etiquetas' => ['Diseño gráfico', 'MySQL']],
-          ['titulo' => 'LiveStream Pro: gestión y producción de contenido', 'imagen' => 'portafolio-livestream.jpg', 'areas' => 'diseno', 'etiquetas' => []],
-          ['titulo' => 'Estrategia de marketing omnicanal', 'imagen' => 'portafolio-marketing.jpg', 'areas' => 'diseno', 'etiquetas' => []],
-          ['titulo' => 'Innovate Tech: identidad y branding visual', 'imagen' => 'portafolio-innovate.jpg', 'areas' => 'diseno', 'etiquetas' => []],
-      ];
-      $nombres_area = ['analitica' => ['Analítica y BI', 'fa-chart-line'], 'publico' => ['Sector público', 'fa-landmark'], 'software' => ['Desarrollo de software', 'fa-code'],
-                       'diseno' => ['Diseño y marketing', 'fa-pen-nib'], 'humano' => ['Desarrollo humano', 'fa-seedling'], 'hackaton' => ['Hackatón', 'fa-trophy']];
-      ?>
-      <?php if ($es_demo): foreach ($portafolio as $pf): $area = $nombres_area[explode(' ', $pf['areas'])[0]] ?? $nombres_area['diseno']; ?>
-      <article class="proyecto-tarjeta proyecto-compacto" data-areas="<?= esc($pf['areas']) ?>">
-        <div class="proyecto-media"><img src="img/proyectos/<?= esc($pf['imagen']) ?>" alt="<?= esc($pf['titulo']) ?>" loading="lazy"></div>
-        <div class="proyecto-cuerpo">
-          <span class="proyecto-area"><i class="fas <?= esc($area[1]) ?>"></i><?= esc($area[0]) ?> · Portafolio</span>
-          <h3><?= esc($pf['titulo']) ?></h3>
-          <?php if ($pf['etiquetas']): ?><ul class="proyecto-etiquetas"><?php foreach ($pf['etiquetas'] as $et): ?><li><?= esc($et) ?></li><?php endforeach; ?></ul><?php endif; ?>
-          <div class="proyecto-acciones">
-            <a href="#contacto" class="btn-team" data-proyecto="<?= esc($pf['titulo']) ?>" data-servicio="<?= strpos($pf['areas'], 'software') !== false ? 'DSW' : 'BI' ?>">Quiero algo así</a>
-          </div>
-        </div>
-      </article>
-      <?php endforeach; endif; ?>
     </div>
 
     <?php if ($testimonios): ?>
