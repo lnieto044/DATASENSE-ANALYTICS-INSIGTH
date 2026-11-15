@@ -847,5 +847,20 @@ select.form-input option {
 .proyecto-ejemplo, .testimonio-ejemplo { border: 2px dashed #f59e0b; }
 .proyecto-ejemplo .proyecto-media-icono { background: linear-gradient(135deg, #7c2d12 0%, #b45309 100%); }
 .proyecto-ejemplo .proyecto-media-icono i { color: #fde68a; }
-/* Con cuatro proyectos: dos por fila en computador */
-@media (min-width: 900px) { .proyectos-rejilla:has(> .proyecto-tarjeta:nth-child(4)) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Filtros de proyectos por área */
+.proyectos-filtros { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 0 auto 36px; }
+.filtro-proyecto { border: 2px solid #cbd5e1; background: #fff; color: #334155; border-radius: 50px; padding: 8px 18px;
+  font-weight: 700; font-size: .92rem; cursor: pointer; transition: all .2s ease; font-family: inherit; }
+.filtro-proyecto i { margin-right: 8px; color: #15803d; }
+.filtro-proyecto:hover, .filtro-proyecto:focus-visible { border-color: #0A2E4F; color: #0A2E4F; }
+.filtro-proyecto.activo { background: #0A2E4F; border-color: #0A2E4F; color: #fff; }
+.filtro-proyecto.activo i { color: #86efac; }
+.filtro-proyecto[hidden], .proyecto-tarjeta[hidden] { display: none !important; }
+/* Tarjetas compactas del portafolio */
+.proyecto-compacto .proyecto-cuerpo { padding: 20px 22px 22px; }
+.proyecto-compacto h3 { font-size: 1.12rem; }
+.proyecto-etiquetas { list-style: none; padding: 0; margin: 0 0 18px; display: flex; flex-wrap: wrap; gap: 8px; }
+.proyecto-etiquetas li { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; border-radius: 50px; padding: 4px 12px;
+  font-size: .82rem; font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { .filtro-proyecto { transition: none; } }

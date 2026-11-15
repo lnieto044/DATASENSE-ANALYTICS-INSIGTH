@@ -311,8 +311,18 @@ $videos_marcela = array_values(array_filter([
     </div>
     <p class="proyectos-intro">Soluciones que hemos construido e investigado. Si quieres algo así para tu organización, cuéntanos tu reto y lo hacemos realidad.</p>
 
+    <div class="proyectos-filtros" role="group" aria-label="Filtrar proyectos por área">
+      <button type="button" class="filtro-proyecto activo" data-filtro="todos" aria-pressed="true">Todos</button>
+      <button type="button" class="filtro-proyecto" data-filtro="analitica" aria-pressed="false"><i class="fas fa-chart-line"></i>Analítica y BI</button>
+      <button type="button" class="filtro-proyecto" data-filtro="publico" aria-pressed="false"><i class="fas fa-landmark"></i>Sector público</button>
+      <button type="button" class="filtro-proyecto" data-filtro="software" aria-pressed="false"><i class="fas fa-code"></i>Desarrollo de software</button>
+      <button type="button" class="filtro-proyecto" data-filtro="diseno" aria-pressed="false"><i class="fas fa-pen-nib"></i>Diseño y marketing</button>
+      <button type="button" class="filtro-proyecto" data-filtro="humano" aria-pressed="false"><i class="fas fa-seedling"></i>Desarrollo humano</button>
+      <button type="button" class="filtro-proyecto" data-filtro="hackaton" aria-pressed="false"><i class="fas fa-trophy"></i>Hackatones</button>
+    </div>
+
     <div class="proyectos-rejilla">
-      <article class="proyecto-tarjeta">
+      <article class="proyecto-tarjeta" data-areas="software publico">
         <div class="proyecto-media"><img src="img/proyectos/plataforma-datasense.jpg" alt="Panel de la plataforma DataSense con sus módulos de operación, mesa de servicios, PQRSD, facturación y contabilidad" loading="lazy"></div>
         <div class="proyecto-cuerpo">
           <span class="proyecto-area"><i class="fas fa-code"></i>Desarrollo de software</span>
@@ -325,7 +335,7 @@ $videos_marcela = array_values(array_filter([
         </div>
       </article>
 
-      <article class="proyecto-tarjeta">
+      <article class="proyecto-tarjeta" data-areas="analitica publico">
         <div class="proyecto-media"><img src="img/productos/prod_6d6fee582c7499d3.jpg" alt="Tablero de ejecución presupuestal con indicadores, ejecución por sector y porcentaje de ejecución" loading="lazy"></div>
         <div class="proyecto-cuerpo">
           <span class="proyecto-area"><i class="fas fa-landmark"></i>Analítica sector público</span>
@@ -338,7 +348,7 @@ $videos_marcela = array_values(array_filter([
         </div>
       </article>
 
-      <article class="proyecto-tarjeta">
+      <article class="proyecto-tarjeta" data-areas="humano">
         <div class="proyecto-media proyecto-media-icono" aria-hidden="true">
           <i class="fas fa-hands-asl-interpreting"></i>
           <span>Investigación · FLACSO Argentina</span>
@@ -356,7 +366,7 @@ $videos_marcela = array_values(array_filter([
 
       <?php if ($es_demo): ?>
       <!-- EJEMPLO solo para la demo: reemplazar con la información real del proyecto de TourMountain Adventure -->
-      <article class="proyecto-tarjeta proyecto-ejemplo">
+      <article class="proyecto-tarjeta proyecto-ejemplo" data-areas="software">
         <div class="proyecto-media proyecto-media-icono" aria-hidden="true">
           <i class="fas fa-mountain-sun"></i>
           <span>TourMountain Adventure</span>
@@ -372,6 +382,34 @@ $videos_marcela = array_values(array_filter([
         </div>
       </article>
       <?php endif; ?>
+
+      <?php
+      /* Portafolio de Luis (diseño, marketing y desarrollo web). Por ahora solo en la demo: las imágenes son recortes de una
+         captura; con las originales se puede quitar la condición $es_demo. Áreas: analitica, publico, software, diseno, humano, hackaton */
+      $portafolio = [
+          ['titulo' => 'Diseño de identidad visual – Tecnológicas', 'imagen' => 'portafolio-tecnologicas.jpg', 'areas' => 'diseno', 'etiquetas' => ['Diseño gráfico', 'Adobe Photoshop']],
+          ['titulo' => 'Diseño de identidad visual – Band Music', 'imagen' => 'portafolio-bandmusic.jpg', 'areas' => 'diseno', 'etiquetas' => ['Diseño gráfico', 'Adobe Photoshop']],
+          ['titulo' => 'Tiendita: e-commerce de productos frescos', 'imagen' => 'portafolio-tiendita.jpg', 'areas' => 'software diseno', 'etiquetas' => ['Diseño gráfico', 'MySQL']],
+          ['titulo' => 'LiveStream Pro: gestión y producción de contenido', 'imagen' => 'portafolio-livestream.jpg', 'areas' => 'diseno', 'etiquetas' => []],
+          ['titulo' => 'Estrategia de marketing omnicanal', 'imagen' => 'portafolio-marketing.jpg', 'areas' => 'diseno', 'etiquetas' => []],
+          ['titulo' => 'Innovate Tech: identidad y branding visual', 'imagen' => 'portafolio-innovate.jpg', 'areas' => 'diseno', 'etiquetas' => []],
+      ];
+      $nombres_area = ['analitica' => ['Analítica y BI', 'fa-chart-line'], 'publico' => ['Sector público', 'fa-landmark'], 'software' => ['Desarrollo de software', 'fa-code'],
+                       'diseno' => ['Diseño y marketing', 'fa-pen-nib'], 'humano' => ['Desarrollo humano', 'fa-seedling'], 'hackaton' => ['Hackatón', 'fa-trophy']];
+      ?>
+      <?php if ($es_demo): foreach ($portafolio as $pf): $area = $nombres_area[explode(' ', $pf['areas'])[0]] ?? $nombres_area['diseno']; ?>
+      <article class="proyecto-tarjeta proyecto-compacto" data-areas="<?= esc($pf['areas']) ?>">
+        <div class="proyecto-media"><img src="img/proyectos/<?= esc($pf['imagen']) ?>" alt="<?= esc($pf['titulo']) ?>" loading="lazy"></div>
+        <div class="proyecto-cuerpo">
+          <span class="proyecto-area"><i class="fas <?= esc($area[1]) ?>"></i><?= esc($area[0]) ?> · Portafolio</span>
+          <h3><?= esc($pf['titulo']) ?></h3>
+          <?php if ($pf['etiquetas']): ?><ul class="proyecto-etiquetas"><?php foreach ($pf['etiquetas'] as $et): ?><li><?= esc($et) ?></li><?php endforeach; ?></ul><?php endif; ?>
+          <div class="proyecto-acciones">
+            <a href="#contacto" class="btn-team" data-proyecto="<?= esc($pf['titulo']) ?>" data-servicio="<?= strpos($pf['areas'], 'software') !== false ? 'DSW' : 'BI' ?>">Quiero algo así</a>
+          </div>
+        </div>
+      </article>
+      <?php endforeach; endif; ?>
     </div>
 
     <?php if ($testimonios): ?>
@@ -963,6 +1001,23 @@ document.addEventListener("DOMContentLoaded", function () {
             <span class="tienda-inicio-ver">Ver producto <i class="fas fa-arrow-right"></i></span></div></a>`).join('');
     })
     .catch(() => { if (destino) destino.remove(); });
+})();
+</script>
+<script>
+// Proyectos: filtros por área; se ocultan los botones de áreas que no tienen proyectos
+(function () {
+  const tarjetas = Array.from(document.querySelectorAll('.proyectos-rejilla .proyecto-tarjeta'));
+  const botones = Array.from(document.querySelectorAll('.filtro-proyecto'));
+  if (!tarjetas.length || !botones.length) return;
+  const areas = (t) => (t.dataset.areas || '').split(' ');
+  botones.forEach(function (b) {
+    const f = b.dataset.filtro;
+    if (f !== 'todos' && !tarjetas.some((t) => areas(t).includes(f))) b.hidden = true;
+    b.addEventListener('click', function () {
+      botones.forEach((o) => { o.classList.toggle('activo', o === b); o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+      tarjetas.forEach((t) => { t.hidden = f !== 'todos' && !areas(t).includes(f); });
+    });
+  });
 })();
 </script>
 <script>
