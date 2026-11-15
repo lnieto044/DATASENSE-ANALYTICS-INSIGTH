@@ -356,6 +356,21 @@ $videos_marcela = array_values(array_filter([
         </div>
       </article>
 
+      <article class="proyecto-tarjeta" data-areas="analitica publico">
+        <div class="proyecto-media"><img src="img/proyectos/colpensiones-fraude.jpg" alt="Tablero de la Gerencia de Fraude con casos en revisión, alertas por tipo y casos por nivel de riesgo (imagen ilustrativa con datos ficticios)" loading="lazy"></div>
+        <div class="proyecto-cuerpo">
+          <span class="proyecto-cliente"><i class="fas fa-building-columns"></i>Colpensiones</span>
+          <span class="proyecto-area"><i class="fas fa-shield-halved"></i>Analítica de fraude · Sector público</span>
+          <h3>Tablero de indicadores para la Gerencia de Fraude</h3>
+          <p>Casos y alertas actualizados en un solo tablero, priorizados por nivel de riesgo y por tipo de alerta, con la información lista para presentar a la dirección.</p>
+          <p class="proyecto-nota"><i class="fas fa-lock"></i>Imagen ilustrativa con datos ficticios: la información del cliente es confidencial.</p>
+          <div class="proyecto-acciones">
+            <a href="#contacto" class="btn-team" data-proyecto="un tablero de indicadores como el de la Gerencia de Fraude de Colpensiones" data-servicio="BI">Quiero un proyecto así</a>
+            <a href="#testimonios" class="btn-proyecto-sec"><i class="fas fa-star"></i>Ver su reseña</a>
+          </div>
+        </div>
+      </article>
+
       <article class="proyecto-tarjeta" data-areas="software publico">
         <div class="proyecto-media"><img src="img/proyectos/plataforma-datasense.jpg" alt="Panel de la plataforma DataSense con sus módulos de operación, mesa de servicios, PQRSD, facturación y contabilidad" loading="lazy"></div>
         <div class="proyecto-cuerpo">

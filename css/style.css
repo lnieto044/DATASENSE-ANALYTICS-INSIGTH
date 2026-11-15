@@ -871,3 +871,5 @@ select.form-input option {
   border-radius: 50px; background: #eff6ff; color: #1d4ed8; font-size: .8rem; font-weight: 800; }
 .btn-proyecto-sec > i:first-child { margin-right: 8px; }
 .testimonio-estrellas { color: #f59e0b; font-size: 1.05rem; margin-bottom: 14px; display: flex; gap: 4px; }
+.proyecto-cuerpo .proyecto-nota { font-size: .82rem; color: #64748b; margin: -10px 0 18px; line-height: 1.45; }
+.proyecto-nota i { margin-right: 6px; color: #94a3b8; }
