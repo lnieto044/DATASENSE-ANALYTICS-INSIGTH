@@ -62,8 +62,20 @@ cabeceraTienda($db, $titulo, [
     <?php else: ?>
 
     <?php if (!$filtrando && $pagina === 1): ?>
-    <section class="tienda-hero mb-4">
+    <?php
+    // Collage del banner: imágenes de los destacados del momento (la conferencia de Marcela va primero)
+    $collage = array_slice(array_values(array_filter($destacados ?: [], function ($p) {
+        $i = (string) ($p['imagen'] ?? '');
+        return preg_match('/^prod_[a-f0-9]{16}\.(jpg|png|webp)$/', $i) && is_file(__DIR__ . '/img/productos/' . $i);
+    })), 0, 3);
+    ?>
+    <section class="tienda-hero mb-4<?= count($collage) === 3 ? ' con-collage' : '' ?>">
         <i class="fas fa-chart-pie hero-icono" aria-hidden="true"></i>
+        <?php if (count($collage) === 3): ?>
+        <div class="hero-collage" aria-hidden="true">
+            <?php foreach ($collage as $k => $pc): ?><img src="img/productos/<?= esc($pc['imagen']) ?>" alt="" class="collage-<?= $k ?>"><?php endforeach; ?>
+        </div>
+        <?php endif; ?>
         <span class="badge rounded-pill text-bg-light text-uppercase mb-3" style="letter-spacing:.06em"><i class="fas fa-bolt text-warning me-1"></i>Tienda DataSense</span>
         <h1>Todo lo que necesitas para decidir con datos</h1>
         <p class="mb-4">Productos bioenergéticos y saludables, plantillas de tableros, cursos, licencias, kits IoT, productos de marca y revistas. Pagas en línea y recibes tu factura al instante.</p>
