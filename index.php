@@ -20,6 +20,13 @@ $es_demo = (($_ENV['APP_ENV'] ?? '') === 'demo');
              'enlace' => 'https://... (evidencia, opcional)'].
    Con 'solo_demo' => true la entrada solo aparece en la demo, marcada como ejemplo. Sin testimonios, el bloque no aparece. */
 $testimonios = array_values(array_filter([
+    // Autorizadas por los clientes (texto libre y 5 estrellas), según Luis, el 15/11/2026
+    ['nombre' => 'Laura Roja', 'cargo' => 'Coordinadora de Inventario', 'organizacion' => 'Colsubsidio', 'proyecto' => 'CuentaVoz: inventario por voz con agente inteligente', 'calificacion' => 5,
+     'texto' => 'CuentaVoz cambió la forma en que contamos el inventario: el equipo dicta los conteos por voz en cada bodega y el agente nos responde al instante. Con el panel gerencial vemos de inmediato las alertas, los saldos por corregir y los tiempos de conteo. Una solución práctica, moderna y pensada para la operación real.',
+     'enlace' => 'https://www.youtube.com/watch?v=V-ZtG-wGlo4'],
+    ['nombre' => 'Andrés Soto', 'cargo' => 'Gerente', 'organizacion' => 'Tour Mountain Adventure', 'proyecto' => 'Plataforma web de caminatas guiadas', 'calificacion' => 5,
+     'texto' => 'DataSense nos dio una plataforma a la altura de una empresa: los viajeros consultan las caminatas y el calendario de salidas, las empresas cotizan sus salidas en línea y dejamos atrás el trabajo manual de responder y organizar cada solicitud. Hoy proyectamos una imagen mucho más profesional.',
+     'enlace' => 'https://tour-mountain-adventure.onrender.com/'],
 ], function ($t) use ($es_demo) {
     return trim((string) ($t['nombre'] ?? '')) !== '' && trim((string) ($t['texto'] ?? '')) !== '' && ($es_demo || empty($t['solo_demo']));
 }));
