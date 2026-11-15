@@ -728,3 +728,12 @@ select.form-input option {
 .tienda-esqueleto { min-height: 300px; border-radius: 16px; background: linear-gradient(90deg, #eef2f7 25%, #f8fafc 50%, #eef2f7 75%); background-size: 200% 100%; animation: tiendaCarga 1.2s infinite; }
 @keyframes tiendaCarga { to { background-position: -200% 0; } }
 @media (prefers-reduced-motion: reduce) { .tienda-esqueleto { animation: none; } .tienda-inicio-card { transition: none; } }
+
+/* Botones de contacto en las tarjetas del equipo */
+.team-contacto { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 18px; }
+.btn-team { display: inline-flex; align-items: center; background: var(--ds-green); color: #fff; padding: 10px 24px; border-radius: 50px;
+  font-weight: 700; font-size: .95rem; text-decoration: none; box-shadow: 0 6px 16px rgba(63, 174, 73, .35); transition: transform .2s ease, background .2s ease; }
+.btn-team:hover, .btn-team:focus-visible { background: var(--ds-green-hover); color: #fff; transform: translateY(-2px); }
+.btn-team-wpp { background: #25d366; box-shadow: 0 6px 16px rgba(37, 211, 102, .35); }
+.btn-team-wpp:hover, .btn-team-wpp:focus-visible { background: #1ebe5a; }
+@media (prefers-reduced-motion: reduce) { .btn-team { transition: none; } }

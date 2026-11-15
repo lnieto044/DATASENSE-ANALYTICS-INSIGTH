@@ -54,7 +54,7 @@ function nuevoCorreo($nombreRemitente) {
     return $mail;
 }
 
-// Nombre legible de las líneas de servicio que guardan el formulario de contacto y el chatbot (BI, DS, ASP, CGD, DSW)
+// Nombre legible de las líneas de servicio que guardan el formulario de contacto y el chatbot (BI, DS, ASP, CGD, DSW, PSI)
 function nombreServicio($codigo) {
     $nombres = [
         'BI'  => 'Business Intelligence',
@@ -62,6 +62,7 @@ function nombreServicio($codigo) {
         'ASP' => 'Analítica Sector Público',
         'CGD' => 'Gobierno y Calidad de Datos',
         'DSW' => 'Desarrollo de Software (backend / frontend)',
+        'PSI' => 'Charlas de Psicología y Desarrollo Humano',
     ];
     return $nombres[$codigo] ?? (string) $codigo;
 }

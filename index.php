@@ -94,18 +94,32 @@ $_SESSION['form_contacto_desde'] = time();
         </div>
         <h4 class="team-name">Marcela Pacheco Parra</h4>
         <span class="team-role">Co-Fundadora & CTO</span>
-        <div class="team-degree"><i class="fas fa-graduation-cap me-2"></i> Magíster en Analítica de Datos</div>
-        <p class="team-desc">Lidera el desarrollo técnico y la arquitectura de ciencia de datos, garantizando un rigor matemático y estadístico avanzado en cada insight entregado a nuestros clientes.</p>
+        <div class="team-degree"><i class="fas fa-graduation-cap me-2"></i> Psicóloga · Magíster en Desarrollo Humano (FLACSO)</div>
+        <p class="team-desc">Magíster en Desarrollo Humano de FLACSO Argentina, con formación en Análisis de Datos certificada por el MinTIC. Integra la psicología y la analítica para que cada decisión basada en datos ponga a las personas en el centro y genere un impacto humano medible.</p>
+        <p class="team-desc mb-0"><i class="fas fa-comments me-2"></i><b>Conferencista en psicología</b> para organizaciones nacionales e internacionales: bienestar, inclusión y desarrollo humano.</p>
+        <div class="team-contacto">
+          <a href="#contacto" class="btn-team">Solicita una charla</a>
+          <?php $wpp = preg_replace('/\D+/', '', (string) ($_ENV['SOCIAL_WHATSAPP'] ?? '')); if (strlen($wpp) >= 10): ?>
+          <a href="https://wa.me/<?= esc($wpp) ?>?text=<?= rawurlencode('Hola Marcela, vengo del sitio de DataSense y quiero información sobre sus charlas de psicología.') ?>" class="btn-team btn-team-wpp" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>
+          <?php endif; ?>
+        </div>
       </div>
 
       <div class="team-card">
         <div class="team-img-wrapper">
-          <img src="img/luis.jpg" alt="Luis Guillermo Nieto Patiño" onerror="this.src='https://ui-avatars.com/api/?name=Luis+Guillermo&background=0A2E4F&color=fff&size=200&bold=true'">
+          <img src="img/luis.jpg" style="object-position: 50% 20%;" alt="Luis Guillermo Nieto Patiño" onerror="this.src='https://ui-avatars.com/api/?name=Luis+Guillermo&background=0A2E4F&color=fff&size=200&bold=true'">
         </div>
         <h4 class="team-name">Luis Guillermo Nieto Patiño</h4>
         <span class="team-role">Co-Fundador & CEO</span>
         <div class="team-degree"><i class="fas fa-graduation-cap me-2"></i> Candidato a Magíster en Analítica de Datos</div>
-        <p class="team-desc">Enfocado en la estrategia de negocio y la integración de Business Intelligence, asegurando que las soluciones de datos sean sostenibles y generen un impacto gerencial real.</p>
+        <p class="team-desc">Lidera la estrategia de negocio y la visión tecnológica de DataSense. Acompaña a gerencias y entidades nacionales e internacionales a convertir sus datos en decisiones rentables: tableros ejecutivos, analítica avanzada y software a la medida que reducen costos, aceleran la gestión y muestran resultados desde el primer mes.</p>
+        <p class="team-desc mb-0"><i class="fas fa-handshake me-2"></i><b>¿Tu organización necesita decidir con datos?</b> Conversemos sobre tu reto.</p>
+        <div class="team-contacto">
+          <a href="#contacto" class="btn-team">Agenda una reunión</a>
+          <?php $wpp = preg_replace('/\D+/', '', (string) ($_ENV['SOCIAL_WHATSAPP'] ?? '')); if (strlen($wpp) >= 10): ?>
+          <a href="https://wa.me/<?= esc($wpp) ?>?text=<?= rawurlencode('Hola Luis, vengo del sitio de DataSense y quiero conversar sobre un proyecto de datos.') ?>" class="btn-team btn-team-wpp" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>
+          <?php endif; ?>
+        </div>
       </div>
     </div>
   </div>
@@ -189,6 +203,14 @@ $_SESSION['form_contacto_desde'] = time();
         </div>
         <h3>Desarrollo de Software</h3>
         <p><strong>Backend:</strong> APIs, bases de datos e integraciones entre sistemas. <strong>Frontend:</strong> aplicaciones web responsivas y móviles. Software a la medida de tu operación.</p>
+      </div>
+
+      <div class="premium-card" id="servicioPsicologia">
+        <div class="premium-icon-box icon-blue">
+          <i class="fas fa-comments"></i>
+        </div>
+        <h3>Charlas de Psicología y Desarrollo Humano</h3>
+        <p>Charlas y talleres para empresas, colegios y entidades sobre bienestar, inclusión y desarrollo humano, dirigidos por Marcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano. <a href="#contacto" class="fw-bold">Solicítala aquí</a>.</p>
       </div>
     </div>
     
@@ -335,6 +357,7 @@ $_SESSION['form_contacto_desde'] = time();
                                   <option value="ASP">Analítica Sector Público</option>
                                   <option value="CGD">Gobierno y Calidad de Datos</option>
                                   <option value="DSW">Desarrollo de Software (backend / frontend)</option>
+                                  <option value="PSI">Charlas de Psicología y Desarrollo Humano</option>
                               </select>
                           </div>
                       </div>
@@ -635,6 +658,22 @@ document.addEventListener("DOMContentLoaded", function () {
         ]);
     }
 
+    // FLUJO 6: Charlas de Psicología (Marcela Pacheco Parra)
+    function flujoPsicologia_Q1() {
+        generarBotones("Nuestras charlas las dirige Marcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano (FLACSO). ¿Para quién sería la charla?", [
+            { texto: "🏢 Equipo de trabajo / empresa", accion: flujoPsicologia_Q2 },
+            { texto: "🏫 Colegio o universidad", accion: flujoPsicologia_Q2 },
+            { texto: "🏛️ Entidad pública o comunidad", accion: flujoPsicologia_Q2 }
+        ]);
+    }
+    function flujoPsicologia_Q2() {
+        generarBotones("¿Qué tema les interesa más?", [
+            { texto: "🧠 Bienestar y salud mental", accion: pedirCorreoFinal },
+            { texto: "🤝 Inclusión y diversidad", accion: pedirCorreoFinal },
+            { texto: "🌱 Desarrollo humano y liderazgo", accion: pedirCorreoFinal }
+        ]);
+    }
+
     // EL CIERRE (PEDIR EL CORREO)
     function pedirCorreoFinal() {
         estado = "pedir_correo";
@@ -650,7 +689,8 @@ document.addEventListener("DOMContentLoaded", function () {
             { texto: "⚙️ BI y Ciencia de Datos", accion: flujoBI_Q1 },
             { texto: "🏛️ Analítica Sector Público", accion: flujoPublico_Q1 },
             { texto: "🛡️ Gobierno y Calidad de Datos", accion: flujoGobierno_Q1 },
-            { texto: "💻 Desarrollo de Software", accion: flujoSoftware_Q1 }
+            { texto: "💻 Desarrollo de Software", accion: flujoSoftware_Q1 },
+            { texto: "💬 Charlas de Psicología", accion: flujoPsicologia_Q1 }
         ]);
     }
 
