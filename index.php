@@ -15,6 +15,10 @@ $_SESSION['form_contacto_desde'] = time();
    Para agregar una, copia el código del video (lo que va después de "watch?v=" en el enlace) y su título.
    Ejemplo: ['id' => 'abcdEFGhijk', 'titulo' => 'Bienestar emocional en el trabajo']. Sin videos, el bloque no aparece. */
 $videos_marcela = array_values(array_filter([
+    // TEMPORAL: videos del canal de Luis (youtube.com/@LUISGUILLERMONIETO) como ejemplo, mientras llegan los de Marcela
+    ['id' => 'v6Cwso37rPo', 'titulo' => 'Análisis demográfico en Colombia'],
+    ['id' => 'ie6oFx1yuZo', 'titulo' => 'Estrategias de organización de eventos'],
+    ['id' => 'rWJvVq5Gu4I', 'titulo' => 'Oportunidades de mejora en medio ambiente y SST'],
 ], function ($v) { return preg_match('/^[A-Za-z0-9_-]{11}$/', (string) ($v['id'] ?? '')); }));
 ?>
 
