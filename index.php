@@ -27,6 +27,8 @@ $testimonios = array_values(array_filter([
     ['nombre' => 'Andrés Soto', 'cargo' => 'Gerente', 'organizacion' => 'Tour Mountain Adventure', 'proyecto' => 'Plataforma web de caminatas guiadas', 'calificacion' => 5,
      'texto' => 'DataSense nos dio una plataforma a la altura de una empresa: los viajeros consultan las caminatas y el calendario de salidas, las empresas cotizan sus salidas en línea y dejamos atrás el trabajo manual de responder y organizar cada solicitud. Hoy proyectamos una imagen mucho más profesional.',
      'enlace' => 'https://tour-mountain-adventure.onrender.com/'],
+    ['nombre' => 'Diana Linares', 'cargo' => 'Apoyo de Gerencia de Fraude', 'organizacion' => 'Colpensiones', 'proyecto' => 'Tablero de indicadores para la Gerencia de Fraude', 'calificacion' => 5,
+     'texto' => 'El tablero que construyó DataSense le dio a la Gerencia de Fraude una vista clara y actualizada de los casos y las alertas. Ahora priorizamos con datos, identificamos más rápido los patrones que requieren revisión y presentamos la información a la dirección sin armar informes a mano.'],
 ], function ($t) use ($es_demo) {
     return trim((string) ($t['nombre'] ?? '')) !== '' && trim((string) ($t['texto'] ?? '')) !== '' && ($es_demo || empty($t['solo_demo']));
 }));
