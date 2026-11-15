@@ -116,7 +116,7 @@ $_SESSION['form_contacto_desde'] = time();
         <h4 class="team-name">Luis Guillermo Nieto Patiño</h4>
         <span class="team-role">Co-Fundador & CEO</span>
         <div class="team-degree"><i class="fas fa-graduation-cap me-2"></i> Candidato a Magíster en Analítica de Datos</div>
-        <p class="team-desc">Lidera la estrategia de negocio y la visión tecnológica de DataSense. Acompaña a gerencias y entidades nacionales e internacionales a convertir sus datos en decisiones rentables: tableros ejecutivos, analítica avanzada y software a la medida que reducen costos, aceleran la gestión y muestran resultados desde el primer mes.</p>
+        <p class="team-desc">Candidato a magíster en Analítica de Datos, con formación en Análisis de Datos certificada por el MinTIC. Lidera la estrategia de negocio y la visión tecnológica de DataSense. Acompaña a gerencias y entidades nacionales e internacionales a convertir sus datos en decisiones rentables: tableros ejecutivos, analítica avanzada y software a la medida que reducen costos, aceleran la gestión y muestran resultados desde el primer mes.</p>
         <p class="team-desc mb-0"><i class="fas fa-handshake me-2"></i><b>¿Tu organización necesita decidir con datos?</b> Conversemos sobre tu reto.</p>
         <div class="team-contacto">
           <a href="#contacto" class="btn-team">Agenda una reunión</a>
