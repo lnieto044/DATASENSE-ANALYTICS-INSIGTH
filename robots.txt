@@ -1,0 +1,21 @@
+# Qué puede recorrer un buscador en DataSense Analytics.
+# Se permite todo el sitio público y se cierra lo interno: el panel, los archivos subidos,
+# la configuración, las librerías y los respaldos de la base.
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /uploads/
+Disallow: /config/
+Disallow: /database/
+Disallow: /vendor/
+Disallow: /includes/
+Disallow: /procesar_chat.php
+Disallow: /tienda_api.php
+Disallow: /checkout.php
+Disallow: /carrito.php
+Disallow: /responder_encuesta.php
+
+# El mapa del sitio se arma solo en sitemap.php.
+# Regístralo en Google Search Console como https://saludgo.org/sitemap.php
+Sitemap: https://saludgo.org/sitemap.php

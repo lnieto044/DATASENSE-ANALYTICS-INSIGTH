@@ -1,0 +1,730 @@
+/* =======================================================
+   VARIABLES GLOBALES DATASENSE
+   ======================================================= */
+:root {
+  --ds-blue: #0A2E4F;
+  --ds-green: #3FAE49;
+  --ds-green-hover: #35993f;
+  --ds-light: #f8fafc;
+  --ds-gray: #e2e8f0;
+  --ds-text: #334155;
+  --ds-text-muted: #64748b;
+}
+
+/* =======================================================
+   RESETEO Y TIPOGRAFÍA
+   ======================================================= */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; color: var(--ds-text); background-color: var(--ds-light); line-height: 1.6; overflow-x: hidden; }
+a { text-decoration: none; transition: all 0.3s ease; }
+h1, h2, h3, h4, h5, h6 { color: var(--ds-blue); font-weight: 700; margin-bottom: 15px; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+.section-padding { padding-top: 100px; padding-bottom: 80px; }
+
+/* =======================================================
+   CABECERA FLOTANTE (GLASSMORPHISM)
+   ======================================================= */
+.header-pro {
+  position: fixed;
+  top: 0; left: 0; width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  padding: 15px 0;
+  transition: all 0.3s ease;
+}
+.header-content {
+  display: flex; justify-content: space-between; align-items: center;
+  max-width: 1200px; margin: 0 auto; padding: 0 20px;
+}
+.header-content img.logo { height: 40px; width: auto; }
+.header-content nav a {
+  color: var(--ds-blue); font-weight: 600; margin-left: 25px; font-size: 0.95rem;
+}
+.header-content nav a:hover { color: var(--ds-green); }
+.menu-toggle-pro {
+  display: none; align-items: center; justify-content: center; width: 44px; height: 44px;
+  border: 1px solid var(--ds-gray); border-radius: 12px; background: #fff; color: var(--ds-blue); font-size: 1.2rem; cursor: pointer;
+}
+
+.btn-login-pro {
+  border: 2px solid var(--ds-blue); padding: 8px 25px; border-radius: 50px;
+  color: var(--ds-blue) !important; display: inline-block;
+}
+.btn-login-pro:hover {
+  background: var(--ds-blue); color: #fff !important; box-shadow: 0 4px 15px rgba(10, 46, 79, 0.2);
+}
+
+/* =======================================================
+   BANNER PRINCIPAL (HERO)
+   ======================================================= */
+.hero-pro {
+  position: relative; height: 100vh; min-height: 600px; display: flex; align-items: center;
+  background-size: cover; background-position: center; background-attachment: fixed;
+}
+.hero-overlay {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(90deg, rgba(10,46,79,0.95) 0%, rgba(10,46,79,0.5) 100%); z-index: 1;
+}
+.hero-content-wrapper {
+  position: relative; z-index: 2; width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px;
+}
+.hero-text-box { max-width: 650px; }
+.hero-text-box h1 { color: #fff; font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; letter-spacing: -1px; }
+.hero-text-box p { color: rgba(255, 255, 255, 0.85); font-size: 1.2rem; margin-bottom: 35px; font-weight: 300; }
+
+.btn-cta-pro {
+  background: var(--ds-green); color: #fff; padding: 15px 40px; border-radius: 50px;
+  font-weight: 700; font-size: 1.1rem; display: inline-block; border: none; cursor: pointer;
+  box-shadow: 0 10px 25px rgba(63, 174, 73, 0.4); text-decoration: none; transition: all 0.3s ease;
+}
+.btn-cta-pro:hover {
+  background: var(--ds-green-hover); transform: translateY(-3px); box-shadow: 0 15px 30px rgba(63, 174, 73, 0.5); color: #fff;
+}
+
+/* =======================================================
+   SECCIONES GLOBALES Y CUADRÍCULAS
+   ======================================================= */
+.section-header { text-align: center; margin-bottom: 50px; }
+.section-header h2 { font-size: 2.5rem; margin-bottom: 10px; color: var(--ds-blue); }
+.section-line { display: block; width: 60px; height: 4px; background: var(--ds-green); margin: 0 auto; border-radius: 2px; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+.align-center { align-items: center; }
+
+.light { background-color: #fff; }
+.gray { background-color: var(--ds-light); }
+
+/* Tarjetas y Servicios */
+.card.soft, .focus-card, .service-item {
+  background: #fff; padding: 40px 30px; border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: transform 0.3s ease; text-align: center;
+}
+.card.soft:hover, .focus-card:hover, .service-item:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
+
+.services-grid-3, .focus-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+.service-item i, .focus-card i { font-size: 2.5rem; color: var(--ds-blue); margin-bottom: 20px; }
+.focus-card i { color: var(--ds-green); }
+
+/* =======================================================
+   QUIÉNES SOMOS: TARJETAS DE LOS FUNDADORES
+   ======================================================= */
+.team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; }
+.team-card {
+  background: #fff; padding: 50px 40px; border-radius: 20px; text-align: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.05); transition: transform 0.3s ease;
+  position: relative; overflow: hidden; border: 1px solid rgba(0,0,0,0.02);
+}
+.team-card:hover { transform: translateY(-10px); box-shadow: 0 20px 50px rgba(10, 46, 79, 0.1); }
+.team-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--ds-green); }
+
+.team-img-wrapper { margin-bottom: 25px; }
+.team-img-wrapper img {
+  width: 150px; height: 150px; object-fit: cover; border-radius: 50%;
+  border: 5px solid var(--ds-light); box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.team-name { font-size: 1.5rem; color: var(--ds-blue); margin-bottom: 10px; font-weight: 800; letter-spacing: -0.5px; }
+.team-role {
+  display: inline-block; background: rgba(10, 46, 79, 0.08); color: var(--ds-blue);
+  padding: 6px 20px; border-radius: 50px; font-size: 0.85rem; font-weight: 700; margin-bottom: 20px; letter-spacing: 0.5px;
+}
+.team-degree { font-size: 0.9rem; color: var(--ds-green); font-weight: 700; margin-bottom: 15px; text-transform: uppercase; }
+.team-desc { color: var(--ds-text-muted); font-size: 1rem; line-height: 1.6; }
+
+/* =======================================================
+   FORMULARIO DE CONTACTO
+   ======================================================= */
+.contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 50px; align-items: center; }
+.contact-info p { font-size: 1.15rem; color: var(--ds-text-muted); margin-bottom: 30px; }
+.contact-list { list-style: none; padding: 0; }
+.contact-list li { margin-bottom: 15px; font-size: 1.05rem; display: flex; align-items: center; }
+.contact-list i { width: 30px; font-size: 1.2rem; }
+
+.contact-form-wrapper { background: #fff; padding: 40px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.05); }
+.form-input { padding: 14px; border: 1px solid var(--ds-gray); border-radius: 8px; width: 100%; font-family: 'Inter', sans-serif; color: var(--ds-text-muted); outline: none; transition: 0.3s; }
+.form-input:focus { border-color: var(--ds-blue); box-shadow: 0 0 0 3px rgba(10,46,79,0.1); }
+.form-grid-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+textarea.form-input { resize: none; margin-bottom: 20px; }
+
+/* Alertas de contacto */
+.alert { padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+.alert-success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+.alert-warning { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+.alert-danger { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
+/* =======================================================
+   FOOTER & UTILIDADES
+   ======================================================= */
+/* Pie del sitio: tres columnas (marca, enlaces y redes) y una barra inferior con el copyright */
+.footer { background: var(--ds-blue); color: #fff; padding: 56px 0 0; text-align: left; }
+.footer p { opacity: .75; font-size: .9rem; margin-bottom: 0; line-height: 1.6; }
+.footer a { color: rgba(255, 255, 255, .78); text-decoration: none; transition: color .2s ease; }
+.footer a:hover, .footer a:focus-visible { color: #fff; text-decoration: underline; }
+/* El logo es azul y gris: sobre el fondo oscuro va en una pastilla blanca para que se lea */
+.footer-logo { display: inline-flex; align-items: center; justify-content: center; background: #fff;
+               border-radius: 12px; padding: 10px 16px; margin-bottom: 18px; box-shadow: 0 6px 18px rgba(0, 0, 0, .22); }
+.footer-logo img { height: 44px; width: auto; display: block; }
+.footer-atencion { font-size: .9rem; line-height: 1.7; }
+.footer-atencion strong { display: block; font-weight: 700; opacity: .95; }
+.footer-compartir { display: flex; align-items: center; gap: 10px; }
+@media (max-width: 860px) { .footer-compartir { justify-content: center; } }
+.footer-dato { font-size: .82rem; opacity: .55; margin-top: 14px; }
+/* El pie arma sus propias columnas: esta página no carga Bootstrap */
+.footer-interior { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+.footer-grid { display: grid; grid-template-columns: 2.2fr 1fr 1.3fr; gap: 48px; align-items: start; }
+.footer-col { min-width: 0; }
+.footer-titulo { font-size: .75rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase;
+                 color: rgba(255, 255, 255, .5); margin-bottom: 16px; }
+.footer-lista { list-style: none; padding: 0; margin: 0; }
+.footer-lista li { margin-bottom: 11px; font-size: .92rem; }
+.footer-lista a { display: inline-flex; align-items: center; gap: 8px; }
+.footer-lista i { font-size: .8rem; opacity: .6; width: 14px; }
+.footer-abajo { border-top: 1px solid rgba(255, 255, 255, .13); margin-top: 44px; padding: 20px 0;
+                display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
+.footer-abajo p { font-size: .84rem; opacity: .6; }
+@media (max-width: 860px) {
+  .footer { text-align: center; padding-top: 40px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+  .footer .redes-sociales, .footer .compartir, .footer-lista a { justify-content: center; }
+  /* Espacio abajo para que los botones flotantes (chat y WhatsApp) no tapen los iconos de compartir */
+  .footer-abajo { justify-content: center; text-align: center; padding-bottom: 104px; }
+}
+
+#backToTop {
+  position: fixed; bottom: 30px; right: 30px; background: var(--ds-green); color: white; border: none; 
+  border-radius: 50%; width: 50px; height: 50px; display: none; align-items: center; justify-content: center;
+  cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 1000; font-size: 1.2rem; transition: 0.3s;
+}
+#backToTop:hover { background: var(--ds-green-hover); transform: translateY(-3px); }
+
+/* Responsive Básico */
+@media (max-width: 992px) {
+  .hero-text-box h1 { font-size: 2.8rem; }
+  .grid-2, .services-grid-3, .focus-grid, .contact-grid, .team-grid { grid-template-columns: 1fr; gap: 30px; }
+  .form-grid-inner { grid-template-columns: 1fr; }
+  .menu-toggle-pro { display: inline-flex; }
+  /* Menú desplegable bajo la cabecera: se abre con la hamburguesa */
+  .header-content nav {
+    display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column;
+    background: #fff; padding: 8px 20px 20px; box-shadow: 0 16px 30px rgba(10, 46, 79, 0.12);
+  }
+  .header-pro.nav-abierta .header-content nav { display: flex; }
+  .header-content nav a { margin-left: 0; padding: 12px 4px; border-bottom: 1px solid var(--ds-gray); }
+  .header-content nav a.btn-login-pro { margin-top: 12px; text-align: center; border-bottom: 2px solid var(--ds-blue); }
+}
+@media (max-width: 576px) {
+  .hero-text-box h1 { font-size: 2rem; }
+  .section-padding { padding-top: 70px; padding-bottom: 50px; }
+}
+
+/* =======================================================
+   QUIÉNES SOMOS: FOTOS DE FUNDADORES (CORREGIDO)
+   ======================================================= */
+.team-grid { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  gap: 30px; 
+  margin: 40px auto 0; 
+  max-width: 850px; /* Estrechamos un poco más el grupo para que se vea compacto */
+}
+
+.team-img-wrapper { 
+  margin-bottom: 20px; 
+  display: flex;
+  justify-content: center;
+}
+
+.team-img-wrapper img {
+  width: 130px; /* Tamaño ideal: ni muy grande ni muy pequeño */
+  height: 130px;
+  object-fit: cover; /* Esto evita que la foto se estire feo */
+  border-radius: 50%;
+  border: 5px solid #fff; /* Borde blanco grueso para que resalte del fondo */
+  box-shadow: 0 10px 25px rgba(10, 46, 79, 0.1);
+  background-color: #f8fafc; /* Color de fondo por si la foto tarda en cargar */
+}
+
+/* Específico para el card de Marcela */
+.team-card:first-child .team-img-wrapper img {
+    object-position: 50% 10%; /* Centrado horizontal (50%), bajado un poco vertical (60% desde arriba) */
+    /* object-position: center 60%; */ /* Esta es otra forma de escribir lo mismo */
+}
+/* =======================================================
+   DISEÑO PREMIUM PARA SERVICIOS Y ENFOQUE
+   ======================================================= */
+.premium-card {
+  background: #fff;
+  padding: 45px 35px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(10, 46, 79, 0.04);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0,0,0,0.03);
+  text-align: left; /* Clave para el aspecto corporativo */
+  position: relative;
+  z-index: 1;
+}
+.premium-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(10, 46, 79, 0.08);
+  border-color: rgba(63, 174, 73, 0.3); /* Brillo verde sutil */
+}
+.premium-icon-box {
+  width: 65px;
+  height: 65px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-bottom: 25px;
+  transition: all 0.3s ease;
+}
+.premium-card:hover .premium-icon-box {
+  transform: scale(1.1);
+}
+.icon-blue { background: rgba(10, 46, 79, 0.06); color: var(--ds-blue); }
+.icon-green { background: rgba(63, 174, 73, 0.12); color: var(--ds-green); }
+
+.premium-card h3 {
+  font-size: 1.35rem;
+  margin-bottom: 15px;
+  letter-spacing: -0.3px;
+  color: var(--ds-blue);
+  font-weight: 800;
+}
+.premium-card p {
+  color: var(--ds-text-muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* =======================================================
+   NUESTRO ENFOQUE (TARJETAS OSCURAS PREMIUM)
+   ======================================================= */
+.enfoque-card {
+  background: var(--ds-blue);
+  padding: 45px 35px;
+  border-radius: 16px;
+  box-shadow: 0 15px 35px rgba(10, 46, 79, 0.15);
+  transition: all 0.4s ease;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+/* Línea verde animada en la parte inferior */
+.enfoque-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; width: 100%; height: 5px;
+  background: var(--ds-green);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+.enfoque-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(10, 46, 79, 0.3);
+}
+.enfoque-card:hover::after {
+  transform: scaleX(1);
+}
+.enfoque-icon-box {
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.08); /* Fondo blanco casi transparente, muy elegante */
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  color: #3FAE49; /* Verde DataSense puro para que resalte */
+  margin-bottom: 25px;
+  transition: all 0.4s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Un bordecito de luz sutil */
+}
+/* El ícono se vuelve verde sólido al hacer hover */
+.enfoque-card:hover .enfoque-icon-box {
+  background: var(--ds-green);
+  color: #fff;
+  transform: scale(1.1) rotate(5deg);
+  border-color: var(--ds-green);
+}
+.enfoque-card h3 {
+  font-size: 1.35rem;
+  margin-bottom: 15px;
+  letter-spacing: -0.3px;
+  color: #fff; /* Título blanco */
+  font-weight: 800;
+}
+.enfoque-card p {
+  color: rgba(255, 255, 255, 0.85); /* Un gris/blanco un poco más brillante para que se lea mejor */
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin: 0;
+}
+/* =======================================================
+   CONTACTO PREMIUM DATASENSE
+   ======================================================= */
+.contact-section-pro {
+    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+}
+
+.contact-info-pro h2 {
+    font-size: 2.8rem;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+}
+
+.contact-list-pro {
+    list-style: none;
+    padding: 0;
+    margin-top: 30px;
+}
+
+.contact-list-pro li {
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    transition: 0.3s;
+    border: 1px solid rgba(10, 46, 79, 0.05);
+}
+
+.contact-list-pro li:hover {
+    transform: translateX(10px);
+    border-color: var(--ds-green);
+}
+
+.contact-list-pro i {
+    font-size: 1.2rem;
+    color: var(--ds-blue);
+    margin-right: 15px;
+    width: 25px;
+    text-align: center;
+}
+
+/* El Formulario Estilo "SaaS Moderno" */
+.contact-card-pro {
+    background: #ffffff;
+    padding: 45px;
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(10, 46, 79, 0.1);
+    border: 1px solid rgba(255,255,255,0.8);
+}
+
+.input-group-pro {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group-pro i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    transition: 0.3s;
+}
+
+.input-group-pro .form-input {
+    padding-left: 45px !important; /* Espacio para el icono */
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.input-group-pro .form-input:focus {
+    background: #fff;
+    border-color: var(--ds-blue);
+}
+
+.input-group-pro .form-input:focus + i {
+    color: var(--ds-blue);
+}
+
+/* Botón más imponente */
+.btn-send-pro {
+    background: var(--ds-green);
+    color: #fff;
+    width: 100%;
+    padding: 18px;
+    border-radius: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(63, 174, 73, 0.3);
+    transition: 0.3s;
+}
+
+.btn-send-pro:hover {
+    background: var(--ds-green-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(63, 174, 73, 0.4);
+}
+
+/* Mejora la apariencia del select cuando tiene una opción elegida */
+select.form-input {
+    cursor: pointer;
+    color: var(--ds-blue); /* Texto oscuro desde el inicio */
+    font-weight: 600;      /* Un poco más de peso para que no se vea "vacio" */
+}
+
+/* Estilo para las opciones dentro de la lista */
+select.form-input option {
+    background: #ffffff;
+    color: var(--ds-blue);
+    padding: 10px;
+    font-weight: 400;
+}
+
+/* Efecto cuando el campo está activo o tiene foco */
+.input-group-pro .form-input:focus {
+    background: #fff;
+    border-color: var(--ds-green);
+    box-shadow: 0 0 0 4px rgba(63, 174, 73, 0.1);
+}
+
+/* Cambia el color del icono de la izquierda cuando el usuario hace clic */
+.input-group-pro .form-input:focus + i,
+.input-group-pro .form-input:valid + i {
+    color: var(--ds-green); /* El icono se ilumina en verde al seleccionar */
+}
+
+/* =======================================================
+   PANTALLA DE ÉXITO (CONFIRMACIÓN PROFESIONAL)
+   ======================================================= */
+.success-card-pro {
+    text-align: center;
+    padding: 60px 40px;
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.success-icon-circle {
+    width: 80px;
+    height: 80px;
+    background: rgba(63, 174, 73, 0.1);
+    color: var(--ds-green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 35px;
+    margin: 0 auto 25px;
+    border: 2px solid var(--ds-green);
+}
+
+.success-card-pro h3 {
+    font-size: 2rem;
+    color: var(--ds-blue);
+    margin-bottom: 15px;
+    font-weight: 800;
+}
+
+.success-card-pro p {
+    color: var(--ds-text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.btn-return-pro {
+    background: transparent;
+    color: var(--ds-blue);
+    border: 2px solid var(--ds-blue);
+    padding: 12px 30px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: 0.3s;
+    display: inline-block;
+}
+
+.btn-return-pro:hover {
+    background: var(--ds-blue);
+    color: #fff;
+}
+/* =====================================================
+   CHATBOT DATASENSE — SENSEBOT (UI PREMIUM)
+===================================================== */
+
+/* Botón flotante */
+.ds-chat-btn { 
+    background: var(--ds-blue, #0A2E4F); 
+    border: none; 
+    border-radius: 50%; 
+    width: 65px; 
+    height: 65px; 
+    color: white; 
+    cursor: pointer; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3); 
+    position: fixed; 
+    bottom: 30px; 
+    right: 30px; 
+    z-index: 9999; 
+    transition: transform 0.3s ease; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+}
+.ds-chat-btn:hover { 
+    transform: scale(1.1); 
+}
+
+/* Panel principal del chat */
+.ds-chat-panel { 
+    display: none; 
+    flex-direction: column; 
+    width: 380px; 
+    height: 550px; 
+    background: white; 
+    position: fixed; 
+    bottom: 110px; 
+    right: 30px; 
+    border-radius: 20px; 
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2); 
+    overflow: hidden; 
+    border: 1px solid #e2e8f0; 
+    z-index: 9999; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Cabecera del chat */
+.ds-chat-header { 
+    background: linear-gradient(135deg, #0A2E4F, #1a4a7b); 
+    color: white; 
+    padding: 20px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+}
+
+/* Área de mensajes */
+.ds-chat-messages { 
+    flex: 1; 
+    padding: 20px; 
+    overflow-y: auto; 
+    background: #f8fafc; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+}
+
+/* Burbujas de chat */
+.ds-msg { 
+    padding: 12px 16px; 
+    border-radius: 16px; 
+    font-size: 0.95rem; 
+    line-height: 1.4; 
+    max-width: 85%; 
+    word-wrap: break-word; 
+    animation: fadeIn 0.3s ease-in-out; 
+}
+.ds-msg.bot { 
+    background: #e2e8f0; 
+    color: #0f172a; 
+    align-self: flex-start; 
+    border-bottom-left-radius: 4px; 
+}
+.ds-msg.user { 
+    background: #3FAE49; 
+    color: white; 
+    align-self: flex-end; 
+    border-bottom-right-radius: 4px; 
+}
+
+/* Botones interactivos (Quick Replies) */
+.ds-quick-replies { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 8px; 
+    margin-top: 5px; 
+    align-self: flex-start; 
+    width: 85%; 
+}
+.ds-quick-reply-btn { 
+    background: white; 
+    border: 2px solid #3FAE49; 
+    color: #3FAE49; 
+    padding: 10px 15px; 
+    border-radius: 20px; 
+    font-size: 0.9rem; 
+    font-weight: 600; 
+    cursor: pointer; 
+    transition: 0.2s; 
+    text-align: left; 
+}
+.ds-quick-reply-btn:hover { 
+    background: #3FAE49; 
+    color: white; 
+}
+
+/* Input y animaciones */
+.ds-chat-input-area { 
+    padding: 15px; 
+    background: white; 
+    border-top: 1px solid #e2e8f0; 
+    display: flex; 
+    gap: 10px; 
+}
+.typing-indicator { 
+    display: none; 
+    align-self: flex-start; 
+    background: #e2e8f0; 
+    padding: 12px 16px; 
+    border-radius: 16px; 
+    font-style: italic; 
+    color: #64748b; 
+    font-size: 0.85rem; 
+    border-bottom-left-radius: 4px; 
+    margin-bottom: 10px;
+}
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(10px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+
+/* =======================================================
+   Tienda en la portada (destacados y carrito del menú)
+   ======================================================= */
+.header-content nav a.nav-carrito { position: relative; font-size: 1.1rem; }
+.nav-carrito span { position: absolute; top: -8px; right: -12px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 999px; background: #f97316; color: #fff; font-size: .68rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.nav-carrito span[hidden], .header-content nav a.nav-carrito[hidden] { display: none !important; }
+.tienda-inicio { background: linear-gradient(to bottom, #f8fafc, #ffffff); }
+.tienda-inicio-lema { color: var(--ds-text-muted); max-width: 640px; margin: 0 auto; }
+.tienda-inicio-rejilla { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+.tienda-inicio-card { background: #fff; border: 1px solid var(--ds-gray); border-radius: 16px; overflow: hidden; color: var(--ds-text); display: flex; flex-direction: column; transition: transform .25s, box-shadow .25s; }
+.tienda-inicio-card:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(10, 46, 79, .12); color: var(--ds-text); }
+.tienda-inicio-media { position: relative; aspect-ratio: 4 / 3; max-width: 100%; display: flex; align-items: center; justify-content: center; font-size: 3.2rem; color: #fff;
+  background: radial-gradient(circle at 25% 20%, rgba(255,255,255,.28), transparent 42%), var(--color-producto, var(--ds-blue)); }
+.tienda-inicio-media img { width: 100%; height: 100%; object-fit: cover; }
+.tienda-inicio-media span { position: absolute; top: 12px; left: 12px; background: #dc2626; color: #fff; font-size: .72rem; font-weight: 700; border-radius: 999px; padding: 3px 9px; }
+.tienda-inicio-cuerpo { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.tienda-inicio-cuerpo small { color: var(--ds-text-muted); text-transform: uppercase; font-size: .7rem; font-weight: 600; letter-spacing: .04em; }
+.tienda-inicio-cuerpo h3 { font-size: 1rem; margin: 0; line-height: 1.3; }
+.tienda-inicio-precio { display: flex; gap: 8px; align-items: baseline; margin-top: auto; }
+.tienda-inicio-precio b { font-size: 1.2rem; color: var(--ds-blue); }
+.tienda-inicio-precio s { color: var(--ds-text-muted); font-size: .85rem; }
+.tienda-inicio-ver { color: var(--ds-green); font-weight: 700; font-size: .88rem; }
+.tienda-inicio-cta { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-top: 36px; }
+.btn-saludable-inicio { display: inline-flex; align-items: center; gap: 8px; border: 2px solid var(--ds-green); color: #15803d; border-radius: 50px; padding: 13px 32px; font-weight: 700; font-size: 1.05rem; background: #f0fdf4; }
+.btn-saludable-inicio:hover { background: var(--ds-green); color: #fff; }
+.tienda-esqueleto { min-height: 300px; border-radius: 16px; background: linear-gradient(90deg, #eef2f7 25%, #f8fafc 50%, #eef2f7 75%); background-size: 200% 100%; animation: tiendaCarga 1.2s infinite; }
+@keyframes tiendaCarga { to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .tienda-esqueleto { animation: none; } .tienda-inicio-card { transition: none; } }

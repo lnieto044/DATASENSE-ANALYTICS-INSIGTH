@@ -1,0 +1,146 @@
+DATASENSE ANALYTICS - BASE DE DATOS
+===================================
+
+UNA SOLA BASE, UN SOLO ARCHIVO
+------------------------------
+En esta carpeta solo hay un archivo de datos: datasense_analytics.sql. Es toda la plataforma
+(tablas, índices, relaciones y todos los registros), con cada fila en su propio INSERT para poder
+leerla y editarla. La base se llama datasense_analytics y no hay bases separadas para nada.
+
+Qué contiene:
+  - Clientes, equipo de trabajo, mensajes del sitio web y conversaciones del chatbot.
+  - Facturación, pagos (incluidos los internacionales), contabilidad y ciclo contable completo.
+  - Mesa de servicios con los tiempos de atención (ANS) de ITIL.
+  - Salas de reuniones con el cliente de cada reunión y la Ficha del cliente.
+  - Tienda en línea con su catálogo: 8 categorías, 33 productos y 2 cupones.
+    REVISA LOS PRECIOS antes de publicarla: son de referencia.
+  - Canal PQRSD conforme a la Ley 1755 de 2015: términos en días hábiles, prórroga (art. 14),
+    requerimiento al ciudadano con desistimiento al mes (art. 17), atención prioritaria (art. 20) y
+    traslado por competencia (art. 21); con reparto automático de las solicitudes, supervisión del
+    canal y medición del desempeño de cada persona.
+  - Plantillas de correo y encuestas.
+No incluye cuentas de prueba: los usuarios son los reales de la operación.
+
+SUBIRLA A HOSTINGER
+-------------------
+1. RESPALDO. hPanel > Bases de datos > phpMyAdmin > selecciona tu base > Exportar > Rápido > SQL.
+   Guarda ese archivo: es tu forma de volver atrás.
+   OJO: al importar reemplazas el contenido de la base por el de este archivo. Lo que se haya creado
+   en el hosting después del respaldo con el que se armó (06-09-2026) se pierde. Si hay datos nuevos,
+   exporta un respaldo fresco y pide que se arme el archivo otra vez con él.
+2. IMPORTA. phpMyAdmin > selecciona tu base > Importar > database/datasense_analytics.sql > Continuar.
+3. CÓDIGO. Sube el proyecto (admin, includes, css, config, database, vendor, img...) y en
+   hPanel > Avanzado > Configuración de PHP elige PHP 8.2 o superior.
+4. .env. DB_NAME debe tener el nombre real de la base del hosting (allá lleva prefijo, por ejemplo
+   u123456789_dataanalytics). En este computador la base se llama datasense_analytics.
+   Configura también EMPRESA_*, MAIL_* y, si vas a cobrar en línea, PAYPAL_*, ZELLE_*, WU_*, USDT_*.
+5. PERMISOS. Sube img/productos/ y uploads/ (con sus .htaccess) y dales permiso de escritura: ahí se
+   guardan las imágenes de la tienda y los soportes que adjuntan los ciudadanos en el PQRSD.
+
+PARA CREARLA EN ESTE COMPUTADOR (XAMPP)
+---------------------------------------
+    mysql -u root -e "CREATE DATABASE datasense_analytics CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci"
+    mysql -u root --max_allowed_packet=64M datasense_analytics < database/datasense_analytics.sql
+
+QUÉ REVISAR DESPUÉS, ENTRANDO COMO ADMINISTRADOR
+------------------------------------------------
+- Balance General: "La ecuación contable cuadra". Libro Mayor: "Sumas iguales".
+- Facturación: hay 8 facturas marcadas como pagadas sin ningún pago registrado; regístralo en
+  Comprobantes de Ingreso con el soporte real para que la cartera quede completa.
+- Mesa de servicios: en Supervisión y Cargas > Especialistas asigna grupos, nivel y capacidad a cada
+  técnico; sin eso, los casos se reparten entre los usuarios con rol Soporte como generalistas.
+- Clientes: el botón de ficha abre todo lo del cliente (facturas, pagos, casos, reuniones, compras,
+  solicitudes y encuestas) con una revisión de datos.
+- Salas de Reuniones: la tabla "Todas las reuniones" muestra todos los registros; con "Mover" puedes
+  asignarle su cliente a las reuniones antiguas.
+- Tienda en Línea > Productos y Cupones: revisa precios, fotos e inventario antes de publicar.
+  Los 33 productos tienen cada uno su propia FOTOGRAFÍA REAL (ninguna se repite), de dominio público
+  (CC0: uso comercial libre, sin citar autor; encontradas con Openverse) y con el logo encima.
+  La fuente y la licencia de cada foto están en img/productos/CREDITOS_FOTOS.txt. Las portadas
+  anteriores quedaron respaldadas fuera del proyecto (datasense_pruebas/respaldo_fotos_tienda_2026-11-15).
+  Para cambiar una: editar el producto y subir la imagen; reemplaza solo la de ese producto.
+  Las imágenes viven en img/productos/ y el nombre debe ser prod_<16 caracteres>.jpg: cualquier otro
+  nombre hace que el producto vuelva al icono de respaldo.
+  Guía de fotos y qué buscar para cada producto: Downloads/datasense_herramientas/fotos_tienda.md
+  (NO uses Google Imágenes: son de sus dueños y ponerlas en una tienda es uso comercial).
+- Atención Ciudadana > PQRSD: la bandeja muestra los términos de ley y, en la ficha de cada solicitud,
+  las actuaciones de ley (prorrogar, pedir información, trasladar y atención prioritaria). Cada una le
+  avisa al ciudadano por correo y queda en el seguimiento. El canal público está en pqrsd.php,
+  enlazado en el menú y el pie del sitio.
+- Atención Ciudadana > Supervisión PQRSD: en "Responsables y reparto" marca quién recibe solicitudes,
+  qué tipos atiende y con qué capacidad; en "Metas y reparto" está el interruptor del reparto
+  automático y los umbrales de bonificación y de plan de mejora. Sin configurar nada, las solicitudes
+  se reparten entre los usuarios con rol Soporte.
+- Atención Ciudadana > Reporte PQRSD: el informe del canal por periodo (radicadas y respondidas, cumplimiento
+  de los términos, desglose por tipo y por tema, actuaciones de ley, el listado de cada incumplimiento con
+  los días de más, tendencia de 6 meses y la base normativa al pie). Se exporta a CSV y se imprime.
+- El reparto mira el TEMA de la solicitud (facturación, técnico, datos personales, comercial, atención) antes
+  que el tipo. El tema se deduce del asunto y se corrige en la ficha; quién atiende cada tema se marca en
+  Supervisión PQRSD > Responsables y reparto.
+- Mesa de Servicios > Supervisión y Cargas > Especialistas: viene cargada una propuesta de especialidad por
+  grupo y nivel (N1/N2/N3). REVÍSALA con tu equipo: define quién sabe de qué, y de eso depende a quién le
+  llega cada caso.
+- Mesa de Servicios > Desempeño y Bonos: cuántos casos cerró cada persona y cuánto cumplió, juntando
+  el ANS de la mesa con los términos del PQRSD; señala quién gana bonificación y quién necesita un
+  plan de mejora, con gráficas del periodo y exportación a CSV. Los umbrales se cambian en
+  Supervisión PQRSD. La plataforma mide: la decisión sobre el bono o la medida es de la empresa.
+- Seguridad y Roles: el rol SUPERVISOR supervisa los dos módulos (mesa de servicios y canal ciudadano)
+  y ya se puede asignar desde Mi Equipo. El rol Soporte atiende sus casos y su bandeja, pero no
+  supervisa ni ve "Desempeño y Bonos" (ahí está el desempeño y la bonificación de sus compañeros).
+  FALTA asignarle el rol a la persona que vaya a supervisar: hoy nadie lo tiene.
+- Mi Equipo: hay un usuario activo sin rol y sin correo (id 19). Dale el rol que
+  corresponda o desactívalo; mientras esté así no entra a ningún módulo.
+
+REVISIÓN DE PERMISOS (20-09-2026)
+---------------------------------
+Se revisó rol por rol lo que cada uno puede abrir. Lo que cambió y por qué:
+- CLIENTE: se le quitó "Mensajes Web". Esa página lista TODOS los contactos del formulario del sitio
+  (72 personas con su correo) sin filtrar por usuario, así que cualquiera de las cuentas de cliente veía
+  datos personales de prospectos. Ley 1581 de 2012. Además el Dashboard usaba ese mismo permiso para
+  mostrar el bloque comercial, que ahora también quedó condicionado.
+- CLIENTE: no entra al Dashboard (ese tablero es de la empresa: cartera de todos, leads y casos de
+  otros clientes). Tiene su propio panel, MI RESUMEN, que es la primera pantalla al iniciar sesión:
+  cuánto ha contratado, cuánto ha pagado y cuánto debe, su gasto mes a mes en una gráfica, qué
+  servicios y productos ha comprado, y cómo le han respondido sus casos (cumplimiento y tiempo
+  promedio). Todo filtrado por su usuario. Además conserva Centro de Soporte, Mis Facturas y
+  Mis Pedidos.
+- SOPORTE: entra a Gestión Clientes (lo necesita para abrir la ficha desde un caso) y sale de
+  Plantillas Auto e Historial SenseBot, que no son de su trabajo.
+- SUPERVISOR: supervisa la mesa y el canal, ve los tres reportes, y no administra cuentas ni permisos.
+- COMERCIAL: entra al Historial SenseBot (conversaciones con visitantes: material comercial).
+- ANALISTA, FINANZAS y SUPERVISOR: salen de "Centro de Soporte", que es la vista del cliente y les
+  aparecía vacía.
+- "Salas de Reunión" NO estaba registrada en la lista de módulos: el menú la enlazaba pero no le salía
+  a nadie y no se podía gestionar. Quedó registrada para Administrador, Supervisor y Comercial.
+- El Administrador entra a todo por código, aunque en la matriz de Seguridad y Roles no aparezcan todos
+  los módulos marcados: esa pantalla muestra la tabla, no el permiso especial del Administrador.
+
+PARA QUE SE CONOZCA: REDES SOCIALES Y BUSCADORES
+-----------------------------------------------
+- En el .env agrega tu dominio y las redes que tengas. Solo se muestran los iconos de las que estén
+  configuradas; las demás no aparecen y no dejan enlaces roto:
+    APP_URL=https://saludgo.org
+    SOCIAL_LINKEDIN=https://www.linkedin.com/company/datasenseinsights
+    SOCIAL_FACEBOOK=https://www.facebook.com/datasenseinsights
+    SOCIAL_INSTAGRAM=https://www.instagram.com/datasenseinsights
+    SOCIAL_YOUTUBE=https://www.youtube.com/@datasenseinsights
+    SOCIAL_TIKTOK=https://www.tiktok.com/@datasenseinsights
+    SOCIAL_WHATSAPP=573001112233   (tu número real con indicativo)
+  OJO: APP_URL solo se define en el hosting. Si se pone en este computador, las pruebas automáticas
+  esperarían enlaces a saludgo.org y fallarían.
+  El correo de la empresa es info@saludgo.org, el mismo desde el que salen los correos de la plataforma.
+- Al pegar el enlace en WhatsApp, LinkedIn o Facebook ya sale una tarjeta con el logo, el título y la
+  descripción (lo arma includes/redes.php). Para revisarla: developers.facebook.com/tools/debug y
+  www.linkedin.com/post-inspector — si cambias la imagen, ahí mismo se limpia la versión vieja.
+- robots.txt: CAMBIA tudominio.com por tu dominio real antes de subirlo.
+- sitemap.php arma el mapa del sitio solo (páginas públicas y productos activos de la tienda).
+  Regístralo en Google Search Console como https://tudominio.com/sitemap.php
+- Los textos para publicar en cada red están en Downloads/datasense_herramientas/publicaciones_redes.md
+  No publiques capturas con datos reales de clientes (Ley 1581 de 2012): usa los datos de demostración.
+
+NOTA SOBRE LAS PRUEBAS AUTOMÁTICAS
+----------------------------------
+Las pruebas usan una base de laboratorio con datos inventados que se crea y se borra sola en cada
+corrida; no vive en el computador ni se sube al hosting. Sus archivos y las migraciones antiguas
+quedaron fuera del proyecto, en la carpeta Downloads/datasense_herramientas, para que aquí solo esté
+la base real.

@@ -1,0 +1,21 @@
+DirectoryIndex index.php
+
+# Bloquear archivos sensibles: .env y demás ocultos, Composer, respaldos y bases locales
+<FilesMatch "(^\.|^composer\.(json|lock)$|\.(sql|bak|log|ini|sqlite)$)">
+    Require all denied
+</FilesMatch>
+
+RewriteEngine On
+
+# Bloquear carpetas internas y archivos subidos (se usan desde PHP, nunca por URL)
+RewriteRule ^(config|includes|libs|vendor|uploads|\.vs|\.git)(/|$) - [F,L]
+
+# Quitar index.php de la URL (respeta la subcarpeta donde esté instalado el proyecto)
+RewriteCond %{THE_REQUEST} /index\.php [NC]
+RewriteCond %{REQUEST_URI} ^(.*/)index\.php$ [NC]
+RewriteRule ^index\.php$ %1 [R=301,L]
+
+# Redirigir todo a index.php si no es archivo o carpeta
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [L]

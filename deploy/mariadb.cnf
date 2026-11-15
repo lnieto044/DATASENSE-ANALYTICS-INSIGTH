@@ -1,0 +1,13 @@
+# MariaDB del contenedor de demostración: solo accesible desde dentro del contenedor y con poca memoria
+[mysqld]
+bind-address = 127.0.0.1
+skip-name-resolve
+character-set-server = utf8mb4
+collation-server = utf8mb4_general_ci
+# Mismo modo que el MariaDB de XAMPP con el que se probó la plataforma
+sql_mode = NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION
+innodb_buffer_pool_size = 32M
+performance_schema = OFF
+max_connections = 40
+key_buffer_size = 8M
+table_open_cache = 200

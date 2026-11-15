@@ -1,0 +1,9 @@
+.git
+.vs
+.vscode
+.env
+vendor
+uploads/*
+!uploads/.htaccess
+database/*.sql
+*.log

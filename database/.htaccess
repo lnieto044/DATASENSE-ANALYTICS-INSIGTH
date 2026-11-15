@@ -1,0 +1,8 @@
+# Migraciones, respaldos de ejemplo y scripts de línea de comandos: nada de esta carpeta se sirve por la web
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

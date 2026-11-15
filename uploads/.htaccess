@@ -1,0 +1,9 @@
+# Los archivos subidos nunca se sirven ni se ejecutan por URL.
+# Los adjuntos de tickets se descargan con control de acceso desde admin/descargar_adjunto.php
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+</IfModule>

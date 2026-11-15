@@ -1,0 +1,17 @@
+.env
+/vendor
+
+# Archivos subidos por usuarios (comprobantes de pago, adjuntos de tickets)
+/uploads/*
+!/uploads/.htaccess
+
+# Base de datos real: nunca se sube (tiene datos personales de clientes).
+# La base de demostración, con datos ficticios, está en deploy/demo/datasense_demo.sql
+/database/*.sql
+
+# Configuración local de editores y del sistema
+/.vs
+/.vscode
+*.log
+Thumbs.db
+.DS_Store
