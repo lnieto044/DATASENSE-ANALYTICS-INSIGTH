@@ -3,18 +3,19 @@ FOTOS DE LOS PRODUCTOS DE LA TIENDA
 Todas son de dominio público (CC0 o marca de dominio público): se pueden usar con fines comerciales, sin pagar y sin
 obligación de citar al autor. Se encontraron con Openverse (openverse.org) y se les agregó el logo de DataSense.
 Actualizadas el 15/11/2026. Las anteriores quedaron respaldadas fuera del proyecto.
-Desde el 15/11/2026 cada imagen usa el diseño de marca de DataSense: la foto arriba y una franja con la categoría,
-el nombre del producto, sus características y el logo (generadas con un script, con la fuente Inter).
+Desde el 15/11/2026: los productos físicos conservan su foto (con una línea del color de la categoría) y los
+productos digitales, servicios y publicaciones usan ilustraciones propias de DataSense, sin fotos de terceros.
+Se generan con deploy/herramientas/tienda_imagenes.py (Pillow y la fuente Inter).
 
 #1  Plantilla Power BI · Tablero de Ventas
-    archivo: prod_1c6bede18917d4df.jpg
-    foto: Business Working (stocksnap, licencia CC0 1.0, autor: Marc Chouinard)
-    fuente: https://stocksnap.io/photo/business-working-PHE63L27S6
+    archivo: prod_5e53edcb190505d9.jpg
+    foto: ilustración propia de DataSense (cifras de ejemplo)
+    fuente: deploy/herramientas/tienda_imagenes.py
 
 #2  Plantilla Power BI · Estado Financiero y Flujo de Caja
-    archivo: prod_46aa569b4327c6bc.jpg
-    foto: Accounting Finance (stocksnap, licencia CC0 1.0, autor: Wilfred Iven)
-    fuente: https://stocksnap.io/photo/accounting-finance-JONMP7TPGK
+    archivo: prod_2b8083a1fa58fb2d.jpg
+    foto: ilustración propia de DataSense (cifras de ejemplo)
+    fuente: deploy/herramientas/tienda_imagenes.py
 
 #3  Tablero de Transparencia Presupuestal
     archivo: prod_6d6fee582c7499d3.jpg
@@ -22,154 +23,154 @@ el nombre del producto, sus características y el logo (generadas con un script,
     fuente: diseñada para la tienda el 15/11/2026
 
 #4  Kit de 25 plantillas de KPIs en Excel
-    archivo: prod_b5a767e616e04e0e.jpg
-    foto: sin título (rawpixel, licencia CC0 1.0)
-    fuente: https://www.rawpixel.com/image/5974308/photo-image-laptop-work-macbook
+    archivo: prod_b1208e6defcd8d9e.jpg
+    foto: ilustración propia de DataSense (cifras de ejemplo)
+    fuente: deploy/herramientas/tienda_imagenes.py
 
 #5  Curso Power BI de cero a experto (40 h)
-    archivo: prod_5eccbaa808c35412.jpg
-    foto: Analytics Charts (stocksnap, licencia CC0 1.0, autor: Negative Space)
-    fuente: https://stocksnap.io/photo/analytics-charts-RCFX768X06
+    archivo: prod_d86c7e7b165242bb.jpg
+    foto: ilustración propia de DataSense (cifras de ejemplo)
+    fuente: deploy/herramientas/tienda_imagenes.py
 
 #6  Curso SQL para análisis de datos (24 h)
-    archivo: prod_2d2169b5fbe02525.jpg
-    foto: Coding Programming (stocksnap, licencia CC0 1.0, autor: Startup Stock Photos)
-    fuente: https://stocksnap.io/photo/coding-programming-SCC00WCQ3I
+    archivo: prod_938724ebc9d0236a.jpg
+    foto: ilustración propia de DataSense (cifras de ejemplo)
+    fuente: deploy/herramientas/tienda_imagenes.py
 
 #7  Curso Python y Machine Learning aplicado (36 h)
-    archivo: prod_f879d9d2dd4945a8.jpg
-    foto: Coding Macbook (stocksnap, licencia CC0 1.0, autor: Marc Chouinard)
-    fuente: https://stocksnap.io/photo/coding-macbook-LV2IUQNTZ5
+    archivo: prod_bedd2904de71a2c6.jpg
+    foto: ilustración propia de DataSense (cifras de ejemplo)
+    fuente: deploy/herramientas/tienda_imagenes.py
 
 #8  DataSense Cloud · Plan Pyme (12 meses)
-    archivo: prod_0bf92729373e14aa.jpg
-    foto: Free computer server room image (rawpixel, licencia CC0 1.0)
-    fuente: https://www.rawpixel.com/image/5906639/photo-image-light-desktop-wallpapers-public-domain
+    archivo: prod_c3d3eeef6f4ab5d4.jpg
+    foto: ilustración propia de DataSense (cifras de ejemplo)
+    fuente: deploy/herramientas/tienda_imagenes.py
 
 #9  SenseBot · Chatbot con IA para tu sitio (12 meses)
-    archivo: prod_ea1237a5367d293a.jpg
-    foto: Robot Technology (stocksnap, licencia CC0 1.0, autor: Alex Knight)
-    fuente: https://stocksnap.io/photo/robot-technology-WUBMLJRYEK
+    archivo: prod_eececd7e91e0952f.jpg
+    foto: ilustración propia de DataSense (cifras de ejemplo)
+    fuente: deploy/herramientas/tienda_imagenes.py
 
 #10 Diagnóstico express de calidad de datos
-    archivo: prod_d7a1ba06a377e515.jpg
-    foto: Free magnifying glass newspaper photo (rawpixel, licencia CC0 1.0)
-    fuente: https://www.rawpixel.com/image/5904368/photo-image-public-domain-black-newspaper
+    archivo: prod_77d08e3fae4c116c.jpg
+    foto: ilustración propia de DataSense (cifras de ejemplo)
+    fuente: deploy/herramientas/tienda_imagenes.py
 
 #11 Bolsa de 10 horas de consultoría analítica
-    archivo: prod_a2272878c6b134b7.jpg
-    foto: Free hand shaking business meeting (rawpixel, licencia CC0 1.0)
-    fuente: https://www.rawpixel.com/image/5926299/photo-image-public-domain-hand-person
+    archivo: prod_ef042a939ffbacf8.jpg
+    foto: ilustración propia de DataSense (cifras de ejemplo)
+    fuente: deploy/herramientas/tienda_imagenes.py
 
 #12 Integración API express (hasta 2 sistemas)
-    archivo: prod_bc5ac7e1bc64f06a.jpg
-    foto: Free networking cables image (rawpixel, licencia CC0 1.0)
-    fuente: https://www.rawpixel.com/image/5927875/photo-image-background-public-domain-technology
+    archivo: prod_792dc143371c134a.jpg
+    foto: ilustración propia de DataSense (cifras de ejemplo)
+    fuente: deploy/herramientas/tienda_imagenes.py
 
 #13 Kit IoT de sensores ambientales
-    archivo: prod_a10f4bc63e3efb3c.jpg
+    archivo: prod_63ce8100230390ad.jpg
     foto: sin título (rawpixel, licencia CC0 1.0)
     fuente: https://www.rawpixel.com/image/5942235/free-public-domain-cc0-photo
 
 #14 Gateway LoRaWAN para captura de datos en campo
-    archivo: prod_242b42de221d1cd1.jpg
+    archivo: prod_667911be597730aa.jpg
     foto: Antenna Satellite (stocksnap, licencia CC0 1.0, autor: Leeroy)
     fuente: https://stocksnap.io/photo/antenna-satellite-92E981EC6F
 
 #15 Pantalla táctil de 32" para tableros en planta
-    archivo: prod_83a42c52b5c8ec83.jpg
+    archivo: prod_a4dff270b6e09254.jpg
     foto: Home Office (stocksnap, licencia CC0 1.0, autor: Design by Matt)
     fuente: https://stocksnap.io/photo/home-office-QUU0AQABSN
 
 #16 Mini PC para kioscos de indicadores
-    archivo: prod_50c63e595df58c9a.jpg
+    archivo: prod_5e2010ee72b4ea3d.jpg
     foto: Cpu Processor (stocksnap, licencia CC0 1.0, autor: Lenharth Systems)
     fuente: https://stocksnap.io/photo/cpu-processor-SPQ6DQLFLF
 
 #17 Kit bienestar diario (colágeno, té verde y espirulina)
-    archivo: prod_99cc785961786536.jpg
+    archivo: prod_f521933bf1cca9dc.jpg
     foto: Healthy Breakfast (stocksnap, licencia CC0 1.0, autor: Burst)
     fuente: https://stocksnap.io/photo/healthy-breakfast-FY5YYPG1LS
 
 #18 Café orgánico con ganoderma · 250 g
-    archivo: prod_38f1b40c0f56c302.jpg
+    archivo: prod_1c3a01e00fd6effb.jpg
     foto: Coffee Beans (stocksnap, licencia CC0 1.0, autor: Anastasia Zhenina)
     fuente: https://stocksnap.io/photo/coffee-beans-X2HTBSJDKF
 
 #19 Colágeno hidrolizado con vitamina C · 500 g
-    archivo: prod_c5490ca9acb24e52.jpg
+    archivo: prod_895656cd6a5f65b9.jpg
     foto: Fruit Smoothie (stocksnap, licencia CC0 1.0, autor: Patryk Dziejma)
     fuente: https://stocksnap.io/photo/fruit-smoothie-HWFUPZEHMO
 
 #20 Espirulina orgánica en polvo · 250 g
-    archivo: prod_81d7620dc4b32026.jpg
+    archivo: prod_c60b782cd31ed04b.jpg
     foto: Free green smoothie top view (rawpixel, licencia CC0 1.0)
     fuente: https://www.rawpixel.com/image/5918800/image-public-domain-free-photo
 
 #21 Omega 3 de aceite de pescado · 60 cápsulas
-    archivo: prod_2a10d336f70944e9.jpg
+    archivo: prod_cda630b3395801a4.jpg
     foto: Free white capsule medicine pills (rawpixel, licencia CC0 1.0)
     fuente: https://www.rawpixel.com/image/5927214/photo-image-public-domain-medicine-white
 
 #22 Té verde con moringa y jengibre · 30 sobres
-    archivo: prod_c6b87af4bd91fb50.jpg
+    archivo: prod_03c854ff290a62f3.jpg
     foto: Free fresh green tea leaf (rawpixel, licencia CC0 1.0)
     fuente: https://www.rawpixel.com/image/5908327/image-public-domain-plant-green
 
 #23 Bebida bioenergética de maca y guaraná · 12 unidades
-    archivo: prod_2677fdb484a27e3f.jpg
+    archivo: prod_bfa8d33cdca4cffe.jpg
     foto: Athlete Water (stocksnap, licencia CC0 1.0, autor: Healthy Living)
     fuente: https://stocksnap.io/photo/athlete-water-IJWJDIWG0Z
 
 #24 Aceite esencial de lavanda para aromaterapia · 30 ml
-    archivo: prod_c82d902cb4c5360e.jpg
+    archivo: prod_22ef0b3ac18d64d1.jpg
     foto: Lavender Herb (stocksnap, licencia CC0 1.0, autor: Daria Shevtsova)
     fuente: https://stocksnap.io/photo/lavender-herb-T3HQNAXDJO
 
 #25 Camiseta DataSense «Data Driven»
-    archivo: prod_481a719792a0d1a3.jpg
+    archivo: prod_5fd57c8ba08f8a69.jpg
     foto: row t-shirts different colors Petersham (rawpixel, licencia CC0 1.0)
     fuente: https://www.rawpixel.com/image/3301357/free-photo-image-t-shirt-shirt-color-clothes-hanging
 
 #26 Taza térmica «Decisiones con datos»
-    archivo: prod_6e0bc3b3793369c5.jpg
+    archivo: prod_021f6b1f3fbd4d41.jpg
     foto: man plaid kneeling pouring drink (rawpixel, licencia CC0 1.0)
     fuente: https://www.rawpixel.com/image/3283602/free-photo-image-stanley-thermos-coffee-camp
 
 #27 Buzo con capota DataSense
-    archivo: prod_88a22b5277e6fb36.jpg
+    archivo: prod_796ff92700f76779.jpg
     foto: People Hoodie (stocksnap, licencia CC0 1.0, autor: Creative Vix)
     fuente: https://stocksnap.io/photo/people-hoodie-EU4KRTXEQH
 
 #28 Libreta de ideas para analistas
-    archivo: prod_d6cc46c9ebf273f1.jpg
+    archivo: prod_206325132af9ed30.jpg
     foto: Notebook Notepad (stocksnap, licencia CC0 1.0, autor: Wilfred Iven)
     fuente: https://stocksnap.io/photo/notebook-notepad-H5Y00D4OFT
 
 #29 Kit de bienvenida DataSense
-    archivo: prod_8a06b380d9bf7d03.jpg
+    archivo: prod_172803287813aaed.jpg
     foto: Gift Box (stocksnap, licencia CC0 1.0, autor: David Everett Strickler)
     fuente: https://stocksnap.io/photo/gift-box-RIJZFSTJNH
 
 #30 Revista DataSense Insights · Edición impresa N.° 12
-    archivo: prod_ce8a061eac61ec7a.jpg
-    foto: Stack Magazines (stocksnap, licencia CC0 1.0, autor: Jess Watters)
-    fuente: https://stocksnap.io/photo/stack-magazines-F2I7WODMGP
+    archivo: prod_f935429f2dafeebe.jpg
+    foto: ilustración propia de DataSense (cifras de ejemplo)
+    fuente: deploy/herramientas/tienda_imagenes.py
 
 #31 Suscripción anual a la revista digital (6 ediciones)
-    archivo: prod_c137aed7f3a7376d.jpg
-    foto: ilustración propia de DataSense (tableta con la portada de DataSense Insights)
-    fuente: diseñada para la tienda el 15/11/2026
+    archivo: prod_f75beff3db298bbf.jpg
+    foto: ilustración propia de DataSense (cifras de ejemplo)
+    fuente: deploy/herramientas/tienda_imagenes.py
 
 #32 E-book · Guía práctica de KPIs para gerentes
-    archivo: prod_4d9b080714c603a6.jpg
-    foto: Kindle E-Reader (stocksnap, licencia CC0 1.0, autor: Aliis Sinisalu)
-    fuente: https://stocksnap.io/photo/kindle-e-reader-YE3BR41KSE
+    archivo: prod_64fc97a7a0e89695.jpg
+    foto: ilustración propia de DataSense (cifras de ejemplo)
+    fuente: deploy/herramientas/tienda_imagenes.py
 
 #33 Informe sectorial · Analítica de datos en Colombia 2026
-    archivo: prod_b10e83f31d3232bb.jpg
-    foto: Book Report (stocksnap, licencia CC0 1.0, autor: Negative Space)
-    fuente: https://stocksnap.io/photo/book-report-G0V362YTA5
+    archivo: prod_cb14f115b8887de2.jpg
+    foto: ilustración propia de DataSense (cifras de ejemplo)
+    fuente: deploy/herramientas/tienda_imagenes.py
 
 
 #34 Conferencia corporativa · Bienestar y Desarrollo Humano
