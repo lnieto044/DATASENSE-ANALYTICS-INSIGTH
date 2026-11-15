@@ -62,7 +62,7 @@ function nombreServicio($codigo) {
         'ASP' => 'Analítica Sector Público',
         'CGD' => 'Gobierno y Calidad de Datos',
         'DSW' => 'Desarrollo de Software (backend / frontend)',
-        'PSI' => 'Charlas de Psicología y Desarrollo Humano',
+        'PSI' => 'Conferencias de Psicología y Desarrollo Humano',
     ];
     return $nombres[$codigo] ?? (string) $codigo;
 }

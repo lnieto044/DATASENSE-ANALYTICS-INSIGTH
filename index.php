@@ -98,9 +98,9 @@ $_SESSION['form_contacto_desde'] = time();
         <p class="team-desc">Magíster en Desarrollo Humano de FLACSO Argentina, con formación en Análisis de Datos certificada por el MinTIC. Integra la psicología y la analítica para que cada decisión basada en datos ponga a las personas en el centro y genere un impacto humano medible.</p>
         <p class="team-desc mb-0"><i class="fas fa-comments me-2"></i><b>Conferencista en psicología</b> para organizaciones nacionales e internacionales: bienestar, inclusión y desarrollo humano.</p>
         <div class="team-contacto">
-          <a href="#contacto" class="btn-team">Solicita una charla</a>
+          <a href="#contacto" class="btn-team">Solicita una conferencia</a>
           <?php $wpp = preg_replace('/\D+/', '', (string) ($_ENV['SOCIAL_WHATSAPP'] ?? '')); if (strlen($wpp) >= 10): ?>
-          <a href="https://wa.me/<?= esc($wpp) ?>?text=<?= rawurlencode('Hola Marcela, vengo del sitio de DataSense y quiero información sobre sus charlas de psicología.') ?>" class="btn-team btn-team-wpp" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>
+          <a href="https://wa.me/<?= esc($wpp) ?>?text=<?= rawurlencode('Hola Marcela, vengo del sitio de DataSense y quiero información sobre sus conferencias de psicología.') ?>" class="btn-team btn-team-wpp" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>
           <?php endif; ?>
         </div>
       </div>
@@ -209,8 +209,8 @@ $_SESSION['form_contacto_desde'] = time();
         <div class="premium-icon-box icon-blue">
           <i class="fas fa-comments"></i>
         </div>
-        <h3>Charlas de Psicología y Desarrollo Humano</h3>
-        <p>Charlas y talleres para empresas, colegios y entidades sobre bienestar, inclusión y desarrollo humano, dirigidos por Marcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano. <a href="#contacto" class="fw-bold">Solicítala aquí</a>.</p>
+        <h3>Conferencias de Psicología y Desarrollo Humano</h3>
+        <p>Conferencias y talleres corporativos para empresas, instituciones educativas y entidades sobre bienestar, inclusión y desarrollo humano, dirigidos por Marcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano. <a href="#contacto" class="fw-bold">Solicítala aquí</a>.</p>
       </div>
     </div>
     
@@ -357,7 +357,7 @@ $_SESSION['form_contacto_desde'] = time();
                                   <option value="ASP">Analítica Sector Público</option>
                                   <option value="CGD">Gobierno y Calidad de Datos</option>
                                   <option value="DSW">Desarrollo de Software (backend / frontend)</option>
-                                  <option value="PSI">Charlas de Psicología y Desarrollo Humano</option>
+                                  <option value="PSI">Conferencias de Psicología y Desarrollo Humano</option>
                               </select>
                           </div>
                       </div>
@@ -658,9 +658,9 @@ document.addEventListener("DOMContentLoaded", function () {
         ]);
     }
 
-    // FLUJO 6: Charlas de Psicología (Marcela Pacheco Parra)
+    // FLUJO 6: Conferencias de Psicología (Marcela Pacheco Parra)
     function flujoPsicologia_Q1() {
-        generarBotones("Nuestras charlas las dirige Marcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano (FLACSO). ¿Para quién sería la charla?", [
+        generarBotones("Nuestras conferencias las dirige Marcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano (FLACSO). ¿Para quién sería la conferencia?", [
             { texto: "🏢 Equipo de trabajo / empresa", accion: flujoPsicologia_Q2 },
             { texto: "🏫 Colegio o universidad", accion: flujoPsicologia_Q2 },
             { texto: "🏛️ Entidad pública o comunidad", accion: flujoPsicologia_Q2 }
@@ -690,7 +690,7 @@ document.addEventListener("DOMContentLoaded", function () {
             { texto: "🏛️ Analítica Sector Público", accion: flujoPublico_Q1 },
             { texto: "🛡️ Gobierno y Calidad de Datos", accion: flujoGobierno_Q1 },
             { texto: "💻 Desarrollo de Software", accion: flujoSoftware_Q1 },
-            { texto: "💬 Charlas de Psicología", accion: flujoPsicologia_Q1 }
+            { texto: "🎤 Conferencias de Psicología", accion: flujoPsicologia_Q1 }
         ]);
     }
 
