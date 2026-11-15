@@ -15,9 +15,9 @@ Actualizadas el 15/11/2026. Las anteriores quedaron respaldadas fuera del proyec
     fuente: https://stocksnap.io/photo/accounting-finance-JONMP7TPGK
 
 #3  Tablero de Transparencia Presupuestal
-    archivo: prod_36b70c3c95771944.jpg
-    foto: Pillars Building (stocksnap, licencia CC0 1.0, autor: Bob Richards)
-    fuente: https://stocksnap.io/photo/pillars-building-SQVO2ZWI2I
+    archivo: prod_6d6fee582c7499d3.jpg
+    foto: imagen propia de DataSense: tablero de ejecución presupuestal ilustrativo (cifras de ejemplo), fuente Inter
+    fuente: diseñada para la tienda el 15/11/2026
 
 #4  Kit de 25 plantillas de KPIs en Excel
     archivo: prod_02dc7f5e2622be0f.jpg

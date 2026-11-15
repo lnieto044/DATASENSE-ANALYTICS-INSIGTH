@@ -84,7 +84,8 @@ function productosTienda(PDO $db, array $f = []) {
     if (isset($f['min']) && is_numeric($f['min']) && (float) $f['min'] > 0) { $where[] = 'p.precio >= ?'; $params[] = (float) $f['min']; }
     if (isset($f['max']) && is_numeric($f['max']) && (float) $f['max'] > 0) { $where[] = 'p.precio <= ?'; $params[] = (float) $f['max']; }
     if (!empty($f['oferta'])) $where[] = 'p.precio_anterior > p.precio';
-    if (!empty($f['destacados'])) $where[] = 'p.destacado = 1';
+    // destacado: 0 = no, 1 = destacado, 2 = destacado principal (sale primero en la portada y en la tienda)
+    if (!empty($f['destacados'])) $where[] = 'p.destacado >= 1';
     if (!empty($f['disponibles'])) $where[] = '(p.stock IS NULL OR p.stock > 0)';
     if (!empty($f['excluir'])) { $where[] = 'p.id <> ?'; $params[] = (int) $f['excluir']; }
     if (isset($f['q']) && trim((string) $f['q']) !== '') {

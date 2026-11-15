@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $valores = [$categoria ?: null, $sku, $nombre, $slugUnico('tienda_productos', $nombre, $id), mb_substr(trim((string) ($_POST['resumen'] ?? '')), 0, 255),
                     trim((string) ($_POST['descripcion'] ?? '')), trim((string) ($_POST['incluye'] ?? '')), $tipo, round($precio, 2), $anterior !== null ? round($anterior, 2) : null,
-                    $stock, $tipo === 'Físico' ? 1 : 0, $icono, $color, $imagen, empty($_POST['destacado']) ? 0 : 1, $estado];
+                    $stock, $tipo === 'Físico' ? 1 : 0, $icono, $color, $imagen, empty($_POST['destacado']) ? 0 : max(1, (int) ($actual['destacado'] ?? 1)), $estado];
         if ($id) {
             $db->prepare("UPDATE tienda_productos SET categoria_id = ?, sku = ?, nombre = ?, slug = ?, resumen = ?, descripcion = ?, incluye = ?, tipo = ?, precio = ?, precio_anterior = ?,
                           stock = ?, requiere_envio = ?, icono = ?, color = ?, imagen = ?, destacado = ?, estado = ?, updated_at = NOW() WHERE id = ?")->execute(array_merge($valores, [$id]));

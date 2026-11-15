@@ -41,6 +41,7 @@ $_SESSION['form_contacto_desde'] = time();
       <a href="#inicio">Inicio</a>
       <a href="#quienes">Quiénes Somos</a>
       <a href="#servicios">Servicios</a>
+      <a href="#conferencias">Conferencias</a>
       <a href="#elegirnos">Nuestro enfoque</a>
       <a href="tienda.php" class="nav-tienda"><i class="fas fa-store"></i> Tienda</a>
       <a href="#contacto">Contacto</a>
@@ -72,7 +73,10 @@ $_SESSION['form_contacto_desde'] = time();
     <div class="hero-text-box">
       <h1>Transformamos datos en decisiones inteligentes</h1>
       <p>Analítica, ciencia de datos e insights estratégicos para impulsar el crecimiento de organizaciones públicas y privadas.</p>
-      <a href="#contacto" class="btn-cta-pro">Solicitar asesoría gratuita</a>
+      <div class="hero-acciones">
+        <a href="#contacto" class="btn-cta-pro">Solicitar asesoría gratuita</a>
+        <a href="#conferencias" class="btn-cta-pro btn-cta-secundario"><i class="fas fa-microphone-lines"></i>Conferencias corporativas</a>
+      </div>
     </div>
   </div>
 </section>
@@ -217,6 +221,38 @@ $_SESSION['form_contacto_desde'] = time();
     <p class="text-center mt-5 fw-bold" style="color: #0A2E4F; padding-top: 20px;">
       <i class="fas fa-database text-success me-2" style="color:#3FAE49;"></i> Todos nuestros servicios se apoyan en una sólida gestión, calidad, integración y gobierno de datos.
     </p>
+  </div>
+</section>
+
+<section id="conferencias" class="section section-padding conferencias-seccion">
+  <div class="container">
+    <div class="conferencias-grid">
+      <div class="conferencias-foto">
+        <img src="img/marcela.jpg" alt="Marcela Pacheco Parra, psicóloga y conferencista de DataSense" loading="lazy">
+        <div class="conferencias-sello">
+          <i class="fas fa-microphone-lines" aria-hidden="true"></i>
+          <span><b>Marcela Pacheco Parra</b>Co-Fundadora · Conferencista</span>
+        </div>
+      </div>
+      <div class="conferencias-texto">
+        <span class="conferencias-etiqueta">Conferencias corporativas</span>
+        <h2>Bienestar y Desarrollo Humano para equipos que crecen</h2>
+        <p>Marcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano de FLACSO Argentina, lleva a su organización conferencias y talleres que fortalecen el bienestar, la inclusión y el liderazgo, con la mirada de la psicología y el respaldo de los datos.</p>
+        <ul class="conferencias-temas">
+          <li><i class="fas fa-brain" aria-hidden="true"></i>Bienestar y salud mental</li>
+          <li><i class="fas fa-handshake-angle" aria-hidden="true"></i>Inclusión y diversidad</li>
+          <li><i class="fas fa-seedling" aria-hidden="true"></i>Desarrollo humano y liderazgo</li>
+        </ul>
+        <p class="conferencias-modalidad"><i class="fas fa-earth-americas" aria-hidden="true"></i>Presencial o virtual · Empresas, instituciones educativas y entidades nacionales e internacionales</p>
+        <div class="conferencias-acciones">
+          <a href="tienda.php?categoria=conferencias-corporativas" class="btn-team">Ver en la tienda</a>
+          <a href="#contacto" class="btn-team btn-team-claro">Solicitar propuesta</a>
+          <?php $wpp = preg_replace('/\D+/', '', (string) ($_ENV['SOCIAL_WHATSAPP'] ?? '')); if (strlen($wpp) >= 10): ?>
+          <a href="https://wa.me/<?= esc($wpp) ?>?text=<?= rawurlencode('Hola Marcela, vengo del sitio de DataSense y quiero información sobre sus conferencias de psicología.') ?>" class="btn-team btn-team-wpp" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>
+          <?php endif; ?>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -422,6 +458,7 @@ $_SESSION['form_contacto_desde'] = time();
       <div class="footer-col">
         <div class="footer-titulo">Enlaces</div>
         <ul class="footer-lista">
+          <li><a href="#conferencias"><i class="fas fa-microphone-lines"></i>Conferencias corporativas</a></li>
           <li><a href="pqrsd.php"><i class="fas fa-scale-balanced"></i>Canal de PQRSD</a></li>
           <li><a href="tienda.php"><i class="fas fa-store"></i>Tienda</a></li>
           <li><a href="admin/login.php"><i class="fas fa-lock"></i>Portal de clientes</a></li>
@@ -686,11 +723,11 @@ document.addEventListener("DOMContentLoaded", function () {
     function mostrarMenuPrincipal() {
         generarBotones("Aquí tienes nuestras líneas de especialidad. Elige la que más resuene con tu necesidad actual:", [
             { texto: "📊 Agendar diagnóstico", accion: flujoDiagnostico_Q1 },
+            { texto: "🎤 Conferencias de Psicología", accion: flujoPsicologia_Q1 },
             { texto: "⚙️ BI y Ciencia de Datos", accion: flujoBI_Q1 },
             { texto: "🏛️ Analítica Sector Público", accion: flujoPublico_Q1 },
             { texto: "🛡️ Gobierno y Calidad de Datos", accion: flujoGobierno_Q1 },
-            { texto: "💻 Desarrollo de Software", accion: flujoSoftware_Q1 },
-            { texto: "🎤 Conferencias de Psicología", accion: flujoPsicologia_Q1 }
+            { texto: "💻 Desarrollo de Software", accion: flujoSoftware_Q1 }
         ]);
     }
 

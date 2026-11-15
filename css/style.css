@@ -737,3 +737,40 @@ select.form-input option {
 .btn-team-wpp { background: #25d366; box-shadow: 0 6px 16px rgba(37, 211, 102, .35); }
 .btn-team-wpp:hover, .btn-team-wpp:focus-visible { background: #1ebe5a; }
 @media (prefers-reduced-motion: reduce) { .btn-team { transition: none; } }
+
+/* Botones del inicio: se acomodan solos en una o dos líneas */
+.hero-acciones { display: flex; flex-wrap: wrap; gap: 14px; }
+.btn-cta-secundario { background: transparent; border: 2px solid #fff; box-shadow: none; padding: 13px 32px; }
+.btn-cta-secundario:hover { background: rgba(255, 255, 255, .14); box-shadow: none; }
+
+/* Conferencias corporativas con Marcela Pacheco Parra */
+.conferencias-seccion { background: linear-gradient(135deg, #0A2E4F 0%, #0f766e 100%); color: #fff; }
+.conferencias-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; align-items: center; }
+.conferencias-foto { position: relative; }
+.conferencias-foto img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 25%;
+  border-radius: 24px; box-shadow: 0 24px 50px rgba(0, 0, 0, .35); }
+.conferencias-sello { position: absolute; left: 20px; right: 20px; bottom: 20px; display: flex; align-items: center; gap: 12px;
+  background: rgba(255, 255, 255, .96); border-radius: 16px; padding: 12px 16px; box-shadow: 0 10px 25px rgba(0, 0, 0, .2); }
+.conferencias-sello i { width: 42px; height: 42px; flex-shrink: 0; border-radius: 50%; background: var(--ds-green); color: #fff;
+  display: flex; align-items: center; justify-content: center; }
+.conferencias-sello span { color: #475569; font-size: .85rem; line-height: 1.35; }
+.conferencias-sello b { display: block; color: #0A2E4F; font-size: 1rem; }
+.conferencias-etiqueta { display: inline-block; margin-bottom: 14px; color: #86efac; font-size: .85rem; font-weight: 800;
+  letter-spacing: 3px; text-transform: uppercase; }
+.conferencias-texto h2 { color: #fff; font-size: 2.4rem; font-weight: 800; line-height: 1.15; margin-bottom: 18px; letter-spacing: -.5px; }
+.conferencias-texto p { color: #dbeafe; font-size: 1.08rem; line-height: 1.7; }
+.conferencias-temas { list-style: none; padding: 0; margin: 24px 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.conferencias-temas li { background: rgba(255, 255, 255, .12); border: 1px solid rgba(255, 255, 255, .28); border-radius: 50px;
+  padding: 8px 16px; font-size: .95rem; font-weight: 600; }
+.conferencias-temas i, .conferencias-modalidad i { color: #86efac; margin-right: 8px; }
+.conferencias-texto .conferencias-modalidad { font-size: .98rem; margin-bottom: 0; }
+.conferencias-acciones { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+.btn-team-claro { background: #fff; color: #0A2E4F; box-shadow: 0 6px 16px rgba(0, 0, 0, .2); }
+.btn-team-claro:hover, .btn-team-claro:focus-visible { background: #e2e8f0; color: #0A2E4F; }
+@media (max-width: 900px) {
+  .conferencias-grid { grid-template-columns: 1fr; gap: 32px; }
+  .conferencias-foto { max-width: 420px; margin: 0 auto; width: 100%; }
+  .conferencias-texto h2 { font-size: 1.9rem; }
+}
+/* Separación entre el ícono y el texto de los botones (la portada no carga Bootstrap) */
+.btn-team > i:first-child, .btn-cta-secundario > i:first-child { margin-right: 8px; }
