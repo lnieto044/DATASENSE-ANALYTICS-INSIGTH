@@ -870,3 +870,4 @@ select.form-input option {
 .proyecto-cliente { display: inline-flex; align-items: center; align-self: flex-start; gap: 8px; margin-bottom: 10px; padding: 4px 12px;
   border-radius: 50px; background: #eff6ff; color: #1d4ed8; font-size: .8rem; font-weight: 800; }
 .btn-proyecto-sec > i:first-child { margin-right: 8px; }
+.testimonio-estrellas { color: #f59e0b; font-size: 1.05rem; margin-bottom: 14px; display: flex; gap: 4px; }

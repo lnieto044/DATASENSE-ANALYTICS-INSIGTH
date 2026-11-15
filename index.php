@@ -16,7 +16,8 @@ $es_demo = (($_ENV['APP_ENV'] ?? '') === 'demo');
 
 /* Testimonios REALES de clientes (solo con su autorización): se muestran en la sección "Proyectos".
    Formato: ['nombre' => 'Nombre Apellido', 'cargo' => 'Cargo', 'organizacion' => 'Empresa o entidad',
-             'proyecto' => 'Proyecto que se hizo', 'texto' => 'Lo que dijo el cliente', 'enlace' => 'https://... (evidencia, opcional)'].
+             'proyecto' => 'Proyecto que se hizo', 'texto' => 'Lo que dijo el cliente', 'calificacion' => 5 (1 a 5),
+             'enlace' => 'https://... (evidencia, opcional)'].
    Con 'solo_demo' => true la entrada solo aparece en la demo, marcada como ejemplo. Sin testimonios, el bloque no aparece. */
 $testimonios = array_values(array_filter([
 ], function ($t) use ($es_demo) {
@@ -398,7 +399,11 @@ $videos_marcela = array_values(array_filter([
         <?php foreach ($testimonios as $t): ?>
         <figure class="testimonio<?= !empty($t['solo_demo']) ? ' testimonio-ejemplo' : '' ?>">
           <?php if (!empty($t['solo_demo'])): ?><span class="etiqueta-ejemplo">Ejemplo · solo en la demo</span><?php endif; ?>
+          <?php $cal = (int) ($t['calificacion'] ?? 0); if ($cal >= 1 && $cal <= 5): ?>
+          <div class="testimonio-estrellas" role="img" aria-label="Calificación: <?= $cal ?> de 5"><?php for ($e = 1; $e <= 5; $e++): ?><i class="fa<?= $e <= $cal ? 's' : 'r' ?> fa-star" aria-hidden="true"></i><?php endfor; ?></div>
+          <?php else: ?>
           <i class="fas fa-quote-left testimonio-comillas" aria-hidden="true"></i>
+          <?php endif; ?>
           <blockquote><?= esc($t['texto']) ?></blockquote>
           <figcaption>
             <span class="testimonio-inicial" aria-hidden="true"><?= esc(mb_strtoupper(mb_substr(trim($t['nombre']), 0, 1))) ?></span>
