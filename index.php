@@ -14,6 +14,13 @@ $_SESSION['form_contacto_desde'] = time();
 /* Conferencias de Marcela Pacheco Parra en YouTube: se muestran en la sección "Conferencias corporativas".
    Para agregar una, copia el código del video (lo que va después de "watch?v=" en el enlace) y su título.
    Ejemplo: ['id' => 'abcdEFGhijk', 'titulo' => 'Bienestar emocional en el trabajo']. Sin videos, el bloque no aparece. */
+/* Testimonios REALES de clientes (solo con su autorización): se muestran en la sección "Proyectos".
+   Formato: ['nombre' => 'Nombre Apellido', 'cargo' => 'Cargo', 'organizacion' => 'Empresa o entidad',
+             'proyecto' => 'Proyecto que se hizo', 'texto' => 'Lo que dijo el cliente', 'enlace' => 'https://... (evidencia, opcional)'].
+   Sin testimonios, el bloque no aparece. */
+$testimonios = array_values(array_filter([
+], function ($t) { return trim((string) ($t['nombre'] ?? '')) !== '' && trim((string) ($t['texto'] ?? '')) !== ''; }));
+
 $videos_marcela = array_values(array_filter([
     // TEMPORAL: ejemplos mientras llegan los videos de Marcela (uno de ONU Derechos Humanos y dos del canal de Luis, youtube.com/@LUISGUILLERMONIETO)
     ['id' => 'MkR7aCgOkUc', 'titulo' => 'Principios Rectores sobre las Empresas y los Derechos Humanos (ONU Derechos Humanos)'],
@@ -52,7 +59,7 @@ $videos_marcela = array_values(array_filter([
       <a href="#quienes">Quiénes Somos</a>
       <a href="#servicios">Servicios</a>
       <a href="#conferencias">Conferencias</a>
-      <a href="#elegirnos">Nuestro enfoque</a>
+      <a href="#proyectos">Proyectos</a>
       <a href="tienda.php" class="nav-tienda"><i class="fas fa-store"></i> Tienda</a>
       <a href="#contacto">Contacto</a>
       <a href="pqrsd.php">PQRSD</a>
@@ -286,6 +293,91 @@ $videos_marcela = array_values(array_filter([
   </div>
 </section>
 
+<section id="proyectos" class="section light section-padding">
+  <div class="container">
+    <div class="section-header text-center" style="margin-bottom: 18px;">
+      <h2 style="font-size: 2.5rem; color: #0A2E4F; margin-bottom:10px;">Proyectos</h2>
+      <span class="section-line" style="display:block; width:60px; height:4px; background:#3FAE49; margin: 0 auto; border-radius:2px;"></span>
+    </div>
+    <p class="proyectos-intro">Soluciones que hemos construido e investigado. Si quieres algo así para tu organización, cuéntanos tu reto y lo hacemos realidad.</p>
+
+    <div class="proyectos-rejilla">
+      <article class="proyecto-tarjeta">
+        <div class="proyecto-media"><img src="img/proyectos/plataforma-datasense.jpg" alt="Panel de la plataforma DataSense con sus módulos de operación, mesa de servicios, PQRSD, facturación y contabilidad" loading="lazy"></div>
+        <div class="proyecto-cuerpo">
+          <span class="proyecto-area"><i class="fas fa-code"></i>Desarrollo de software</span>
+          <h3>Plataforma de gestión DataSense</h3>
+          <p>Una sola plataforma con 38 módulos: mesa de servicios ITIL con ANS en horario hábil, canal de PQRSD conforme a la Ley 1755 de 2015, facturación, contabilidad, pagos y tienda en línea, con permisos por rol.</p>
+          <div class="proyecto-acciones">
+            <a href="#contacto" class="btn-team" data-proyecto="Plataforma de gestión DataSense" data-servicio="DSW">Quiero un proyecto así</a>
+            <a href="#contacto" class="btn-proyecto-sec" data-proyecto="una demostración de la Plataforma de gestión DataSense" data-servicio="DSW">Solicitar una demostración</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="proyecto-tarjeta">
+        <div class="proyecto-media"><img src="img/productos/prod_6d6fee582c7499d3.jpg" alt="Tablero de ejecución presupuestal con indicadores, ejecución por sector y porcentaje de ejecución" loading="lazy"></div>
+        <div class="proyecto-cuerpo">
+          <span class="proyecto-area"><i class="fas fa-landmark"></i>Analítica sector público</span>
+          <h3>Tablero de Transparencia Presupuestal</h3>
+          <p>Ejecución presupuestal por sector, contratación y metas del plan de desarrollo en un tablero claro, listo para publicar en la web de la entidad y rendir cuentas a la ciudadanía.</p>
+          <div class="proyecto-acciones">
+            <a href="#contacto" class="btn-team" data-proyecto="Tablero de Transparencia Presupuestal" data-servicio="ASP">Quiero un proyecto así</a>
+            <a href="producto.php?p=tablero-transparencia-presupuestal" class="btn-proyecto-sec">Ver en la tienda</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="proyecto-tarjeta">
+        <div class="proyecto-media proyecto-media-icono" aria-hidden="true">
+          <i class="fas fa-hands-asl-interpreting"></i>
+          <span>Investigación · FLACSO Argentina</span>
+        </div>
+        <div class="proyecto-cuerpo">
+          <span class="proyecto-area"><i class="fas fa-seedling"></i>Desarrollo humano</span>
+          <h3>Inclusión educativa de estudiantes sordos</h3>
+          <p>Estudio de caso dirigido por Marcela Pacheco Parra en Fusagasugá, Colombia: entrevistas a estudiantes, docentes, intérpretes y familias, análisis de equidad, pertinencia y relevancia, y propuestas de política pública.</p>
+          <div class="proyecto-acciones">
+            <a href="#contacto" class="btn-team" data-proyecto="Inclusión educativa de estudiantes sordos" data-servicio="PSI">Quiero un proyecto así</a>
+            <a href="#conferencias" class="btn-proyecto-sec">Conferencias de Marcela</a>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <?php if ($testimonios): ?>
+    <div class="testimonios" id="testimonios">
+      <h3 class="testimonios-titulo">Lo que dicen quienes han trabajado con nosotros</h3>
+      <div class="testimonios-rejilla">
+        <?php foreach ($testimonios as $t): ?>
+        <figure class="testimonio">
+          <i class="fas fa-quote-left testimonio-comillas" aria-hidden="true"></i>
+          <blockquote><?= esc($t['texto']) ?></blockquote>
+          <figcaption>
+            <span class="testimonio-inicial" aria-hidden="true"><?= esc(mb_strtoupper(mb_substr(trim($t['nombre']), 0, 1))) ?></span>
+            <span>
+              <b><?= esc($t['nombre']) ?></b>
+              <?= esc(trim(($t['cargo'] ?? '') . (!empty($t['cargo']) && !empty($t['organizacion']) ? ' · ' : '') . ($t['organizacion'] ?? ''))) ?>
+              <?php if (!empty($t['proyecto'])): ?><small>Proyecto: <?= esc($t['proyecto']) ?></small><?php endif; ?>
+              <?php if (!empty($t['enlace']) && preg_match('#^https://#i', $t['enlace'])): ?><a href="<?= esc($t['enlace']) ?>" target="_blank" rel="noopener noreferrer">Ver evidencia</a><?php endif; ?>
+            </span>
+          </figcaption>
+        </figure>
+        <?php endforeach; ?>
+      </div>
+    </div>
+    <?php endif; ?>
+
+    <div class="proyectos-cta">
+      <div>
+        <h3>¿Tienes un proyecto en mente?</h3>
+        <p>Trabajamos con empresas, instituciones educativas y entidades públicas, en Colombia y en el exterior.</p>
+      </div>
+      <a href="#contacto" class="btn-cta-pro">Proponer un proyecto</a>
+    </div>
+  </div>
+</section>
+
 <section id="elegirnos" class="section gray section-padding" style="background:#f8fafc;">
   <div class="container">
     <div class="section-header text-center" style="margin-bottom: 50px;">
@@ -489,6 +581,7 @@ $videos_marcela = array_values(array_filter([
         <div class="footer-titulo">Enlaces</div>
         <ul class="footer-lista">
           <li><a href="#conferencias"><i class="fas fa-microphone-lines"></i>Conferencias corporativas</a></li>
+          <li><a href="#proyectos"><i class="fas fa-diagram-project"></i>Proyectos</a></li>
           <li><a href="pqrsd.php"><i class="fas fa-scale-balanced"></i>Canal de PQRSD</a></li>
           <li><a href="tienda.php"><i class="fas fa-store"></i>Tienda</a></li>
           <li><a href="admin/login.php"><i class="fas fa-lock"></i>Portal de clientes</a></li>
@@ -841,6 +934,21 @@ document.addEventListener("DOMContentLoaded", function () {
     })
     .catch(() => { if (destino) destino.remove(); });
 })();
+</script>
+<script>
+// Proyectos: "Quiero un proyecto así" deja elegido el servicio y empieza el mensaje del formulario de contacto
+document.querySelectorAll('[data-proyecto]').forEach(function (enlace) {
+  enlace.addEventListener('click', function () {
+    const servicio = document.querySelector('#contactForm select[name="servicio"]');
+    const mensaje = document.querySelector('#contactForm textarea[name="mensaje"]');
+    if (servicio && enlace.dataset.servicio && servicio.querySelector('option[value="' + enlace.dataset.servicio + '"]')) {
+      servicio.value = enlace.dataset.servicio;
+    }
+    if (mensaje && mensaje.value.trim() === '') {
+      mensaje.value = 'Hola, me interesa ' + (enlace.dataset.proyecto.indexOf('una demostración') === 0 ? '' : 'un proyecto como ') + enlace.dataset.proyecto + '. ';
+    }
+  });
+});
 </script>
 <script>
 // Videos de las conferencias: se muestra la miniatura y YouTube solo se carga cuando la persona da clic (página más liviana)
