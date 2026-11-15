@@ -322,6 +322,23 @@ $videos_marcela = array_values(array_filter([
     </div>
 
     <div class="proyectos-rejilla">
+      <?php if ($es_demo): ?>
+      <!-- CuentaVoz (Colsubsidio): por ahora solo en la demo, hasta confirmar si se puede nombrar a Colsubsidio en producción -->
+      <article class="proyecto-tarjeta proyecto-destacado" data-areas="analitica software">
+        <div class="proyecto-media"><img src="img/proyectos/cuentavoz.jpg" alt="CuentaVoz: reportes de análisis de consumo con recomendación automática del agente" loading="lazy"></div>
+        <div class="proyecto-cuerpo">
+          <span class="proyecto-cliente"><i class="fas fa-building"></i>Colsubsidio</span>
+          <span class="proyecto-area"><i class="fas fa-microphone-lines"></i>Analítica e IA · Desarrollo de software</span>
+          <h3>CuentaVoz: inventario por voz con agente inteligente</h3>
+          <p>Aplicación para contar inventario por voz en las bodegas, con un agente que responde preguntas por voz o texto, análisis de consumo frente a la receta con recomendaciones automáticas, auditoría, legalización y un panel gerencial con alertas y tiempos de conteo.</p>
+          <div class="proyecto-acciones">
+            <a href="#contacto" class="btn-team" data-proyecto="CuentaVoz (inventario por voz con agente inteligente)" data-servicio="DS">Quiero un proyecto así</a>
+            <a href="https://www.youtube.com/watch?v=V-ZtG-wGlo4" class="btn-proyecto-sec" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-youtube me-2"></i>Ver el recorrido</a>
+          </div>
+        </div>
+      </article>
+      <?php endif; ?>
+
       <article class="proyecto-tarjeta" data-areas="software publico">
         <div class="proyecto-media"><img src="img/proyectos/plataforma-datasense.jpg" alt="Panel de la plataforma DataSense con sus módulos de operación, mesa de servicios, PQRSD, facturación y contabilidad" loading="lazy"></div>
         <div class="proyecto-cuerpo">
