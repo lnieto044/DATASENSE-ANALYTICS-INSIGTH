@@ -16,7 +16,7 @@ if (!tiendaDisponible($db)) {
 
 $lineas = lineasCarrito($db);
 $t = totalesTienda($db, $lineas, cuponSesion());
-$sugeridos = $lineas ? [] : productosTienda($db, ['destacados' => 1, 'disponibles' => 1, 'limite' => 4]);
+$sugeridos = $lineas ? [] : destacadosVariados($db, 4, ['disponibles' => 1]);
 
 cabeceraTienda($db, 'Carrito de compras', ['migas' => [['Tienda', 'tienda.php'], ['Carrito', null]]]);
 ?>

@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 'color' => preg_match('/^#[0-9a-fA-F]{6}$/', (string) $p['color']) ? $p['color'] : '#0A2E4F',
                 'imagen' => preg_match('/^prod_[a-f0-9]{16}\.(jpg|png|webp)$/', $imagen) && is_file(__DIR__ . '/img/productos/' . $imagen) ? 'img/productos/' . $imagen : null,
             ];
-        }, productosTienda($db, ['destacados' => 1, 'disponibles' => 1, 'limite' => 4]));
+        }, destacadosVariados($db, 4, ['disponibles' => 1]));
         responderTienda(['ok' => true, 'productos' => $productos, 'unidades' => unidadesCarrito()]);
     }
     if ($accion === 'tarjetas') {

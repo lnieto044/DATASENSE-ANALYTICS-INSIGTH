@@ -33,7 +33,7 @@ $total = count($productos);
 $paginas = max(1, (int) ceil($total / $por_pagina));
 $pagina = min($paginas, max(1, (int) ($_GET['pagina'] ?? 1)));
 $visibles = array_slice($productos, ($pagina - 1) * $por_pagina, $por_pagina);
-$destacados = (!$filtrando && !$favoritos && $pagina === 1) ? productosTienda($db, ['destacados' => 1, 'limite' => 4]) : [];
+$destacados = (!$filtrando && !$favoritos && $pagina === 1) ? destacadosVariados($db, 4) : [];
 
 // Enlace con los filtros actuales y los cambios indicados (sin los vacíos)
 $enlace = function (array $cambios = []) use ($filtros) {

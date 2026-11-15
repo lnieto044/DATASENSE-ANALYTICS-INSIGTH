@@ -58,6 +58,26 @@ function slugTienda($texto) {
 // CATÁLOGO
 // ================================================================
 
+/**
+ * Destacados variados para la portada, el inicio de la tienda y el carrito vacío: primero los destacados principales
+ * (destacado = 2, como la conferencia de Marcela) y luego, al azar en cada visita, un destacado por categoría distinta
+ * hasta completar el límite; si no alcanzan las categorías, se completa con los demás destacados.
+ */
+function destacadosVariados(PDO $db, $limite = 4, array $f = []) {
+    $todos = productosTienda($db, ['destacados' => 1] + $f);
+    $elegidos = array_values(array_filter($todos, function ($p) { return (int) $p['destacado'] >= 2; }));
+    $resto = array_values(array_filter($todos, function ($p) { return (int) $p['destacado'] < 2; }));
+    shuffle($resto);
+    $usadas = array_map('intval', array_column($elegidos, 'categoria_id'));
+    $sobrantes = [];
+    foreach ($resto as $p) {
+        if (in_array((int) $p['categoria_id'], $usadas, true)) { $sobrantes[] = $p; continue; }
+        $elegidos[] = $p;
+        $usadas[] = (int) $p['categoria_id'];
+    }
+    return array_slice(array_merge($elegidos, $sobrantes), 0, $limite);
+}
+
 function categoriasTienda(PDO $db, $solo_activas = true) {
     return $db->query("SELECT c.*, COUNT(p.id) AS productos FROM tienda_categorias c
                        LEFT JOIN tienda_productos p ON p.categoria_id = c.id AND p.estado = 'Activo'
