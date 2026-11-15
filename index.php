@@ -10,6 +10,12 @@ if (empty($_SESSION['token'])) {
 
 // Antispam: contacto.php rechaza envíos hechos en menos de 3 segundos desde que se cargó el formulario
 $_SESSION['form_contacto_desde'] = time();
+
+/* Conferencias de Marcela Pacheco Parra en YouTube: se muestran en la sección "Conferencias corporativas".
+   Para agregar una, copia el código del video (lo que va después de "watch?v=" en el enlace) y su título.
+   Ejemplo: ['id' => 'abcdEFGhijk', 'titulo' => 'Bienestar emocional en el trabajo']. Sin videos, el bloque no aparece. */
+$videos_marcela = array_values(array_filter([
+], function ($v) { return preg_match('/^[A-Za-z0-9_-]{11}$/', (string) ($v['id'] ?? '')); }));
 ?>
 
 <!DOCTYPE html>
@@ -103,6 +109,9 @@ $_SESSION['form_contacto_desde'] = time();
         <p class="team-desc mb-0"><i class="fas fa-comments me-2"></i><b>Conferencista en psicología</b> para organizaciones nacionales e internacionales: bienestar, inclusión y desarrollo humano.</p>
         <div class="team-contacto">
           <a href="#contacto" class="btn-team">Solicita una conferencia</a>
+          <?php if ($videos_marcela): ?>
+          <a href="#videosMarcela" class="btn-team btn-team-yt"><i class="fa-brands fa-youtube"></i>Sus conferencias</a>
+          <?php endif; ?>
           <?php $wpp = preg_replace('/\D+/', '', (string) ($_ENV['SOCIAL_WHATSAPP'] ?? '')); if (strlen($wpp) >= 10): ?>
           <a href="https://wa.me/<?= esc($wpp) ?>?text=<?= rawurlencode('Hola Marcela, vengo del sitio de DataSense y quiero información sobre sus conferencias de psicología.') ?>" class="btn-team btn-team-wpp" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>
           <?php endif; ?>
@@ -253,6 +262,23 @@ $_SESSION['form_contacto_desde'] = time();
         </div>
       </div>
     </div>
+
+    <?php if ($videos_marcela): ?>
+    <div class="conferencias-videos" id="videosMarcela">
+      <h3><i class="fa-brands fa-youtube"></i>Mira a Marcela en sus conferencias</h3>
+      <div class="videos-rejilla">
+        <?php foreach ($videos_marcela as $v): ?>
+        <div class="video-marco">
+          <button type="button" class="video-yt" data-video="<?= esc($v['id']) ?>" data-titulo="<?= esc($v['titulo'] ?? '') ?>" aria-label="Reproducir el video: <?= esc($v['titulo'] ?? '') ?>">
+            <img src="https://i.ytimg.com/vi/<?= esc($v['id']) ?>/hqdefault.jpg" alt="" loading="lazy">
+            <span class="video-play" aria-hidden="true"><i class="fas fa-play"></i></span>
+          </button>
+          <p class="video-titulo"><?= esc($v['titulo'] ?? '') ?></p>
+        </div>
+        <?php endforeach; ?>
+      </div>
+    </div>
+    <?php endif; ?>
   </div>
 </section>
 
@@ -811,6 +837,22 @@ document.addEventListener("DOMContentLoaded", function () {
     })
     .catch(() => { if (destino) destino.remove(); });
 })();
+</script>
+<script>
+// Videos de las conferencias: se muestra la miniatura y YouTube solo se carga cuando la persona da clic (página más liviana)
+document.querySelectorAll('.video-yt').forEach(function (boton) {
+  boton.addEventListener('click', function () {
+    const id = boton.dataset.video;
+    if (!/^[A-Za-z0-9_-]{11}$/.test(id)) return;
+    const marco = document.createElement('iframe');
+    marco.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+    marco.title = boton.dataset.titulo || 'Conferencia en video';
+    marco.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+    marco.allowFullscreen = true;
+    marco.className = 'video-iframe';
+    boton.replaceWith(marco);
+  });
+});
 </script>
 </body>
 </html>
