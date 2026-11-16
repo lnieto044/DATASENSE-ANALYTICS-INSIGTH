@@ -29,3 +29,10 @@ services:
         value: demo@example.com
       - key: MAIL_PASS
         value: demo
+      # Redes sociales de DataSense (direcciones públicas): salen en el pie de página y en el canal de PQRSD
+      - key: SOCIAL_FACEBOOK
+        value: https://www.facebook.com/profile.php?id=61596210356006
+      - key: SOCIAL_INSTAGRAM
+        value: https://www.instagram.com/datasenseanalyticsinsigth/
+      - key: SOCIAL_LINKEDIN
+        value: https://www.linkedin.com/company/datasense-analytics-insights
