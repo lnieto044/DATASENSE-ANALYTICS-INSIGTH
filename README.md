@@ -52,6 +52,18 @@ PHP 8 sin framework, MySQL/MariaDB con PDO (consultas preparadas), Bootstrap 5, 
 Protección CSRF en todos los formularios, contraseñas con bcrypt, límite de intentos de inicio de sesión y control
 de acceso por rol en cada página.
 
+## Ejecutar en local con Docker (recomendado)
+
+Con Docker (también dentro de un Codespace) se usa la misma imagen que Render, con la base de datos incluida:
+
+```bash
+docker compose up -d --build
+```
+
+Abre `http://localhost:8080` (en un Codespace, pestaña **Puertos**, puerto 8080) e ingresa con una de las cuentas de
+la tabla. La base de datos y los archivos subidos quedan en volúmenes: lo que crees se conserva al reiniciar o al
+actualizar con el mismo comando. `docker compose down -v` borra todo y vuelve a los datos de demostración.
+
 ## Ejecutar en local (XAMPP)
 
 1. Copiar el proyecto en `htdocs` y ejecutar `composer install`.

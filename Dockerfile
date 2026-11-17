@@ -25,7 +25,10 @@ RUN apt-get update \
 COPY deploy/php.ini /usr/local/etc/php/conf.d/zz-datasense.ini
 COPY deploy/apache-datasense.conf /etc/apache2/conf-available/datasense.conf
 COPY deploy/mariadb.cnf /etc/mysql/mariadb.conf.d/99-datasense.cnf
-RUN a2enconf datasense
+# Permisos normales: MariaDB ignora un archivo de configuración que cualquiera puede modificar (pasa al copiar desde
+# algunos equipos o Codespaces), y sin él la base corre con otro sql_mode y otra memoria
+RUN chmod 644 /usr/local/etc/php/conf.d/zz-datasense.ini /etc/apache2/conf-available/datasense.conf /etc/mysql/mariadb.conf.d/99-datasense.cnf \
+ && a2enconf datasense
 
 COPY . /var/www/html/
 COPY --from=vendor /app/vendor /var/www/html/vendor

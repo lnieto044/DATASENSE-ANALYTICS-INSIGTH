@@ -1,0 +1,43 @@
+# DataSense en este computador (o en el Codespace), con la misma imagen que usa Render.
+#
+#   docker compose up -d --build     arranca (o actualiza tras cambiar el código)
+#   docker compose stop              lo detiene sin borrar nada
+#   docker compose down -v           lo borra TODO, incluida la base de datos (vuelve a los datos de demostración)
+#
+# Abre http://localhost:8080 (en un Codespace: pestaña PUERTOS, puerto 8080).
+#
+# A diferencia de Render, aquí la base de datos y los archivos subidos se guardan en volúmenes: lo que crees
+# (usuarios, facturas, publicaciones programadas, conexiones a redes…) se conserva al reiniciar o actualizar.
+# La primera vez los volúmenes se llenan con la base de demostración que trae la imagen.
+services:
+  datasense:
+    build: .
+    image: datasense-local
+    container_name: ds-local
+    restart: unless-stopped
+    ports:
+      - "8080:10000"
+    environment:
+      # Solo para esta copia: MariaDB vive dentro del contenedor y no se expone fuera de él
+      DB_PASS: datasense-local
+      # Modo demostración: pagos con simulador y las cuentas @example.com muestran el código de verificación
+      APP_ENV: demo
+      PAGOS_ENTORNO: LOCAL
+      MFA_MODO: obligatorio
+      # Correo desactivado (no hay servidor de correo en la copia local)
+      MAIL_HOST: 127.0.0.1
+      MAIL_PORT: "9"
+      MAIL_ENCRYPTION: none
+      MAIL_USER: demo@example.com
+      MAIL_PASS: demo
+      SOCIAL_FACEBOOK: https://www.facebook.com/profile.php?id=61596210356006
+      SOCIAL_INSTAGRAM: https://www.instagram.com/datasenseanalyticsinsigth/
+      SOCIAL_LINKEDIN: https://www.linkedin.com/company/datasense-analytics-insights
+      REDES_ENLACE: https://datasense-demo.onrender.com/
+    volumes:
+      - datasense_base:/var/lib/mysql
+      - datasense_archivos:/var/www/html/uploads
+
+volumes:
+  datasense_base:
+  datasense_archivos:
