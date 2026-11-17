@@ -51,5 +51,13 @@ PUERTO="${PORT:-10000}"
 sed -ri "s/^Listen .*/Listen ${PUERTO}/" /etc/apache2/ports.conf
 sed -ri "s/<VirtualHost \*:[0-9]+>/<VirtualHost *:${PUERTO}>/" /etc/apache2/sites-available/000-default.conf
 
+# Publicador de redes sociales: cada minuto publica lo que ya llegó a su fecha, aunque nadie tenga el panel abierto
+(
+    while true; do
+        php /var/www/html/cron/publicar_redes.php || true
+        sleep 60
+    done
+) &
+
 echo "DataSense (demostración) escuchando en el puerto ${PUERTO}"
 exec apache2-foreground

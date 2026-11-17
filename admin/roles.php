@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../includes/seguridad.php';
+require_once __DIR__ . '/../includes/doble_factor.php';
 $db = require __DIR__ . '/../config/database.php';
 // El acceso lo decide el módulo "roles" de Seguridad y Roles (hoy solo el Administrador), no una lista fija de roles
 requiereAcceso($db, 'roles');
@@ -23,7 +24,8 @@ $stmt_modulos = $db->query("SELECT id_modulo, etiqueta, icono FROM modulos_siste
 $modulos_sistema = $stmt_modulos->fetchAll(PDO::FETCH_ASSOC);
 
 // Lista de usuarios incluyendo la columna estado_cuenta
-$stmt_all_users = $db->query("SELECT id, nombre, correo, rol, estado_cuenta FROM usuarios ORDER BY nombre ASC");
+asegurarColumnasMfa($db);
+$stmt_all_users = $db->query("SELECT id, nombre, correo, rol, estado_cuenta, mfa_activo FROM usuarios ORDER BY nombre ASC");
 $lista_usuarios = $stmt_all_users->fetchAll(PDO::FETCH_ASSOC);
 
 $roles_mostrar = ['Admin', 'Soporte', 'Supervisor', 'Analista', 'Finanzas', 'Comercial', 'Cliente'];
@@ -131,7 +133,7 @@ $roles_mostrar = ['Admin', 'Soporte', 'Supervisor', 'Analista', 'Finanzas', 'Com
                             <th class="ps-4">NOMBRE COMPLETO</th>
                             <th>CORREO</th>
                             <th class="text-center">ROL</th>
-                            <th class="text-center">ESTADO</th> <th class="text-center">ACCIONES</th>
+                            <th class="text-center">ESTADO</th> <th class="text-center">2 PASOS</th> <th class="text-center">ACCIONES</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -146,6 +148,18 @@ $roles_mostrar = ['Admin', 'Soporte', 'Supervisor', 'Analista', 'Finanzas', 'Com
                                 <span class="badge rounded-pill <?= $bloqueado ? 'bg-danger' : 'bg-success' ?>" id="badge-status-<?= $user['id'] ?>">
                                     <?= esc($user['estado_cuenta'] ?? 'Activo') ?>
                                 </span>
+                            </td>
+
+                            <td class="text-center" id="mfa-<?= (int) $user['id'] ?>">
+                                <?php if (esCuentaDemoMfa($user)): ?>
+                                    <span class="badge rounded-pill bg-info bg-opacity-10 text-info" title="Cuenta de demostración con código de prueba">Demo</span>
+                                <?php elseif (!empty($user['mfa_activo'])): ?>
+                                    <span class="badge rounded-pill bg-success bg-opacity-10 text-success"><i class="fas fa-shield-halved me-1"></i>Activa</span>
+                                    <button type="button" class="btn btn-link btn-sm p-0 ms-1 text-decoration-none" title="Restablecer: la persona la configura de nuevo en su próximo ingreso"
+                                            onclick="restablecerDobleFactor(<?= (int) $user['id'] ?>, <?= jsAttr($user['nombre']) ?>)"><i class="fas fa-rotate-left"></i></button>
+                                <?php else: ?>
+                                    <span class="badge rounded-pill bg-secondary bg-opacity-10 text-secondary">Sin activar</span>
+                                <?php endif; ?>
                             </td>
 
                             <td class="text-center">
@@ -191,6 +205,19 @@ function cambiarRolUsuario(userId, rol) {
             alert('No se pudo cambiar el rol: nadie modifica su propia cuenta y solo un Admin gestiona cuentas de Admin.');
             location.reload();
         }
+    });
+}
+
+// Verificación en dos pasos: si alguien perdió el celular y sus códigos, la configura de nuevo al ingresar
+function restablecerDobleFactor(userId, nombre) {
+    if (!confirm('¿Restablecer la verificación en dos pasos de ' + nombre + '? En su próximo ingreso deberá configurarla de nuevo con su app.')) return;
+    const params = new URLSearchParams();
+    params.append('id_usuario', userId); params.append('restablecer_mfa', '1');
+    fetch('actualizar_rol_usuario.php', { method: 'POST', body: params })
+    .then(res => res.text()).then(data => {
+        if (data === 'ok') document.getElementById('mfa-' + userId).innerHTML = '<span class="badge rounded-pill bg-secondary bg-opacity-10 text-secondary">Sin activar</span>';
+        else if (data === 'error_auto_bloqueo') alert('Tu propia verificación se administra desde Mi Perfil.');
+        else alert('No tienes permiso para restablecer la verificación de este usuario.');
     });
 }
 

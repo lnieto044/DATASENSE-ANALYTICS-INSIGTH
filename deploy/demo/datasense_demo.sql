@@ -1677,6 +1677,46 @@ LOCK TABLES `usuarios` WRITE;
 INSERT INTO `usuarios` VALUES (1,'Wilson Orozco',NULL,'admin@example.com','$2y$10$7gkFAMC3mIT0BD8Qv7WrY.DKA5HUm0vpeUOmlTTkWCxDwH0z6svMi',NULL,'3075558818','DataSense Analytics','Admin','2026-03-09 19:42:49',NULL,NULL,'Activo',1,'Ingeniero de Sistemas'),(2,'Andrea Jaramillo',NULL,'andrea.jaramillo@example.com','$2y$10$7gkFAMC3mIT0BD8Qv7WrY.DKA5HUm0vpeUOmlTTkWCxDwH0z6svMi',NULL,'3155551169','Soluciones Tecnológicas Andinas S.A.S.','Cliente','2026-03-09 19:42:49',NULL,NULL,'Activo',1,'soporte'),(3,'Simón Ramírez',NULL,'soporte@example.com','$2y$10$7gkFAMC3mIT0BD8Qv7WrY.DKA5HUm0vpeUOmlTTkWCxDwH0z6svMi',NULL,'3125557136','Colegio Nueva Era','Soporte','2026-03-09 19:42:49',NULL,NULL,'Activo',1,'Consultor'),(4,'Federico Figueroa',NULL,'federico.figueroa@example.com','$2y$10$7gkFAMC3mIT0BD8Qv7WrY.DKA5HUm0vpeUOmlTTkWCxDwH0z6svMi',NULL,'3025554146','Soluciones Tecnológicas Andinas S.A.S.','Analista','2026-03-09 19:42:49',NULL,NULL,'Suspendido',1,'Consultor'),(5,'Silvia Montoya',NULL,'analista@example.com','$2y$10$7gkFAMC3mIT0BD8Qv7WrY.DKA5HUm0vpeUOmlTTkWCxDwH0z6svMi',NULL,'3295557910','Banco Cordillera','Analista','2026-03-09 19:42:49',NULL,NULL,'Activo',1,'Consultor'),(6,'Darío Federico Palacio',NULL,'finanzas@example.com','$2y$10$7gkFAMC3mIT0BD8Qv7WrY.DKA5HUm0vpeUOmlTTkWCxDwH0z6svMi',NULL,'3235557422','DataSense Analytics','Finanzas','2026-03-09 19:42:49',NULL,NULL,'Activo',1,'Consultor'),(7,'Ernesto Henao',NULL,'ernesto.henao@example.com','$2y$10$7gkFAMC3mIT0BD8Qv7WrY.DKA5HUm0vpeUOmlTTkWCxDwH0z6svMi',NULL,'3165558584','Petroandina Energía S.A.','Cliente','2026-03-09 19:42:49',NULL,NULL,'Activo',1,'Consultor'),(8,'Fabiola Osorio',NULL,'fabiola.osorio@example.com','$2y$10$7gkFAMC3mIT0BD8Qv7WrY.DKA5HUm0vpeUOmlTTkWCxDwH0z6svMi',NULL,'3155559604','Aseguradora Brisas del Valle','Cliente','2026-03-09 19:42:49',NULL,NULL,'Activo',1,'Consultor'),(9,'Santiago Benítez',NULL,'santiago.benitez@example.com','$2y$10$7gkFAMC3mIT0BD8Qv7WrY.DKA5HUm0vpeUOmlTTkWCxDwH0z6svMi',NULL,'3285554040','Soluciones Tecnológicas Andinas S.A.S.','Finanzas','2026-03-09 19:42:49',NULL,NULL,'Activo',1,'Consultor'),(10,'Lorena Durán',NULL,'lorena.duran@example.com','$2y$10$7gkFAMC3mIT0BD8Qv7WrY.DKA5HUm0vpeUOmlTTkWCxDwH0z6svMi',NULL,'3055551545','Alimentos La Pradera S.A.S.','Cliente','2026-03-09 19:42:49',NULL,NULL,'Activo',1,'Consultor'),(12,'Wilson Hernán Ocampo Flórez',NULL,'cliente@example.com','$2y$10$7gkFAMC3mIT0BD8Qv7WrY.DKA5HUm0vpeUOmlTTkWCxDwH0z6svMi',NULL,'3165554893','Soluciones Tecnológicas Andinas S.A.S.','Cliente','2026-03-09 20:42:04',NULL,NULL,'Activo',1,'Ingeniero de Sistemas'),(13,'Simón Tobón',NULL,'simon.tobon@example.com','$2y$10$7gkFAMC3mIT0BD8Qv7WrY.DKA5HUm0vpeUOmlTTkWCxDwH0z6svMi',NULL,'3165554893','Fiduciaria Altos del Río','Soporte','2026-03-09 21:50:07',NULL,NULL,'Activo',1,'Consultor'),(14,'Silvia Urrego',NULL,'silvia.urrego@example.com','$2y$10$7gkFAMC3mIT0BD8Qv7WrY.DKA5HUm0vpeUOmlTTkWCxDwH0z6svMi',NULL,'3155551169','Banco Ciudad Verde','Cliente','2026-03-09 21:50:07',NULL,NULL,'Activo',1,'Consultor'),(15,'samuel mesa',NULL,'samuel.mesa@example.com','$2y$10$7gkFAMC3mIT0BD8Qv7WrY.DKA5HUm0vpeUOmlTTkWCxDwH0z6svMi',NULL,'3155557127','Corporación Universitaria Horizonte','Soporte','2026-03-10 05:01:49',NULL,NULL,'Activo',1,'Consultor'),(16,'Bibiana Vargas Cardona','1056574956','bibiana.vargas.cardona@example.com','$2y$10$7gkFAMC3mIT0BD8Qv7WrY.DKA5HUm0vpeUOmlTTkWCxDwH0z6svMi',NULL,'','Métricas y Datos S.A.S.','Admin','2026-03-15 22:11:07',NULL,NULL,'Suspendido',0,'Consultor'),(19,'SAMUEL CORREA','1000261901','','',NULL,NULL,NULL,'','2026-04-02 07:05:47',NULL,NULL,'Activo',0,'Consultor'),(20,'wilson arbeláez',NULL,'wilson.arbelaez@example.com','$2y$10$7gkFAMC3mIT0BD8Qv7WrY.DKA5HUm0vpeUOmlTTkWCxDwH0z6svMi',NULL,'','Soluciones Tecnológicas Andinas S.A.S.','Cliente','2026-04-03 23:19:08',NULL,NULL,'Activo',1,'Consultor'),(24,'Gilberto Gaviria',NULL,'gilberto.gaviria@example.com','$2y$10$7gkFAMC3mIT0BD8Qv7WrY.DKA5HUm0vpeUOmlTTkWCxDwH0z6svMi',NULL,'3245554468','Soluciones Tecnológicas Andinas S.A.S.','Cliente','2026-04-03 23:59:22',NULL,NULL,'',1,'Consultor'),(25,'arturo yepes',NULL,'arturo.yepes@example.com','$2y$10$7gkFAMC3mIT0BD8Qv7WrY.DKA5HUm0vpeUOmlTTkWCxDwH0z6svMi',NULL,NULL,'Distribuidora El Roble Ltda.','Cliente','2026-05-02 00:36:23',NULL,NULL,'Suspendido',0,'Consultor'),(26,'benjamín londoño',NULL,'benjamin.londono@example.com','$2y$10$7gkFAMC3mIT0BD8Qv7WrY.DKA5HUm0vpeUOmlTTkWCxDwH0z6svMi',NULL,NULL,'Clínica Valle Sereno','Cliente','2026-08-07 10:20:04',NULL,NULL,'Suspendido',0,'Consultor'),(59,'Alejandra Arango',NULL,'supervisor@example.com','$2y$10$7gkFAMC3mIT0BD8Qv7WrY.DKA5HUm0vpeUOmlTTkWCxDwH0z6svMi',NULL,'3275555216','DataSense Analytics','Supervisor','2026-11-15 06:42:30',NULL,NULL,'Activo',1,'Supervisora de servicio');
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
+
+-- Verificación en dos pasos (includes/doble_factor.php). Las cuentas @example.com de la demostración la tienen
+-- activa con un código de prueba que se muestra al ingresar.
+ALTER TABLE `usuarios`
+  ADD COLUMN `mfa_activo` tinyint(1) NOT NULL DEFAULT 0,
+  ADD COLUMN `mfa_secreto` varchar(255) DEFAULT NULL,
+  ADD COLUMN `mfa_recuperacion` text DEFAULT NULL,
+  ADD COLUMN `mfa_ultimo_paso` bigint(20) DEFAULT NULL,
+  ADD COLUMN `mfa_activado_en` datetime DEFAULT NULL;
+
+-- Publicación automática en redes sociales (includes/redes_publicar.php)
+CREATE TABLE IF NOT EXISTS `redes_conexiones` (
+  `red` varchar(20) NOT NULL,
+  `cuenta_id` varchar(80) NOT NULL,
+  `nombre` varchar(150) NOT NULL DEFAULT '',
+  `token` text NOT NULL,
+  `conectado_por` int(11) DEFAULT NULL,
+  `actualizado` datetime NOT NULL,
+  PRIMARY KEY (`red`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `redes_programadas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ref` varchar(40) NOT NULL DEFAULT '',
+  `redes` varchar(60) NOT NULL,
+  `tipo` varchar(10) NOT NULL DEFAULT 'feed',
+  `fecha` datetime NOT NULL,
+  `texto` text NOT NULL,
+  `imagen` varchar(80) NOT NULL,
+  `estado` varchar(12) NOT NULL DEFAULT 'Programada',
+  `resultado` text DEFAULT NULL,
+  `intentos` tinyint(4) NOT NULL DEFAULT 0,
+  `proximo` datetime DEFAULT NULL,
+  `bloqueado_en` datetime DEFAULT NULL,
+  `creado_por` int(11) DEFAULT NULL,
+  `creado` datetime NOT NULL,
+  `publicado` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_redes_estado_fecha` (`estado`,`fecha`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

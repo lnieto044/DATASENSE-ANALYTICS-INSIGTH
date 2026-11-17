@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../includes/seguridad.php';
+require_once __DIR__ . '/../includes/doble_factor.php';
 $db = require __DIR__ . '/../config/database.php';
 // Seguridad: solo quien tenga el módulo "roles" (Seguridad y Roles) puede cambiar el rol o el estado de una cuenta
 $actor = requiereAcceso($db, 'roles', 'api');
@@ -32,7 +33,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        if ($nuevo_rol) {
+        if (!empty($_POST['restablecer_mfa'])) {
+            // Caso 0: restablecer la verificación en dos pasos (la persona la configura de nuevo al ingresar)
+            desactivarMfa($db, $id);
+            echo 'ok';
+        } elseif ($nuevo_rol) {
             // Caso 1: Actualizar el ROL
             if (!in_array($nuevo_rol, $roles_validos, true)) { echo 'error_datos'; exit; }
             $stmt = $db->prepare("UPDATE usuarios SET rol = ? WHERE id = ?");

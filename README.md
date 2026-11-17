@@ -17,6 +17,10 @@ Todas las cuentas usan la clave `Demo2026*`:
 | `analista@example.com` | Analista | Dashboard, clientes, encuestas e historial del chatbot |
 | `cliente@example.com` | Cliente | Su resumen, Centro de Soporte, facturas y pedidos |
 
+Después de la clave se pide la verificación en dos pasos. Como estas cuentas son compartidas, en la demo la
+pantalla muestra el código del momento; una cuenta creada con "Crear cuenta" la configura con su propia app
+autenticadora.
+
 En la demo los pagos van a un simulador y el correo está desactivado. Cada vez que el servidor se reinicia los
 datos vuelven a su estado inicial; en el plan gratuito de Render el servidor se apaga tras 15 minutos sin visitas
 y la primera visita después tarda alrededor de un minuto.
@@ -33,8 +37,11 @@ y la primera visita después tarda alrededor de un minuto.
 - **Facturación y contabilidad:** facturas, notas crédito y débito, comprobantes de ingreso y egreso, cuentas por pagar,
   conciliación bancaria, impuestos y retenciones, libro auxiliar, libro mayor, estado de resultados, balance y cierre.
 - **Pagos:** MercadoPago, PayPal, Zelle, Western Union y USDT, con validación por Finanzas.
-- **Redes sociales:** publicaciones listas con su texto y un plan por días de la semana (sin festivos) que se descarga
-  completo para dejarlo programado en Meta y LinkedIn; diseñador rápido de afiches y editor libre (textos, fuentes,
+- **Seguridad de acceso:** verificación en dos pasos al iniciar sesión y al registrarse con una app autenticadora
+  (TOTP, el mismo estándar del MFA de AWS Cognito), códigos de recuperación de un solo uso, secretos cifrados,
+  límite de intentos y restablecimiento por el administrador desde Seguridad y Roles.
+- **Redes sociales:** publicaciones listas con su texto y un plan por días de la semana (sin festivos); publicación
+  automática en Facebook, Instagram y LinkedIn en la fecha programada, o descarga del plan para programarlo a mano; diseñador rápido de afiches y editor libre (textos, fuentes,
   formas, iconos, fotos, capas, deshacer, cambio de tamaño y diseños guardados); mensajes para las respuestas
   automáticas, los comentarios con palabra clave y las preguntas frecuentes de Facebook, Instagram y WhatsApp Business.
 - **Administración:** permisos por rol y módulo, equipo, plantillas de correo, encuestas y salas de reunión.
@@ -51,6 +58,20 @@ de acceso por rol en cada página.
 2. Crear la base `datasense_demo` e importar `deploy/demo/datasense_demo.sql`.
 3. Copiar `.env.example` como `.env` y completar `DB_*` (por ejemplo `DB_NAME=datasense_demo`).
 4. Abrir `http://localhost/<carpeta-del-proyecto>/` e ingresar con una de las cuentas de la tabla.
+
+## Publicación automática en redes sociales
+
+En **Redes Sociales › Publicación automática** se conectan las cuentas con un token de acceso (se guarda cifrado):
+uno de la página de Facebook (con permisos `pages_manage_posts`, `pages_read_engagement`, `instagram_basic` e
+`instagram_content_publish`) conecta Facebook y su Instagram profesional; LinkedIn necesita un token con
+`w_organization_social` y el número de la página de empresa. "Programar el plan" deja cada afiche en la cola y
+`cron/publicar_redes.php` publica cada minuto lo que llegó a su fecha, con hasta 3 intentos por red.
+
+- En el contenedor (Render y la copia local) el publicador arranca solo con el servidor.
+- En un hosting con cron: `* * * * * php /ruta/del/proyecto/cron/publicar_redes.php`.
+- El servidor debe estar encendido a la hora de cada publicación: el plan gratuito de Render se apaga sin visitas
+  y su base vuelve al estado inicial al reiniciarse, así que para publicar de verdad se necesita un servidor que
+  no se duerma, con una base que conserve los datos.
 
 ## Publicar la demo en Render
 

@@ -591,12 +591,13 @@
         });
     }
 
-    /** Devuelve el afiche a tamaño real como archivo PNG (Blob). */
-    function exportar(diseno) {
+    /** Devuelve el afiche a tamaño real como archivo (Blob). tipo: 'image/png' (por defecto) o 'image/jpeg' (Instagram solo acepta JPG). */
+    function exportar(diseno, tipo) {
         const canvas = document.createElement('canvas');
+        const formato = tipo === 'image/jpeg' ? 'image/jpeg' : 'image/png';
         return dibujar(canvas, diseno, 1).then(function () {
             return new Promise(function (listo, fallo) {
-                canvas.toBlob(function (blob) { blob ? listo(blob) : fallo(new Error('No se pudo generar la imagen')); }, 'image/png');
+                canvas.toBlob(function (blob) { blob ? listo(blob) : fallo(new Error('No se pudo generar la imagen')); }, formato, 0.92);
             });
         });
     }

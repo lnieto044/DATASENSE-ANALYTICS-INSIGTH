@@ -1,7 +1,10 @@
 <?php
 require_once __DIR__ . '/../includes/seguridad.php';
+require_once __DIR__ . '/../includes/doble_factor.php';
 $db = require __DIR__ . '/../config/database.php';
 requiereSesion($db);
+asegurarColumnasMfa($db);
+$aviso = tomarAviso();
 
 $user_id = $_SESSION['admin_id'];
 $status_save = ""; 
@@ -139,6 +142,38 @@ if (!empty($perfil['foto'])) {
                         </div>
                     </div>
 
+                    <?php
+                    $mfa_demo = esCuentaDemoMfa($perfil);
+                    $mfa_activa = $mfa_demo || !empty($perfil['mfa_activo']);
+                    $mfa_restantes = codigosRecuperacionRestantes($perfil);
+                    ?>
+                    <div class="card card-form p-4 h-auto shadow-sm mb-4" id="dobleFactor">
+                        <h6 class="fw-bold small mb-3 text-uppercase" style="color: #0A2E4F; letter-spacing: 0.5px;"><i class="fas fa-shield-halved me-2"></i> Verificación en dos pasos</h6>
+                        <?php if ($mfa_activa): ?>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="text-success fw-bold bg-success bg-opacity-10 px-3 py-1 rounded-pill small"><i class="fas fa-circle-check me-1"></i> ACTIVA</span>
+                                <?php if (!$mfa_demo && !empty($perfil['mfa_activado_en'])): ?><span class="small text-muted">desde el <?= esc(date('d/m/Y', strtotime($perfil['mfa_activado_en']))) ?></span><?php endif; ?>
+                            </div>
+                            <?php if ($mfa_demo): ?>
+                                <p class="small text-muted mb-0">Cuenta de demostración: la verificación está activa con un código de prueba que se muestra al ingresar. Con tu cuenta real usas tu propia app autenticadora.</p>
+                            <?php else: ?>
+                                <p class="small text-muted mb-3">Cada ingreso pide el código de tu app autenticadora. Te quedan <b class="<?= $mfa_restantes <= 2 ? 'text-danger' : 'text-dark' ?>"><?= (int) $mfa_restantes ?></b> códigos de recuperación.</p>
+                                <form method="post" action="seguridad_cuenta.php" class="d-grid gap-2">
+                                    <label for="mfaCodigo" class="small fw-bold text-muted mb-0">Código actual de tu app (para confirmar cambios)</label>
+                                    <input type="text" class="form-control text-center fw-bold" id="mfaCodigo" name="codigo" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9 ]{6,7}" maxlength="7" placeholder="000000" required style="letter-spacing: .3em;">
+                                    <button type="submit" name="accion" value="codigos" class="btn btn-outline-primary btn-sm fw-bold"><i class="fas fa-key me-1"></i> Generar códigos de recuperación nuevos</button>
+                                    <?php if (modoMfa() !== 'obligatorio'): ?>
+                                    <button type="submit" name="accion" value="desactivar" class="btn btn-outline-danger btn-sm fw-bold"><i class="fas fa-power-off me-1"></i> Desactivar la verificación</button>
+                                    <?php endif; ?>
+                                </form>
+                            <?php endif; ?>
+                        <?php else: ?>
+                            <span class="text-warning fw-bold bg-warning bg-opacity-10 px-3 py-1 rounded-pill small d-inline-block mb-2"><i class="fas fa-triangle-exclamation me-1"></i> INACTIVA</span>
+                            <p class="small text-muted mb-3">Protege tu cuenta: además de la contraseña, cada ingreso pedirá un código de tu celular.</p>
+                            <a href="doble_factor.php?activar=1" class="btn btn-success btn-sm fw-bold w-100"><i class="fas fa-shield-halved me-1"></i> Activar ahora</a>
+                        <?php endif; ?>
+                    </div>
+
                     <div class="card card-form p-4 h-auto shadow-sm">
                         <h6 class="fw-bold small mb-3 text-uppercase" style="color: #0A2E4F; letter-spacing: 0.5px;"><i class="fas fa-chart-line me-2"></i> Estadísticas de Actividad</h6>
                         <div class="d-flex justify-content-between align-items-center small mb-3 border-bottom pb-2">
@@ -223,6 +258,10 @@ if (!empty($perfil['foto'])) {
     document.getElementById('inputTelefono').addEventListener('input', function (e) {
         this.value = this.value.replace(/[^0-9+\s-]/g, '');
     });
+
+    <?php if ($aviso): ?>
+        Swal.fire({ text: <?= jsJson($aviso['texto']) ?>, icon: <?= jsJson(in_array($aviso['tipo'], ['success', 'error', 'warning', 'info'], true) ? $aviso['tipo'] : 'info') ?>, confirmButtonColor: '#0A2E4F' });
+    <?php endif; ?>
 
     <?php if (($_GET['err'] ?? '') === 'acceso_denegado'): ?>
         Swal.fire({

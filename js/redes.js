@@ -521,7 +521,250 @@
         cargarDiseno(guardado && typeof guardado === 'object' ? guardado : BASE);
     })();
 
+    // ---------------------------------------------------------------- Publicación automática
+
+    // Conecta las cuentas, sube el plan a la cola del servidor y muestra cómo va cada publicación.
+    // El servidor publica solo (cron/publicar_redes.php revisa la cola cada minuto).
+    const API = 'redes_api.php';
+    const NOMBRE_RED = { facebook: 'Facebook', instagram: 'Instagram', linkedin: 'LinkedIn' };
+    const ICONO_RED = { facebook: ['fa-facebook-f', '#1877f2'], instagram: ['fa-instagram', '#e4405f'], linkedin: ['fa-linkedin-in', '#0a66c2'] };
+    const COLOR_ESTADO = { Programada: 'programada', Publicando: 'publicando', Publicada: 'publicada', Parcial: 'parcial', Error: 'error', Cancelada: 'cancelada' };
+    let auto = { conexiones: {}, cola: [], hace: null };
+
+    function escapar(texto) {
+        return String(texto == null ? '' : texto).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
+    }
+
+    // Respuesta JSON del servidor, también cuando responde con error
+    function pedirApi(datos) {
+        return fetch(API, { method: 'POST', body: datos, credentials: 'same-origin' }).then(function (r) {
+            return r.json().catch(function () { return { ok: false, mensaje: 'El servidor respondió ' + r.status + '. Recarga la página e inténtalo de nuevo.' }; });
+        });
+    }
+
+    function redesAutomaticas(pub) {
+        const mapa = { Facebook: 'facebook', Instagram: 'instagram', LinkedIn: 'linkedin' };
+        let lista = pub.redes.map(function (r) { return mapa[r]; }).filter(Boolean);
+        if (pub.historia) lista = lista.filter(function (r) { return r === 'instagram'; });
+        return lista;
+    }
+    function conectadas(lista) { return lista.filter(function (r) { return !!auto.conexiones[r]; }); }
+
+    function fechaCola(texto) {
+        const m = /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})/.exec(texto || '');
+        if (!m) return '';
+        const f = new Date(+m[1], +m[2] - 1, +m[3]);
+        return DIAS_CORTOS[f.getDay()] + ' ' + f.getDate() + ' ' + MESES[f.getMonth()].slice(0, 3) + ' · ' + hora12(m[4] + ':' + m[5]);
+    }
+
+    function pintarAuto() {
+        // Cuentas
+        Object.keys(NOMBRE_RED).forEach(function (red) {
+            const fila = $('.auto-cuentas [data-cuenta="' + red + '"]');
+            const con = auto.conexiones[red];
+            fila.classList.toggle('conectada', !!con);
+            $('b', fila).textContent = con ? con.nombre : 'Sin conectar';
+        });
+        $('[data-desconectar="facebook"]').hidden = !auto.conexiones.facebook;
+        $('[data-desconectar="linkedin"]').hidden = !auto.conexiones.linkedin;
+
+        // Publicador
+        const robot = $('#autoRobot');
+        let estado, detalle, clase;
+        if (auto.hace === null) { estado = 'Esperando su primera revisión'; detalle = 'El publicador arranca con el servidor y revisa la cola cada minuto.'; clase = 'espera'; }
+        else if (auto.hace < 180) { estado = 'Publicador activo'; detalle = 'Revisó la cola hace ' + Math.max(1, auto.hace) + ' s. Publica aunque nadie tenga el panel abierto.'; clase = 'activo'; }
+        else { estado = 'Publicador detenido'; detalle = 'Última revisión hace ' + Math.round(auto.hace / 60) + ' min. El servidor debe estar encendido para publicar a tiempo.'; clase = 'detenido'; }
+        robot.className = 'auto-robot ' + clase;
+        $('#autoRobotEstado').textContent = estado;
+        $('#autoRobotDetalle').textContent = detalle;
+
+        // "Publicar ahora" en las tarjetas que tienen al menos una red conectada
+        $$('.pub-tarjeta').forEach(function (tarjeta) {
+            const pub = publicaciones[tarjeta.getAttribute('data-id')];
+            const boton = $('[data-accion="publicar"]', tarjeta);
+            if (pub && boton) boton.hidden = conectadas(redesAutomaticas(pub)).length === 0;
+        });
+
+        // Cola
+        const pendientes = auto.cola.filter(function (f) { return f.estado === 'Programada' || f.estado === 'Publicando'; }).length;
+        $('#autoConteo').hidden = pendientes === 0;
+        $('#autoConteo').textContent = pendientes;
+        $('#autoColaVacia').hidden = auto.cola.length > 0;
+        $('#autoCola').innerHTML = auto.cola.map(function (f) {
+            const pub = publicaciones[f.ref];
+            const redes = f.redes.split(',').map(function (red) {
+                const r = f.resultado[red] || null;
+                const icono = ICONO_RED[red] || ['fa-share-nodes', '#475569'];
+                const estadoRed = r ? (r.ok ? 'ok' : 'falla') : 'pendiente';
+                const titulo = NOMBRE_RED[red] + ': ' + (r ? (r.ok ? 'publicada' : r.error) : 'pendiente');
+                const contenido = '<i class="fa-brands ' + icono[0] + '" aria-hidden="true"></i><i class="fas ' + (estadoRed === 'ok' ? 'fa-check' : estadoRed === 'falla' ? 'fa-xmark' : 'fa-clock') + ' auto-marca" aria-hidden="true"></i>';
+                return r && r.ok && /^https?:\/\//i.test(r.enlace || '')   // solo enlaces web: nunca otro esquema
+                    ? '<a class="auto-chip ok" href="' + escapar(r.enlace) + '" target="_blank" rel="noopener noreferrer" style="--color-red: ' + icono[1] + '" title="' + escapar(titulo) + ' · ver publicación">' + contenido + '</a>'
+                    : '<span class="auto-chip ' + estadoRed + '" style="--color-red: ' + icono[1] + '" title="' + escapar(titulo) + '">' + contenido + '</span>';
+            }).join('');
+            const errores = Object.keys(f.resultado || {}).filter(function (red) { return f.resultado[red] && !f.resultado[red].ok; })
+                .map(function (red) { return '<div class="auto-error">' + escapar(NOMBRE_RED[red] + ': ' + f.resultado[red].error) + '</div>'; }).join('');
+            const acciones = (['Programada', 'Error', 'Parcial'].indexOf(f.estado) !== -1 ? '<button type="button" class="btn-pub btn-pub-suave" data-cola="cancelar" data-id="' + f.id + '">Cancelar</button>' : '')
+                + (['Error', 'Parcial'].indexOf(f.estado) !== -1 ? '<button type="button" class="btn-pub" data-cola="reintentar" data-id="' + f.id + '">Reintentar</button>' : '');
+            const nota = f.estado === 'Programada' && f.proximo ? '<small>Reintenta ' + escapar(fechaCola(f.proximo)) + '</small>' : '';
+            return '<tr>'
+                + '<td class="auto-fecha">' + escapar(fechaCola(f.fecha)) + (f.tipo === 'historia' ? '<small>Historia</small>' : '') + '</td>'
+                + '<td><div class="auto-pub"><img src="' + API + '?accion=imagen&amp;id=' + f.id + '" alt="" loading="lazy"><div><b>' + escapar(pub ? pub.tema : (f.ref || 'Publicación')) + '</b><span>' + escapar(f.texto) + '</span>' + errores + '</div></div></td>'
+                + '<td><div class="auto-chips">' + redes + '</div></td>'
+                + '<td><span class="auto-estado ' + (COLOR_ESTADO[f.estado] || '') + '">' + escapar(f.estado) + '</span>' + nota + '</td>'
+                + '<td class="text-end"><div class="auto-acciones">' + acciones + '</div></td></tr>';
+        }).join('');
+
+        // Resumen del plan dentro de la pestaña
+        const fechas = calendario();
+        const listas = fechas.filter(function (item) { return conectadas(redesAutomaticas(item.pub)).length > 0; }).length;
+        $('#autoPlanResumen').innerHTML = $('#planResumen').innerHTML
+            + (Object.keys(auto.conexiones).length ? '' : ' <b class="text-danger">Conecta al menos una cuenta para programarlo.</b>')
+            + (Object.keys(auto.conexiones).length && listas < fechas.length ? ' <span class="text-muted">' + (fechas.length - listas) + ' no tienen ninguna de sus redes conectada y se omiten.</span>' : '');
+        $('#autoProgramar').disabled = !Object.keys(auto.conexiones).length;
+    }
+
+    function cargarAuto() {
+        return fetch(API + '?accion=estado', { credentials: 'same-origin' }).then(function (r) { return r.json(); })
+            .then(function (datos) { auto = datos; pintarAuto(); })
+            .catch(function () { $('#autoRobotEstado').textContent = 'No se pudo consultar el publicador'; });
+    }
+
+    function enviarFormulario(formulario, datos, exito) {
+        const boton = $('button[type="submit"]', formulario);
+        const original = boton.innerHTML;
+        boton.disabled = true;
+        boton.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Conectando…';
+        pedirApi(datos).then(function (r) {
+            aviso(r.mensaje || (r.ok ? 'Listo' : 'No se pudo conectar'));
+            if (r.ok) { exito(); cargarAuto(); }
+        }).finally(function () { boton.disabled = false; boton.innerHTML = original; });
+    }
+    $('#formMeta').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const datos = new FormData();
+        datos.append('accion', 'conectar_meta');
+        datos.append('token', $('#tokenMeta').value.trim());
+        enviarFormulario(this, datos, function () { $('#tokenMeta').value = ''; });
+    });
+    $('#formLinkedin').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const datos = new FormData();
+        datos.append('accion', 'conectar_linkedin');
+        datos.append('token', $('#tokenLinkedin').value.trim());
+        datos.append('organizacion', $('#orgLinkedin').value.trim());
+        enviarFormulario(this, datos, function () { $('#tokenLinkedin').value = ''; });
+    });
+    $$('[data-desconectar]').forEach(function (boton) {
+        boton.addEventListener('click', function () {
+            const red = boton.getAttribute('data-desconectar');
+            if (!window.confirm('¿Desconectar ' + (red === 'facebook' ? 'Facebook e Instagram' : 'LinkedIn') + '? Lo programado para esa red no se publicará hasta que la conectes de nuevo.')) return;
+            const datos = new FormData();
+            datos.append('accion', 'desconectar');
+            datos.append('red', red);
+            pedirApi(datos).then(function () { aviso('Cuenta desconectada'); cargarAuto(); });
+        });
+    });
+
+    // Sube un afiche a la cola: con fecha (programar) o sin ella (publicar ahora)
+    function subirPublicacion(pub, accion, fecha) {
+        return A.exportar(pub.diseno, 'image/jpeg').then(function (blob) {
+            const datos = new FormData();
+            const campo = $('#pubTexto-' + pub.id);
+            datos.append('accion', accion);
+            datos.append('imagen', blob, pub.id + '.jpg');
+            datos.append('texto', campo ? campo.value : pub.texto);
+            datos.append('redes', conectadas(redesAutomaticas(pub)).join(','));
+            datos.append('ref', pub.id);
+            datos.append('tipo', pub.historia ? 'historia' : 'feed');
+            if (fecha) datos.append('fecha', fecha);
+            return pedirApi(datos);
+        });
+    }
+
+    $('#autoProgramar').addEventListener('click', function () {
+        const boton = this;
+        const lista = calendario().filter(function (item) { return conectadas(redesAutomaticas(item.pub)).length > 0; });
+        if (!lista.length) { aviso('Conecta al menos una cuenta para programar el plan'); return; }
+        if (!window.confirm('Se programarán ' + lista.length + ' publicaciones, del ' + fechaLarga(lista[0].fecha) + ' al ' + fechaLarga(lista[lista.length - 1].fecha)
+            + ', a las ' + hora12(plan.hora) + '. Lo que ya estaba pendiente de este plan se reemplaza. ¿Continuar?')) return;
+        const barra = $('#autoProgreso');
+        const original = boton.innerHTML;
+        boton.disabled = true;
+        barra.hidden = false;
+        let hechas = 0, fallas = [];
+        const limpiar = new FormData();
+        limpiar.append('accion', 'cancelar_refs');
+        limpiar.append('refs', lista.map(function (item) { return item.pub.id; }).join(','));
+        let cadena = pedirApi(limpiar);
+        lista.forEach(function (item) {
+            cadena = cadena.then(function () {
+                return subirPublicacion(item.pub, 'programar', aTextoFecha(item.fecha) + ' ' + plan.hora).then(function (r) {
+                    hechas++;
+                    if (!r.ok) fallas.push(item.pub.tema + ': ' + r.mensaje);
+                    $('.progress-bar', barra).style.width = Math.round(hechas * 100 / lista.length) + '%';
+                    boton.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Programando ' + hechas + ' de ' + lista.length + '…';
+                });
+            });
+        });
+        cadena.then(function () {
+            aviso(fallas.length ? 'Se programaron ' + (lista.length - fallas.length) + '; ' + fallas.length + ' con problemas' : 'Plan programado: ' + lista.length + ' publicaciones saldrán solas');
+            if (fallas.length) window.alert('No se pudieron programar:\n\n' + fallas.join('\n'));
+        }).catch(function () {
+            aviso('Se cortó la conexión mientras se programaba. Revisa la cola y vuelve a intentarlo.');
+        }).then(function () {
+            boton.disabled = false;
+            boton.innerHTML = original;
+            setTimeout(function () { barra.hidden = true; $('.progress-bar', barra).style.width = '0%'; }, 1500);
+            cargarAuto();
+        });
+    });
+
+    // Publicar ahora (también las historias, que van a Instagram)
+    $$('.pub-tarjeta [data-accion="publicar"]').forEach(function (boton) {
+        boton.addEventListener('click', function () {
+            const pub = publicaciones[boton.closest('.pub-tarjeta').getAttribute('data-id')];
+            const redes = conectadas(redesAutomaticas(pub));
+            if (!redes.length) return;
+            if (!window.confirm('¿Publicar ahora en ' + redes.map(function (r) { return NOMBRE_RED[r]; }).join(', ') + (pub.historia ? ' (como historia)' : '') + '?')) return;
+            const original = boton.innerHTML;
+            boton.disabled = true;
+            boton.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Publicando…';
+            subirPublicacion(pub, 'publicar_ahora').then(function (r) {
+                if (!r.ok) { aviso(r.mensaje || 'No se pudo publicar'); return; }
+                const res = (r.publicacion && r.publicacion.resultado) || {};
+                const bien = Object.keys(res).filter(function (red) { return res[red].ok; }).map(function (red) { return NOMBRE_RED[red]; });
+                const mal = Object.keys(res).filter(function (red) { return !res[red].ok; });
+                aviso(bien.length ? 'Publicada en ' + bien.join(', ') + (mal.length ? '. Con problemas: ' + mal.map(function (red) { return NOMBRE_RED[red]; }).join(', ') : '') : 'No se pudo publicar: revisa la cola');
+                if (mal.length) window.alert(mal.map(function (red) { return NOMBRE_RED[red] + ': ' + res[red].error; }).join('\n\n'));
+            }).catch(function () { aviso('Se cortó la conexión. Revisa la cola antes de intentarlo de nuevo.'); })
+              .then(function () { boton.disabled = false; boton.innerHTML = original; cargarAuto(); });
+        });
+    });
+
+    $('#autoCola').addEventListener('click', function (e) {
+        const boton = e.target.closest('[data-cola]');
+        if (!boton) return;
+        const accion = boton.getAttribute('data-cola');
+        if (accion === 'cancelar' && !window.confirm('¿Cancelar esta publicación? No saldrá en ninguna red.')) return;
+        const datos = new FormData();
+        datos.append('accion', accion);
+        datos.append('id', boton.getAttribute('data-id'));
+        pedirApi(datos).then(function (r) {
+            aviso(r.ok ? (accion === 'cancelar' ? 'Publicación cancelada' : 'Se intentará de nuevo en el próximo minuto') : 'No se pudo cambiar: recarga la página');
+            cargarAuto();
+        });
+    });
+
+    // El plan cambia de días u hora: el resumen de esta pestaña también
+    ['#planInicio', '#planHora'].forEach(function (sel) { $(sel).addEventListener('change', pintarAuto); });
+    $('#planDias').addEventListener('click', function () { setTimeout(pintarAuto, 0); });
+
+    cargarAuto();
+    // La cola se actualiza sola cada 30 segundos mientras la página está visible
+    setInterval(function () { if (!document.hidden) cargarAuto(); }, 30000);
+
     // Enlace directo a una pestaña: redes_sociales.php#disenador o #respuestas
-    const pestanas = { '#disenador': '#pestanaDisenador', '#respuestas': '#pestanaRespuestas' };
+    const pestanas = { '#disenador': '#pestanaDisenador', '#respuestas': '#pestanaRespuestas', '#automatica': '#pestanaAuto' };
     if (pestanas[location.hash]) bootstrap.Tab.getOrCreateInstance($(pestanas[location.hash])).show();
 })();

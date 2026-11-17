@@ -37,7 +37,7 @@ RUN mkdir -p /opt/datasense \
  && sed -i 's/\r$//' /usr/local/bin/datasense-entrypoint /etc/apache2/conf-available/datasense.conf /etc/mysql/mariadb.conf.d/99-datasense.cnf \
  && chmod +x /usr/local/bin/datasense-entrypoint \
  && rm -rf /var/www/html/deploy /var/www/html/Dockerfile /var/www/html/render.yaml /var/www/html/.dockerignore \
- && mkdir -p /var/www/html/uploads/tickets /var/www/html/uploads/pagos /var/www/html/uploads/pqrsd \
+ && mkdir -p /var/www/html/uploads/tickets /var/www/html/uploads/pagos /var/www/html/uploads/pqrsd /var/www/html/uploads/redes \
  && chown -R www-data:www-data /var/www/html/uploads /var/www/html/img/productos
 
 # Crea la base de demostración dentro de la imagen (si el volcado tiene un error, la construcción falla aquí)

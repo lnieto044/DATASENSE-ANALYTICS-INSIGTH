@@ -14,6 +14,7 @@
  */
 require_once __DIR__ . '/../includes/seguridad.php';
 require_once __DIR__ . '/../includes/redes_contenido.php';
+require_once __DIR__ . '/../includes/redes_publicar.php';   // publicación automática (conexiones y cola)
 require_once __DIR__ . '/../includes/itsm.php';   // festivosColombia(): el plan no publica en festivos
 $db = require __DIR__ . '/../config/database.php';
 requiereAcceso($db, 'redes');
@@ -86,13 +87,18 @@ foreach (['SOCIAL_FACEBOOK' => 'Facebook', 'SOCIAL_INSTAGRAM' => 'Instagram', 'S
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pestanaAuto" data-bs-toggle="pill" data-bs-target="#panelAuto" type="button" role="tab" aria-controls="panelAuto" aria-selected="false">
+                        <i class="fas fa-robot" aria-hidden="true"></i> Publicación automática <span class="redes-conteo" id="autoConteo" hidden></span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
                     <button class="nav-link" id="pestanaDisenador" data-bs-toggle="pill" data-bs-target="#panelDisenador" type="button" role="tab" aria-controls="panelDisenador" aria-selected="false">
-                        <i class="fas fa-palette" aria-hidden="true"></i> Diseñador de afiches
+                        <i class="fas fa-palette" aria-hidden="true"></i> Diseñador
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="pestanaRespuestas" data-bs-toggle="pill" data-bs-target="#panelRespuestas" type="button" role="tab" aria-controls="panelRespuestas" aria-selected="false">
-                        <i class="fas fa-reply-all" aria-hidden="true"></i> Respuestas automáticas
+                        <i class="fas fa-reply-all" aria-hidden="true"></i> Respuestas
                     </button>
                 </li>
                 <li class="nav-item">
@@ -195,11 +201,107 @@ foreach (['SOCIAL_FACEBOOK' => 'Facebook', 'SOCIAL_INSTAGRAM' => 'Instagram', 'S
                                         <button type="button" class="btn-pub" data-copiar="#pubTexto-<?= esc($pub['id']) ?>"><i class="far fa-copy" aria-hidden="true"></i> Copiar texto</button>
                                         <button type="button" class="btn-pub" data-accion="compartir" hidden><i class="fas fa-share-nodes" aria-hidden="true"></i> Compartir</button>
                                         <button type="button" class="btn-pub" data-accion="editar"><i class="fas fa-pen" aria-hidden="true"></i> Editar</button>
+                                        <button type="button" class="btn-pub btn-pub-verde" data-accion="publicar" hidden><i class="fas fa-paper-plane" aria-hidden="true"></i> Publicar ahora</button>
                                     </div>
                                 </div>
                             </article>
                         </div>
                         <?php endforeach; ?>
+                    </div>
+                </section>
+
+                <!-- ============================================================ PUBLICACIÓN AUTOMÁTICA -->
+                <section class="tab-pane fade" id="panelAuto" role="tabpanel" aria-labelledby="pestanaAuto" tabindex="0">
+                    <div class="redes-banda">
+                        <div>
+                            <h3>Se publica solo, sin que nadie lo haga a mano</h3>
+                            <p>Conecta tus cuentas una vez. La plataforma publica cada afiche con su texto en la fecha y la hora del plan, en Facebook, Instagram y LinkedIn.</p>
+                        </div>
+                        <div class="auto-robot" id="autoRobot">
+                            <i class="fas fa-robot" aria-hidden="true"></i>
+                            <span><b id="autoRobotEstado">Consultando…</b><span id="autoRobotDetalle">El publicador revisa la cola cada minuto.</span></span>
+                        </div>
+                    </div>
+
+                    <h3 class="redes-subtitulo">1. Conecta tus cuentas</h3>
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <article class="redes-caja auto-red">
+                                <div class="resp-encabezado">
+                                    <span class="pub-redes"><?= $insignias_red(['Facebook', 'Instagram']) ?></span>
+                                    <div><h4>Facebook e Instagram</h4><p>Un solo token de la página conecta las dos: Instagram debe ser una cuenta profesional vinculada a la página.</p></div>
+                                </div>
+                                <ul class="auto-cuentas">
+                                    <li data-cuenta="facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i><span>Facebook</span><b>Sin conectar</b></li>
+                                    <li data-cuenta="instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i><span>Instagram</span><b>Sin conectar</b></li>
+                                </ul>
+                                <form id="formMeta" class="d-grid gap-2" autocomplete="off">
+                                    <label class="form-label mb-0" for="tokenMeta">Token de acceso de la página</label>
+                                    <textarea class="form-control auto-token" id="tokenMeta" rows="3" placeholder="EAAG…" spellcheck="false" required></textarea>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <button type="submit" class="btn-pub btn-pub-principal"><i class="fas fa-plug" aria-hidden="true"></i> Conectar Facebook e Instagram</button>
+                                        <button type="button" class="btn-pub btn-pub-suave" data-desconectar="facebook" hidden><i class="fas fa-plug-circle-xmark" aria-hidden="true"></i> Desconectar</button>
+                                    </div>
+                                </form>
+                            </article>
+                        </div>
+                        <div class="col-lg-6">
+                            <article class="redes-caja auto-red">
+                                <div class="resp-encabezado">
+                                    <span class="pub-redes"><?= $insignias_red(['LinkedIn']) ?></span>
+                                    <div><h4>LinkedIn</h4><p>Publica en la página de empresa. Necesita un token con el permiso para publicar como organización.</p></div>
+                                </div>
+                                <ul class="auto-cuentas">
+                                    <li data-cuenta="linkedin"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i><span>LinkedIn</span><b>Sin conectar</b></li>
+                                </ul>
+                                <form id="formLinkedin" class="d-grid gap-2" autocomplete="off">
+                                    <label class="form-label mb-0" for="orgLinkedin">Número de la página de empresa</label>
+                                    <input type="text" class="form-control" id="orgLinkedin" placeholder="Por ejemplo 12345678 o la dirección linkedin.com/company/12345678/admin" required>
+                                    <label class="form-label mb-0" for="tokenLinkedin">Token de acceso</label>
+                                    <textarea class="form-control auto-token" id="tokenLinkedin" rows="2" placeholder="AQV…" spellcheck="false" required></textarea>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <button type="submit" class="btn-pub btn-pub-principal"><i class="fas fa-plug" aria-hidden="true"></i> Conectar LinkedIn</button>
+                                        <button type="button" class="btn-pub btn-pub-suave" data-desconectar="linkedin" hidden><i class="fas fa-plug-circle-xmark" aria-hidden="true"></i> Desconectar</button>
+                                    </div>
+                                </form>
+                            </article>
+                        </div>
+                    </div>
+
+                    <details class="redes-guia mt-4">
+                        <summary><i class="fas fa-circle-question" aria-hidden="true"></i> ¿Cómo obtengo los tokens de acceso?</summary>
+                        <div class="redes-guia-cuerpo">
+                            <p class="mb-0"><b>Facebook e Instagram</b> (se hace una sola vez, con la cuenta que administra la página):</p>
+                            <div class="redes-paso"><span class="redes-paso-numero">1</span><div>Entra a <a href="https://developers.facebook.com/apps" target="_blank" rel="noopener noreferrer">developers.facebook.com</a>, toca <b>Crear app</b>, elige el caso de uso para <b>administrar una página</b> y ponle de nombre DataSense.</div></div>
+                            <div class="redes-paso"><span class="redes-paso-numero">2</span><div>Abre el <a href="https://developers.facebook.com/tools/explorer/" target="_blank" rel="noopener noreferrer">Explorador de la API Graph</a>, elige tu app y en <b>Permisos</b> agrega: pages_show_list, pages_read_engagement, pages_manage_posts, instagram_basic e instagram_content_publish.</div></div>
+                            <div class="redes-paso"><span class="redes-paso-numero">3</span><div>Toca <b>Generate Access Token</b>, acepta con tu cuenta y en <b>Usuario o página</b> elige la página de DataSense. Copia el token que aparece y pégalo aquí.</div></div>
+                            <div class="redes-paso"><span class="redes-paso-numero">4</span><div>Para que no venza: en el <a href="https://developers.facebook.com/tools/debug/accesstoken/" target="_blank" rel="noopener noreferrer">Depurador de tokens</a> toca <b>Extender token de acceso</b> sobre el de usuario y vuelve a pedir el de la página: el token de página que sale de un token extendido no vence.</div></div>
+                            <p class="mb-0 mt-2"><b>LinkedIn</b>:</p>
+                            <div class="redes-paso"><span class="redes-paso-numero">1</span><div>En <a href="https://www.linkedin.com/developers/apps" target="_blank" rel="noopener noreferrer">linkedin.com/developers</a> crea una app asociada a la página de DataSense y pide el producto <b>Community Management API</b> (LinkedIn lo revisa y lo aprueba).</div></div>
+                            <div class="redes-paso"><span class="redes-paso-numero">2</span><div>Con el permiso <b>w_organization_social</b> aprobado, genera el token en la herramienta de tokens de la app y pégalo aquí junto con el número de la página (aparece en la dirección cuando la administras: linkedin.com/company/<b>12345678</b>/admin). El token de LinkedIn vence a los 60 días: cuando venza, pega uno nuevo.</div></div>
+                            <p class="redes-nota"><i class="fas fa-lock" aria-hidden="true"></i> Los tokens se guardan cifrados y nunca se muestran de nuevo. Mientras tu app de Meta esté en modo de desarrollo, solo publica en las cuentas que tú administras, que es justo lo que se necesita.</p>
+                        </div>
+                    </details>
+
+                    <h3 class="redes-subtitulo">2. Programa el plan</h3>
+                    <div class="redes-caja auto-programar">
+                        <div>
+                            <p id="autoPlanResumen" class="mb-1"></p>
+                            <p class="small text-muted mb-0">Las historias no entran en el plan: publícalas cuando quieras con <b>Publicar ahora</b> (van a Instagram). Si vuelves a programar el plan, lo pendiente se reemplaza.</p>
+                        </div>
+                        <button type="button" class="btn-pub btn-pub-verde" id="autoProgramar"><i class="fas fa-robot" aria-hidden="true"></i> Programar el plan para que se publique solo</button>
+                        <div class="progress auto-progreso" id="autoProgreso" role="progressbar" aria-label="Programando el plan" hidden><div class="progress-bar bg-success" style="width: 0%"></div></div>
+                    </div>
+
+                    <h3 class="redes-subtitulo">3. Cola de publicación</h3>
+                    <div class="redes-caja p-0 overflow-hidden">
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0 auto-cola">
+                                <thead><tr><th>Fecha</th><th>Publicación</th><th>Redes</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
+                                <tbody id="autoCola"></tbody>
+                            </table>
+                        </div>
+                        <p class="ed-vacio m-0 p-4 text-muted" id="autoColaVacia">Todavía no hay publicaciones en la cola. Conecta tus cuentas y programa el plan.</p>
                     </div>
                 </section>
 
@@ -482,7 +584,7 @@ foreach (['SOCIAL_FACEBOOK' => 'Facebook', 'SOCIAL_INSTAGRAM' => 'Instagram', 'S
 window.REDES_DATOS = <?= jsJson(['galeria' => $galeria, 'publicaciones' => $publicaciones, 'pie' => pieAfiches(), 'logo' => '../img/logo.png',
                                   'festivos' => festivosColombia((int) date('Y')) + festivosColombia((int) date('Y') + 1)]) ?>;
 </script>
-<script src="../js/afiches.js?v=3"></script>
-<script src="../js/redes.js?v=3"></script>
+<script src="../js/afiches.js?v=4"></script>
+<script src="../js/redes.js?v=4"></script>
 </body>
 </html>

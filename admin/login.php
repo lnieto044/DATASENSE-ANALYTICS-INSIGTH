@@ -1,9 +1,11 @@
 <?php
 require_once __DIR__ . '/../includes/seguridad.php';
+require_once __DIR__ . '/../includes/doble_factor.php';   // verificación en dos pasos después de la contraseña
 iniciarSesionSegura();
 
 // 1. Cargar la conexión a la base de datos
 $db = require __DIR__ . '/../config/database.php';
+asegurarColumnasMfa($db);
 
 $error_login = false;
 $mensaje_error = "";
@@ -60,16 +62,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                         $mensaje_error = "Tu cuenta se encuentra inactiva. Verifica tu estado.";
                     }
                 } else {
-                    // Si está 'Activo' o en 'Vacaciones', iniciamos sesión normalmente
+                    // Si está 'Activo' o en 'Vacaciones': contraseña correcta. Falta el segundo paso si la cuenta lo tiene
+                    // (o debe configurarlo porque MFA_MODO=obligatorio); si no, entra directo.
                     reiniciarIntentos($clave_correo);
-                    session_regenerate_id(true);
-                    unset($_SESSION['csrf_panel']); // La nueva sesión recibe un token CSRF nuevo
-                    $_SESSION['admin']        = true;
-                    $_SESSION['admin_id']     = $usuario['id'];
-                    $_SESSION['admin_nombre'] = $usuario['nombre'];
-                    $_SESSION['admin_rol']    = $usuario['rol'];
-                    
-                    header("Location: " . destinoTrasLogin($_GET['volver'] ?? '', paginaInicio($usuario['rol'], $db))); // Página pedida antes del login, o la primera que su rol puede abrir
+                    $volver = is_string($_GET['volver'] ?? null) ? $_GET['volver'] : '';
+                    $paso_mfa = pasoMfaPendiente($usuario);
+                    if ($paso_mfa !== 'no') {
+                        iniciarFlujoMfa($usuario, $paso_mfa, 'login', $volver);
+                        header("Location: doble_factor.php");
+                        exit;
+                    }
+                    header("Location: " . completarInicioSesion($db, $usuario, $volver)); // Página pedida antes del login, o la primera que su rol puede abrir
                     exit;
                 }
                 
@@ -127,6 +130,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 $stmt_enlace_exacto = $db->prepare("UPDATE contactos SET id_usuario_final = ? WHERE correo = ? AND id_usuario_final IS NULL");
                 $stmt_enlace_exacto->execute([$nuevo_id_usuario, $email]);
 
+                // La cuenta nueva configura de una vez la verificación en dos pasos y entra al panel
+                if (modoMfa() !== 'desactivado') {
+                    iniciarFlujoMfa(['id' => $nuevo_id_usuario], 'configurar', 'registro', is_string($_GET['volver'] ?? null) ? $_GET['volver'] : '');
+                    header("Location: doble_factor.php");
+                    exit;
+                }
                 $error_registro = false;
                 $mensaje_registro = "Registro exitoso. Ya puedes ingresar en la pestaña 'Iniciar Sesión'.";
             }
@@ -211,7 +220,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 <h1 class="mb-3">Decisiones impulsadas por datos</h1>
                 <p class="mb-2">Tu panel centralizado para visualizar indicadores, gestionar la operación y comprar soluciones de datos.</p>
                 <div class="beneficio"><span class="icono"><i class="fas fa-chart-line"></i></span><div><b>Analítica en tiempo real</b><span>Tableros y reportes siempre actualizados.</span></div></div>
-                <div class="beneficio"><span class="icono"><i class="fas fa-shield-halved"></i></span><div><b>Seguridad de datos</b><span>Sesión protegida y bloqueo ante intentos fallidos.</span></div></div>
+                <div class="beneficio"><span class="icono"><i class="fas fa-shield-halved"></i></span><div><b>Verificación en dos pasos</b><span>Contraseña más un código de tu celular, y bloqueo ante intentos fallidos.</span></div></div>
                 <div class="beneficio"><span class="icono"><i class="fas fa-headset"></i></span><div><b>Soporte con ANS</b><span>Radica y sigue tus casos con tiempos claros.</span></div></div>
                 <div class="beneficio"><span class="icono"><i class="fas fa-store"></i></span><div><b>Tienda en línea</b><span>Plantillas, cursos, licencias y kits con factura.</span></div></div>
             </aside>
@@ -235,6 +244,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                         <div class="tab-pane fade show active" id="ingresar" role="tabpanel" aria-labelledby="ingresar-tab">
                             <?php if (($_GET['res'] ?? '') === 'success_reset'): ?>
                                 <div class="alert alert-success acceso-alerta" role="alert" style="border-color:#198754"><i class="fas fa-circle-check me-2"></i>Contraseña actualizada. Ya puedes iniciar sesión.</div>
+                            <?php endif; ?>
+                            <?php $avisos_mfa = ['mfa_vencido' => 'La verificación tardó demasiado. Vuelve a escribir tu correo y contraseña.',
+                                                 'mfa_intentos' => 'Demasiados códigos incorrectos. Por seguridad, vuelve a iniciar sesión.',
+                                                 'mfa_cancelado' => 'No se completó la verificación en dos pasos. Inicia sesión cuando quieras configurarla.'];
+                                  if (isset($avisos_mfa[$_GET['res'] ?? ''])): ?>
+                                <div class="alert alert-warning acceso-alerta" role="alert" style="border-color:#f0b429"><i class="fas fa-shield-halved me-2"></i><?= esc($avisos_mfa[$_GET['res']]) ?></div>
                             <?php endif; ?>
                             <?php if ($error_login): ?>
                                 <div class="alert alert-danger acceso-alerta" role="alert" style="border-color:#dc3545"><i class="fas fa-circle-exclamation me-2"></i><?= esc($mensaje_error) ?></div>
@@ -290,13 +305,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                                 </div>
                                 <div class="fuerza-clave" aria-hidden="true"><span id="barraFuerza"></span></div>
                                 <div class="small text-muted mt-1 mb-3" id="textoFuerza">Usa al menos 8 caracteres con letras y números.</div>
+                                <?php if (modoMfa() !== 'desactivado'): ?>
+                                <p class="small text-muted mb-3"><i class="fas fa-mobile-screen-button me-1" style="color:#3FAE49"></i> Después activarás la verificación en dos pasos con una app autenticadora en tu celular.</p>
+                                <?php endif; ?>
                                 <button type="submit" class="btn btn-acceso btn-registrar w-100"><i class="fas fa-user-plus me-2"></i>Crear mi cuenta</button>
                                 <p class="text-muted text-center mt-3 mb-0" style="font-size:.74rem">Al crear tu cuenta aceptas el tratamiento de tus datos personales según la Ley 1581 de 2012.</p>
                             </form>
                         </div>
                     </div>
 
-                    <div class="acceso-seguro text-center mt-4"><i class="fas fa-lock me-1 text-success"></i> Conexión protegida · Tus datos viajan cifrados</div>
+                    <div class="acceso-seguro text-center mt-4"><i class="fas fa-lock me-1 text-success"></i> Conexión protegida · Verificación en dos pasos · Tus datos viajan cifrados</div>
                 </div>
             </section>
         </div>
