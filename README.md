@@ -33,6 +33,10 @@ y la primera visita después tarda alrededor de un minuto.
 - **Facturación y contabilidad:** facturas, notas crédito y débito, comprobantes de ingreso y egreso, cuentas por pagar,
   conciliación bancaria, impuestos y retenciones, libro auxiliar, libro mayor, estado de resultados, balance y cierre.
 - **Pagos:** MercadoPago, PayPal, Zelle, Western Union y USDT, con validación por Finanzas.
+- **Redes sociales:** publicaciones listas con su texto y un plan por días de la semana (sin festivos) que se descarga
+  completo para dejarlo programado en Meta y LinkedIn; diseñador rápido de afiches y editor libre (textos, fuentes,
+  formas, iconos, fotos, capas, deshacer, cambio de tamaño y diseños guardados); mensajes para las respuestas
+  automáticas, los comentarios con palabra clave y las preguntas frecuentes de Facebook, Instagram y WhatsApp Business.
 - **Administración:** permisos por rol y módulo, equipo, plantillas de correo, encuestas y salas de reunión.
 
 ## Tecnología

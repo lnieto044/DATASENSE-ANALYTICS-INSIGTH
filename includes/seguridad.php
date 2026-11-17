@@ -90,6 +90,7 @@ function paginaInicio($rol, PDO $db) {
         'libro_auxiliar' => 'libro_auxiliar.php', 'estado_resultados' => 'estado_resultados.php',
         'balance_general' => 'balance_general.php', 'libro_mayor' => 'libro_mayor.php',
         'mis_pedidos' => 'mis_pedidos.php', 'tienda' => 'tienda_productos.php',
+        'redes' => 'redes_sociales.php',
     ];
     foreach ($paginas as $modulo => $pagina) {
         if (tieneAcceso($rol, $modulo, $db)) return $pagina;

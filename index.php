@@ -376,7 +376,7 @@ $videos_marcela = array_values(array_filter([
         <div class="proyecto-cuerpo">
           <span class="proyecto-area"><i class="fas fa-code"></i>Desarrollo de software</span>
           <h3>Plataforma de gestión DataSense</h3>
-          <p>Una sola plataforma con 38 módulos: mesa de servicios ITIL con ANS en horario hábil, canal de PQRSD conforme a la Ley 1755 de 2015, facturación, contabilidad, pagos y tienda en línea, con permisos por rol.</p>
+          <p>Una sola plataforma con más de 35 módulos: mesa de servicios ITIL con ANS en horario hábil, canal de PQRSD conforme a la Ley 1755 de 2015, facturación, contabilidad, pagos y tienda en línea, con permisos por rol.</p>
           <div class="proyecto-acciones">
             <a href="#contacto" class="btn-team" data-proyecto="Plataforma de gestión DataSense" data-servicio="DSW">Quiero un proyecto así</a>
             <a href="#contacto" class="btn-proyecto-sec" data-proyecto="una demostración de la Plataforma de gestión DataSense" data-servicio="DSW">Solicitar una demostración</a>

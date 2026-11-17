@@ -1,7 +1,7 @@
 <?php
 /**
  * SIDEBAR UNIFICADO COMPLETO - DATASENSE ENTERPRISE
- * Arquitectura: Operación, Mesa de Servicios, Finanzas, Automatización y Administración.
+ * Arquitectura: Operación, Mesa de Servicios, Finanzas, Tienda, Mercadeo, Automatización y Administración.
  */
 require_once __DIR__ . '/seguridad.php';
 
@@ -67,6 +67,9 @@ $menu_secciones = [
         ['tienda', 'tienda_pedidos.php', 'fa-truck-ramp-box', 'Pedidos de la Tienda'],
         ['mis_pedidos', 'mis_pedidos.php', 'fa-bag-shopping', 'Mis Pedidos'],
         [['tienda', 'mis_pedidos'], '../tienda.php', 'fa-cart-shopping', 'Ir a la Tienda'],
+    ],
+    'Mercadeo y Redes' => [
+        ['redes', 'redes_sociales.php', 'fa-bullhorn', 'Redes Sociales'],
     ],
     'Automatización' => [
         ['plantillas', 'plantillas.php', 'fa-magic', 'Plantillas Auto'],
