@@ -31,7 +31,7 @@ services:
         value: demo
       # Redes sociales de DataSense (direcciones públicas): salen en el pie de página y en el canal de PQRSD
       - key: SOCIAL_FACEBOOK
-        value: https://www.facebook.com/profile.php?id=61596210356006
+        value: https://www.facebook.com/DataSenseAnalyticsCo
       - key: SOCIAL_INSTAGRAM
         value: https://www.instagram.com/datasenseanalyticsinsigth/
       - key: SOCIAL_LINKEDIN

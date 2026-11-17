@@ -38,7 +38,7 @@ services:
       MAIL_ENCRYPTION: none
       MAIL_USER: demo@example.com
       MAIL_PASS: demo
-      SOCIAL_FACEBOOK: https://www.facebook.com/profile.php?id=61596210356006
+      SOCIAL_FACEBOOK: https://www.facebook.com/DataSenseAnalyticsCo
       SOCIAL_INSTAGRAM: https://www.instagram.com/datasenseanalyticsinsigth/
       SOCIAL_LINKEDIN: https://www.linkedin.com/company/datasense-analytics-insights
       REDES_ENLACE: https://datasense-demo.onrender.com/
