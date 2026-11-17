@@ -38,8 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     }
     $ultima = ultimaRevisionRedes();
-    responder(['conexiones' => conexionesRedes($db), 'cola' => colaRedes($db), 'ultima_revision' => $ultima,
-               'hace' => $ultima ? time() - $ultima : null]);
+    responder(['conexiones' => conexionesRedes($db), 'entorno' => sincronizarConexionesEntorno($db), 'cola' => colaRedes($db),
+               'ultima_revision' => $ultima, 'hace' => $ultima ? time() - $ultima : null]);
 }
 
 $id = (int) ($_POST['id'] ?? 0);
@@ -53,6 +53,9 @@ switch ($accion) {
     case 'desconectar':
         $red = $_POST['red'] ?? '';
         if (!isset(REDES_AUTO[$red])) responder(['ok' => false, 'mensaje' => 'Red no válida.'], 422);
+        if (isset(sincronizarConexionesEntorno($db)[$red === 'instagram' ? 'facebook' : $red])) {
+            responder(['ok' => false, 'mensaje' => 'Esta cuenta se conecta con un token de la configuración del servidor: para quitarla, borra ese token del archivo .env (o de Environment en Render).'], 422);
+        }
         quitarConexion($db, $red);
         if ($red === 'facebook') quitarConexion($db, 'instagram'); // Instagram publica con el token de la página
         responder(['ok' => true]);

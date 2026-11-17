@@ -1695,6 +1695,7 @@ CREATE TABLE IF NOT EXISTS `redes_conexiones` (
   `token` text NOT NULL,
   `conectado_por` int(11) DEFAULT NULL,
   `actualizado` datetime NOT NULL,
+  `huella` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`red`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

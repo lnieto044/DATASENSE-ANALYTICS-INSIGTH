@@ -235,6 +235,7 @@ foreach (['SOCIAL_FACEBOOK' => 'Facebook', 'SOCIAL_INSTAGRAM' => 'Instagram', 'S
                                     <li data-cuenta="facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i><span>Facebook</span><b>Sin conectar</b></li>
                                     <li data-cuenta="instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i><span>Instagram</span><b>Sin conectar</b></li>
                                 </ul>
+                                <p class="auto-servidor" id="notaMeta" hidden></p>
                                 <form id="formMeta" class="d-grid gap-2" autocomplete="off">
                                     <label class="form-label mb-0" for="tokenMeta">Token de acceso de la página</label>
                                     <textarea class="form-control auto-token" id="tokenMeta" rows="3" placeholder="EAAG…" spellcheck="false" required></textarea>
@@ -254,6 +255,7 @@ foreach (['SOCIAL_FACEBOOK' => 'Facebook', 'SOCIAL_INSTAGRAM' => 'Instagram', 'S
                                 <ul class="auto-cuentas">
                                     <li data-cuenta="linkedin"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i><span>LinkedIn</span><b>Sin conectar</b></li>
                                 </ul>
+                                <p class="auto-servidor" id="notaLinkedin" hidden></p>
                                 <form id="formLinkedin" class="d-grid gap-2" autocomplete="off">
                                     <label class="form-label mb-0" for="orgLinkedin">Número de la página de empresa</label>
                                     <input type="text" class="form-control" id="orgLinkedin" placeholder="Por ejemplo 12345678 o la dirección linkedin.com/company/12345678/admin" required>
@@ -268,18 +270,21 @@ foreach (['SOCIAL_FACEBOOK' => 'Facebook', 'SOCIAL_INSTAGRAM' => 'Instagram', 'S
                         </div>
                     </div>
 
-                    <details class="redes-guia mt-4">
-                        <summary><i class="fas fa-circle-question" aria-hidden="true"></i> ¿Cómo obtengo los tokens de acceso?</summary>
+                    <details class="redes-guia mt-4" id="guiaTokens">
+                        <summary><i class="fas fa-circle-question" aria-hidden="true"></i> ¿De dónde saco los tokens y dónde los dejo para que no se pidan?</summary>
                         <div class="redes-guia-cuerpo">
-                            <p class="mb-0"><b>Facebook e Instagram</b> (se hace una sola vez, con la cuenta que administra la página):</p>
-                            <div class="redes-paso"><span class="redes-paso-numero">1</span><div>Entra a <a href="https://developers.facebook.com/apps" target="_blank" rel="noopener noreferrer">developers.facebook.com</a>, toca <b>Crear app</b>, elige el caso de uso para <b>administrar una página</b> y ponle de nombre DataSense.</div></div>
-                            <div class="redes-paso"><span class="redes-paso-numero">2</span><div>Abre el <a href="https://developers.facebook.com/tools/explorer/" target="_blank" rel="noopener noreferrer">Explorador de la API Graph</a>, elige tu app y en <b>Permisos</b> agrega: pages_show_list, pages_read_engagement, pages_manage_posts, instagram_basic e instagram_content_publish.</div></div>
-                            <div class="redes-paso"><span class="redes-paso-numero">3</span><div>Toca <b>Generate Access Token</b>, acepta con tu cuenta y en <b>Usuario o página</b> elige la página de DataSense. Copia el token que aparece y pégalo aquí.</div></div>
-                            <div class="redes-paso"><span class="redes-paso-numero">4</span><div>Para que no venza: en el <a href="https://developers.facebook.com/tools/debug/accesstoken/" target="_blank" rel="noopener noreferrer">Depurador de tokens</a> toca <b>Extender token de acceso</b> sobre el de usuario y vuelve a pedir el de la página: el token de página que sale de un token extendido no vence.</div></div>
-                            <p class="mb-0 mt-2"><b>LinkedIn</b>:</p>
-                            <div class="redes-paso"><span class="redes-paso-numero">1</span><div>En <a href="https://www.linkedin.com/developers/apps" target="_blank" rel="noopener noreferrer">linkedin.com/developers</a> crea una app asociada a la página de DataSense y pide el producto <b>Community Management API</b> (LinkedIn lo revisa y lo aprueba).</div></div>
-                            <div class="redes-paso"><span class="redes-paso-numero">2</span><div>Con el permiso <b>w_organization_social</b> aprobado, genera el token en la herramienta de tokens de la app y pégalo aquí junto con el número de la página (aparece en la dirección cuando la administras: linkedin.com/company/<b>12345678</b>/admin). El token de LinkedIn vence a los 60 días: cuando venza, pega uno nuevo.</div></div>
-                            <p class="redes-nota"><i class="fas fa-lock" aria-hidden="true"></i> Los tokens se guardan cifrados y nunca se muestran de nuevo. Mientras tu app de Meta esté en modo de desarrollo, solo publica en las cuentas que tú administras, que es justo lo que se necesita.</p>
+                            <p class="mb-0"><b>Token de Facebook e Instagram</b>: lo entrega Meta a quien administra la página, una sola vez.</p>
+                            <div class="redes-paso"><span class="redes-paso-numero">1</span><div>Entra a <a href="https://developers.facebook.com/apps" target="_blank" rel="noopener noreferrer">developers.facebook.com/apps</a> con la cuenta de Facebook que administra la página de DataSense, toca <b>Crear app</b>, elige el caso de uso para <b>administrar una página</b> y ponle de nombre DataSense.</div></div>
+                            <div class="redes-paso"><span class="redes-paso-numero">2</span><div>Abre el <a href="https://developers.facebook.com/tools/explorer/" target="_blank" rel="noopener noreferrer">Explorador de la API Graph</a>. Arriba a la derecha elige tu app y en <b>Permisos</b> agrega: <code>pages_show_list</code>, <code>pages_read_engagement</code>, <code>pages_manage_posts</code>, <code>instagram_basic</code> e <code>instagram_content_publish</code>.</div></div>
+                            <div class="redes-paso"><span class="redes-paso-numero">3</span><div>Toca <b>Generate Access Token</b> y acepta con tu cuenta, marcando la página de DataSense y su Instagram. Aparece un texto largo que empieza por <b>EAA</b>: ese es el token.</div></div>
+                            <div class="redes-paso"><span class="redes-paso-numero">4</span><div>Para que no venza, pégalo en el <a href="https://developers.facebook.com/tools/debug/accesstoken/" target="_blank" rel="noopener noreferrer">Depurador de tokens</a>, toca <b>Depurar</b> y luego <b>Extender token de acceso</b>. Usa el token extendido: con él la plataforma obtiene el de la página, que no vence.</div></div>
+                            <p class="mb-0 mt-2"><b>Token de LinkedIn</b>:</p>
+                            <div class="redes-paso"><span class="redes-paso-numero">1</span><div>En <a href="https://www.linkedin.com/developers/apps" target="_blank" rel="noopener noreferrer">linkedin.com/developers/apps</a> crea una app asociada a la página de DataSense y en <b>Products</b> solicita <b>Community Management API</b>. LinkedIn la revisa antes de aprobarla.</div></div>
+                            <div class="redes-paso"><span class="redes-paso-numero">2</span><div>Aprobada, en <b>Auth › OAuth 2.0 tools</b> crea un token con el permiso <code>w_organization_social</code>. El número de la página está en la dirección cuando la administras: linkedin.com/company/<b>12345678</b>/admin. Este token vence a los 60 días.</div></div>
+                            <p class="mb-0 mt-2"><b>Dónde dejarlos para que el panel no los pida</b> (se conectan solos al arrancar):</p>
+                            <div class="redes-paso"><span class="redes-paso-numero"><i class="fas fa-laptop" aria-hidden="true"></i></span><div><b>En tu copia local</b>: en el archivo <code>.env</code> de la carpeta del proyecto escribe <code>META_PAGE_TOKEN=</code> seguido del token (y <code>LINKEDIN_TOKEN=</code> y <code>LINKEDIN_ORG_ID=</code>), guarda y ejecuta <code>docker compose up -d</code>. Git nunca sube ese archivo.</div></div>
+                            <div class="redes-paso"><span class="redes-paso-numero"><i class="fas fa-cloud" aria-hidden="true"></i></span><div><b>En Render</b>: abre el servicio datasense-demo › <b>Environment</b> y agrega las mismas tres variables con su valor.</div></div>
+                            <p class="redes-nota"><i class="fas fa-lock" aria-hidden="true"></i> Nunca los escribas en el código: el repositorio de GitHub es público y con un token cualquiera podría publicar a nombre de DataSense. Si prefieres, también puedes pegarlos en los campos de arriba: se guardan cifrados en la base de datos.</p>
                         </div>
                     </details>
 

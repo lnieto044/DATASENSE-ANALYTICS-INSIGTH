@@ -6,6 +6,10 @@
 #
 # Abre http://localhost:8080 (en un Codespace: pestaña PUERTOS, puerto 8080).
 #
+# Publicación automática en redes: escribe los tokens en el archivo .env de esta carpeta
+#   META_PAGE_TOKEN=...   LINKEDIN_TOKEN=...   LINKEDIN_ORG_ID=...
+# y vuelve a ejecutar docker compose up -d: la plataforma se conecta sola y el panel no los pide.
+#
 # A diferencia de Render, aquí la base de datos y los archivos subidos se guardan en volúmenes: lo que crees
 # (usuarios, facturas, publicaciones programadas, conexiones a redes…) se conserva al reiniciar o actualizar.
 # La primera vez los volúmenes se llenan con la base de demostración que trae la imagen.
@@ -15,6 +19,10 @@ services:
     image: datasense-local
     container_name: ds-local
     restart: unless-stopped
+    # Tokens de las redes y demás secretos: se leen del archivo .env (Git no lo sube). Si no existe, se ignora.
+    env_file:
+      - path: .env
+        required: false
     ports:
       - "8080:10000"
     environment:

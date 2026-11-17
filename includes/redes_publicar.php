@@ -15,6 +15,13 @@
  * y se usa la dirección que entrega Facebook. Así funciona aunque la plataforma no tenga una dirección pública.
  * Las historias se publican solo en Instagram.
  *
+ * Los tokens también pueden quedar en la configuración del servidor, y entonces el panel no los pide:
+ *   META_PAGE_TOKEN=...     token de la página de Facebook (o de un usuario que la administra)
+ *   LINKEDIN_TOKEN=...      token de LinkedIn con w_organization_social
+ *   LINKEDIN_ORG_ID=...     número de la página de empresa en LinkedIn
+ * En la copia local van en el archivo .env (Git no lo sube) y en Render en Environment. Nunca en el código:
+ * el repositorio es público y con un token cualquiera podría publicar a nombre de la empresa.
+ *
  * Variables opcionales del .env (para cambiar de versión de API o para pruebas):
  *   META_GRAPH_VERSION=v24.0   META_GRAPH_URL=https://graph.facebook.com
  *   META_APP_ID / META_APP_SECRET   si están, un token corto de usuario se cambia por uno de larga duración
@@ -61,7 +68,56 @@ function asegurarTablasRedes(PDO $db) {
         publicado DATETIME DEFAULT NULL,
         KEY idx_redes_estado_fecha (estado, fecha)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
+    // huella: resumen del token de la configuración del servidor con el que se conectó (vacío si se pegó en el panel)
+    if (!$db->query("SHOW COLUMNS FROM redes_conexiones LIKE 'huella'")->fetch()) {
+        $db->exec("ALTER TABLE redes_conexiones ADD COLUMN huella VARCHAR(64) DEFAULT NULL");
+    }
     $listas = true;
+}
+
+/**
+ * Conecta las redes con los tokens de la configuración del servidor (META_PAGE_TOKEN, LINKEDIN_TOKEN y
+ * LINKEDIN_ORG_ID). Solo llama a las API cuando el token cambia; si uno falla, no lo vuelve a probar en 10 minutos.
+ * Devuelve, por red configurada así, ['configurado' => true, 'error' => mensaje o ''].
+ */
+function sincronizarConexionesEntorno(PDO $db) {
+    static $estado = null;
+    if ($estado !== null) return $estado;
+    $estado = [];
+    $meta = trim((string) ($_ENV['META_PAGE_TOKEN'] ?? ''));
+    $linkedin = trim((string) ($_ENV['LINKEDIN_TOKEN'] ?? ''));
+    $organizacion = trim((string) ($_ENV['LINKEDIN_ORG_ID'] ?? ''));
+    $casos = [];
+    if ($meta !== '') {
+        $casos['facebook'] = [$meta, ['facebook', 'instagram'], function () use ($db, $meta) { return conectarMeta($db, $meta, null); }];
+    }
+    if ($linkedin !== '' && $organizacion !== '') {
+        $casos['linkedin'] = [$linkedin . '|' . $organizacion, ['linkedin'], function () use ($db, $linkedin, $organizacion) { return conectarLinkedin($db, $linkedin, $organizacion, null); }];
+    }
+    foreach ($casos as $red => [$valor, $redes, $conectar]) {
+        $huella = hash('sha256', $valor);
+        $stmt = $db->prepare("SELECT huella FROM redes_conexiones WHERE red = ?");
+        $stmt->execute([$red]);
+        if ($stmt->fetchColumn() === $huella) { $estado[$red] = ['configurado' => true, 'error' => '']; continue; }
+
+        $marca = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'datasense_redes_fallo_' . substr($huella, 0, 16) . '.txt';
+        if (is_file($marca) && time() - filemtime($marca) < 600) {
+            $estado[$red] = ['configurado' => true, 'error' => (string) @file_get_contents($marca)];
+            continue;
+        }
+        $r = $conectar();
+        if ($r['ok']) {
+            $marcas = implode(',', array_fill(0, count($redes), '?'));
+            $db->prepare("UPDATE redes_conexiones SET huella = ? WHERE red IN ($marcas)")->execute(array_merge([$huella], $redes));
+            @unlink($marca);
+            $estado[$red] = ['configurado' => true, 'error' => ''];
+        } else {
+            @file_put_contents($marca, $r['mensaje']);
+            @chmod($marca, 0666);
+            $estado[$red] = ['configurado' => true, 'error' => $r['mensaje']];
+        }
+    }
+    return $estado;
 }
 
 // ================================================================
@@ -138,13 +194,19 @@ function graph($metodo, $ruta, $token, array $op = []) {
 
 function conexionesRedes(PDO $db) {
     asegurarTablasRedes($db);
+    sincronizarConexionesEntorno($db);
     $lista = [];
-    foreach ($db->query("SELECT red, cuenta_id, nombre, actualizado FROM redes_conexiones") as $fila) $lista[$fila['red']] = $fila;
+    foreach ($db->query("SELECT red, cuenta_id, nombre, actualizado, huella FROM redes_conexiones") as $fila) {
+        $fila['servidor'] = !empty($fila['huella']); // conectada con un token de la configuración del servidor
+        unset($fila['huella']);
+        $lista[$fila['red']] = $fila;
+    }
     return $lista;
 }
 
 function conexionRed(PDO $db, $red) {
     asegurarTablasRedes($db);
+    sincronizarConexionesEntorno($db);
     $stmt = $db->prepare("SELECT * FROM redes_conexiones WHERE red = ?");
     $stmt->execute([$red]);
     $fila = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -154,7 +216,7 @@ function conexionRed(PDO $db, $red) {
 }
 
 function guardarConexion(PDO $db, $red, $cuenta_id, $nombre, $token, $usuario_id) {
-    $db->prepare("REPLACE INTO redes_conexiones (red, cuenta_id, nombre, token, conectado_por, actualizado) VALUES (?, ?, ?, ?, ?, ?)")
+    $db->prepare("REPLACE INTO redes_conexiones (red, cuenta_id, nombre, token, conectado_por, actualizado, huella) VALUES (?, ?, ?, ?, ?, ?, NULL)")
        ->execute([$red, (string) $cuenta_id, mb_substr((string) $nombre, 0, 150), cifrarSecreto($token), $usuario_id, date('Y-m-d H:i:s')]);
 }
 

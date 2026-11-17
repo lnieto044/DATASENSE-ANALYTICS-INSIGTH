@@ -218,3 +218,11 @@
     .auto-programar .btn-pub { width: 100%; justify-content: center; }
     .auto-robot { max-width: none; width: 100%; }
 }
+
+.auto-servidor { margin: 0; padding: 11px 14px; border-radius: 12px; background: #f0f9f1; color: #25552b; font-size: .86rem; line-height: 1.5; }
+.auto-servidor i { color: var(--verde); margin-right: 6px; }
+.auto-servidor.con-error { background: #fef2f2; color: #991b1b; }
+.auto-servidor.con-error i { color: #dc2626; }
+.redes-guia code { background: #f1f5f9; color: var(--azul); border-radius: 6px; padding: 1px 6px; font-size: .82rem; }
+/* Bootstrap fuerza display:grid en .d-grid; el formulario de una cuenta conectada desde el servidor debe ocultarse */
+.auto-red form[hidden] { display: none !important; }

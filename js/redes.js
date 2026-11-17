@@ -565,8 +565,19 @@
             fila.classList.toggle('conectada', !!con);
             $('b', fila).textContent = con ? con.nombre : 'Sin conectar';
         });
-        $('[data-desconectar="facebook"]').hidden = !auto.conexiones.facebook;
-        $('[data-desconectar="linkedin"]').hidden = !auto.conexiones.linkedin;
+        // Cuentas conectadas con un token de la configuración del servidor: no se pide nada en el panel
+        const entorno = auto.entorno || {};
+        [['facebook', '#formMeta', '#notaMeta', 'META_PAGE_TOKEN'], ['linkedin', '#formLinkedin', '#notaLinkedin', 'LINKEDIN_TOKEN y LINKEDIN_ORG_ID']].forEach(function (c) {
+            const e = entorno[c[0]];
+            $(c[1]).hidden = !!(e && !e.error);
+            $(c[2]).hidden = !e;
+            $(c[2]).classList.toggle('con-error', !!(e && e.error));
+            if (e) $(c[2]).innerHTML = e.error
+                ? '<i class="fas fa-triangle-exclamation" aria-hidden="true"></i> El token de la configuración del servidor (' + c[3] + ') no funcionó: ' + escapar(String(e.error).replace(/[.\s]+$/, '')) + '. Revisa el archivo .env o pega uno nuevo aquí.'
+                : '<i class="fas fa-server" aria-hidden="true"></i> Conectada con el token guardado en la configuración del servidor (' + c[3] + '). No hace falta pegar nada aquí.';
+        });
+        $('[data-desconectar="facebook"]').hidden = !auto.conexiones.facebook || !!entorno.facebook;
+        $('[data-desconectar="linkedin"]').hidden = !auto.conexiones.linkedin || !!entorno.linkedin;
 
         // Publicador
         const robot = $('#autoRobot');

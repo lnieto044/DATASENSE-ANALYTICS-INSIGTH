@@ -36,3 +36,10 @@ services:
         value: https://www.instagram.com/datasenseanalyticsinsigth/
       - key: SOCIAL_LINKEDIN
         value: https://www.linkedin.com/company/datasense-analytics-insights
+      # Publicación automática en redes: el valor se escribe en Render (Environment), nunca en el repositorio
+      - key: META_PAGE_TOKEN
+        sync: false
+      - key: LINKEDIN_TOKEN
+        sync: false
+      - key: LINKEDIN_ORG_ID
+        sync: false
