@@ -11,6 +11,57 @@ if (empty($_SESSION['token'])) {
 // Antispam: contacto.php rechaza envíos hechos en menos de 3 segundos desde que se cargó el formulario
 $_SESSION['form_contacto_desde'] = time();
 
+/* Proyectos del portafolio de Luis Guillermo Nieto (portafolio-guillermo-nieto.onrender.com), con sus imágenes originales.
+   Aparecen después de los proyectos principales; en "Todos" se muestran al tocar "Ver más proyectos".
+   [imagen en img/proyectos/portafolio, áreas del filtro, etiqueta del área, título, descripción, tecnologías, página del portafolio, servicio del formulario] */
+$portafolio_luis = [
+    ['arquitectura-datos.jpg', 'analitica', 'Analítica y BI', 'Arquitectura de inteligencia de datos',
+     'Flujo de datos completo, de la fuente a la decisión: extracción desde bases de datos, APIs y archivos; orquestación y validación en Python; limpieza, deduplicación y enriquecimiento; modelo dimensional y datos maestros; y paneles interactivos con indicadores.',
+     'Python · Data Science · Big Data', 'arquitectura-de-inteligencia-de-datos', 'BI'],
+    ['marketing-analytics.jpg', 'analitica diseno', 'Analítica de marketing', 'Marketing Analytics: inteligencia de datos',
+     'Tablero que reúne el rendimiento de las campañas, el embudo de conversión etapa por etapa, la audiencia por edad, el alcance geográfico y el reparto por canal (búsqueda, redes, display, correo y video), para decidir dónde invertir con cifras.',
+     'Analítica · Marketing digital', 'marketing-analytics-inteligencia-de-datos', 'BI'],
+    ['centro-operaciones.jpg', 'analitica software', 'Analítica y automatización', 'Centro de operaciones y automatización administrativa',
+     'Automatización de la operación administrativa de principio a fin —captura de datos, tareas repetitivas, correo y atención al cliente— con un tablero de volumen de solicitudes, nivel de servicio, satisfacción y tiempos de respuesta.',
+     'Excel avanzado · Automatización', 'centro-de-operaciones-y-automatizacion-administrativa', 'BI'],
+    ['salud-eps.jpg', 'software', 'Desarrollo de software', 'Salud+ EPS: plataforma de servicios de salud',
+     'Portal para afiliados: citas médicas, odontológicas y virtuales, resultados de laboratorio, certificaciones y autorizaciones, historial, directorio de profesionales, grupo familiar, y pagos y facturación.',
+     'PHP · WordPress', 'salud-eps-plataforma-de-gestion-de-servicios-de-salud', 'DSW'],
+    ['droguerias-app.jpg', 'software', 'Desarrollo de software', 'DrogueriasApp: gestión integral para droguerías',
+     'Ventas y facturación rápida, inventario y existencias, clientes, proveedores y compras, y reportes con estadísticas, con roles y permisos, respaldo automático y acceso web seguro.',
+     'Aplicación web · Diseño adaptable', 'drogueriasapp-sistema-de-gestion-integral-para-droguerias', 'DSW'],
+    ['agrosmartic.jpg', 'software analitica', 'Desarrollo de software', 'AgroSmartic: gestión agrícola inteligente',
+     'Cultivos y parcelas, alertas climáticas, demanda y precios de mercado, reportes y analítica, e indicadores de sostenibilidad y uso de recursos, en escritorio, tableta y celular.',
+     'Python · Flutter', 'agrosmartic-plataforma-inteligente-para-gestion-agricola', 'DSW'],
+    ['ayuda-pev.jpg', 'software humano', 'Tecnología con impacto social', 'AYUDA (PEV): prevención y erradicación de la violencia',
+     'Plataforma web y móvil de apoyo a víctimas: denuncia anónima con seguimiento del caso, línea de atención, directorio de centros de ayuda y refugios, asesoría legal y psicológica, y guía de derechos.',
+     'Python · Flutter', 'ayuda-pev-plataforma-integral-para-la-prevencion-y-erradicacion-de-la-violencia', 'DSW'],
+    ['store-fashion.jpg', 'software diseno', 'Comercio electrónico', 'Store Fashion Colombia: tienda en línea con panel de gestión',
+     'Tienda en línea con panel propio en tiempo real: usuarios, clientes, productos y pedidos, ventas mensuales, reparto por método de pago y productos más vendidos.',
+     'WordPress · Comercio electrónico', 'store-fashion-colombia-e-commerce-infantil-y-gestion', 'DSW'],
+    ['tiendita.jpg', 'software diseno', 'Comercio electrónico', 'Tiendita: tienda en línea de productos frescos',
+     'Catálogo por categorías con envío a todo el país, ofertas, precios por peso, carrito, ubicación de entrega y pago seguro, en web y celular.',
+     'MySQL · Diseño de interfaces', 'tiendita-e-commerce-de-productos-frescos', 'DSW'],
+    ['gestion-comercial-almacen.jpg', 'diseno software', 'Diseño de interfaces', 'Sistema de gestión comercial y almacén',
+     'Rediseño de la interfaz de un sistema de almacén y punto de venta: artículos, compras con detalle por línea, proveedores, ventas, reportes, y usuarios y roles con sus permisos.',
+     'Diseño UI/UX', 'sistema-de-gestion-comercial-y-almacen-rediseno-ui-ux', 'DSW'],
+    ['innovate-tech.jpg', 'diseno', 'Identidad de marca', 'Innovate Tech: identidad visual',
+     'Identidad visual completa para una empresa de tecnología: símbolo, paleta de color, tipografía, iconografía y aplicación de la marca en soportes digitales e impresos.',
+     'Branding · Adobe Photoshop', 'innovate-tech-identidad-y-branding-visual', 'DSW'],
+    ['identidad-tecnologicas.jpg', 'diseno', 'Identidad de marca', 'Identidad visual de perfil tecnológico',
+     'Símbolo construido sobre un trazado de circuito con una figura humana en el centro, con sus variantes de color y versiones para fondo claro y oscuro.',
+     'Branding · Adobe Photoshop', 'diseno-de-identidad-visual-tecnologicas', 'DSW'],
+    ['marketing-omnicanal.jpg', 'diseno', 'Marketing', 'Estrategia de marketing omnicanal',
+     'Un mismo mensaje en todos los canales —sitio web, correo, redes sociales, móvil, eventos y comunicación interna— con objetivos, audiencias y una secuencia de planificación, producción, lanzamiento, optimización y crecimiento.',
+     'Marketing digital', 'estrategia-de-marketing-omnicanal', 'DSW'],
+    ['livestream-pro.jpg', 'diseno', 'Contenido digital', 'LiveStream Pro: producción de transmisiones en vivo',
+     'Edición en tiempo real, cambio de cámaras, escenas y superposiciones, emisión simultánea en varias plataformas y seguimiento de audiencia, alcance e interacciones durante la transmisión.',
+     'Marketing digital · Google Analytics', 'livestream-pro-gestion-y-produccion-de-contenido', 'DSW'],
+    ['ecosistema-digital.jpg', 'diseno software', 'Presencia digital', 'Ecosistema digital multicanal',
+     'Sitio web, versión móvil y gestión de contenidos sobre una misma base de información, para que un cambio se refleje en todos los canales a la vez.',
+     'WordPress', 'ecosistema-digital-multicanal', 'DSW'],
+];
+
 // Sitio de demostración (Render pone APP_ENV=demo): ahí se ven también los ejemplos marcados 'solo_demo'
 $es_demo = (($_ENV['APP_ENV'] ?? '') === 'demo');
 
@@ -151,7 +202,7 @@ $videos_marcela = array_values(array_filter([
         <div class="team-degree"><i class="fas fa-graduation-cap me-2"></i> Ingeniero de Sistemas · Maestría en Administración con énfasis en Análisis de Datos (en curso)</div>
         <p class="team-desc">Ingeniero de Sistemas con trayectoria en tecnología desde 2013, especializado en analítica y calidad de la información. Ha trabajado en el sector público y en el privado: administró los sistemas de información del Ministerio de las Culturas, validó información académica y laboral en la Gerencia de Prevención del Fraude de Colpensiones y lideró mesa de ayuda bajo ITIL para la banca. Lidera la estrategia de negocio y la visión tecnológica de DataSense, y acompaña a gerencias y entidades a convertir sus datos en decisiones: tableros ejecutivos, verificación de información, analítica avanzada y software a la medida.</p>
         <p class="team-desc"><i class="fas fa-award me-2" style="color:#d4a017"></i><b>Premio Alfonso Palacio Rudas 2026</b> de la Contraloría General de la República, categoría Académico, por una metodología de verificación de información pública.</p>
-        <p class="team-desc"><i class="fas fa-trophy me-2" style="color:#d4a017"></i><b>Primer lugar</b> en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca (MinTIC) y creador de CuentaVoz en la Hackatón Colsubsidio × 30X 2026.</p>
+        <p class="team-desc"><i class="fas fa-trophy me-2" style="color:#d4a017"></i><b>Primer lugar</b> en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca (MinTIC, 2025) y creador de CuentaVoz en la Hackatón Colsubsidio × 30X 2026.</p>
         <p class="team-desc"><i class="fas fa-screwdriver-wrench me-2"></i>Power BI · SQL Server y MySQL · Python · calidad y cruce de datos · Amazon Cognito y doble factor · ITIL y ANS · desarrollo web y APIs.</p>
         <p class="team-desc mb-0"><i class="fas fa-handshake me-2"></i><b>¿Tu organización necesita decidir con datos?</b> Conversemos sobre tu reto.</p>
         <div class="team-contacto">
@@ -348,10 +399,7 @@ $videos_marcela = array_values(array_filter([
 
       <!-- Premio Alfonso Palacio Rudas 2026 (Contraloría General de la República) -->
       <article class="proyecto-tarjeta" data-areas="analitica publico">
-        <div class="proyecto-media proyecto-media-icono" aria-hidden="true">
-          <i class="fas fa-award"></i>
-          <span>Premio Alfonso Palacio Rudas 2026</span>
-        </div>
+        <div class="proyecto-media"><img src="img/proyectos/premio-alfonso-palacio-rudas.jpg" alt="Luis Guillermo Nieto Patiño con el reconocimiento de la Contraloría General de la República" loading="lazy"></div>
         <div class="proyecto-cuerpo">
           <span class="proyecto-cliente"><i class="fas fa-landmark"></i>Contraloría General de la República</span>
           <span class="proyecto-area"><i class="fas fa-magnifying-glass-chart"></i>Calidad de la información · Sector público</span>
@@ -367,13 +415,13 @@ $videos_marcela = array_values(array_filter([
       <article class="proyecto-tarjeta" data-areas="analitica hackaton">
         <div class="proyecto-media proyecto-media-icono" aria-hidden="true">
           <i class="fas fa-trophy"></i>
-          <span>Primer lugar · Hackatón Talento Tech Región 7</span>
+          <span>Primer lugar · Hackatón Talento Tech Región 7 · 2025</span>
         </div>
         <div class="proyecto-cuerpo">
           <span class="proyecto-cliente"><i class="fas fa-flag"></i>Ministerio TIC · Talento Tech</span>
           <span class="proyecto-area"><i class="fas fa-chart-line"></i>Analítica avanzada · Hackatón</span>
           <h3>Analítica avanzada con pronósticos y minería de procesos</h3>
-          <p>Solución ganadora del primer lugar regional en Boyacá y Cundinamarca, reconocida por su excelencia, creatividad e innovación: integración de datos en MySQL, pronósticos con modelos de series de tiempo (ARIMA y Prophet), minería de procesos con PM4Py y tableros en Power BI, construida con datos reales y bajo presión de tiempo.</p>
+          <p>Solución ganadora del primer lugar regional en Boyacá y Cundinamarca en 2025, reconocida por su excelencia, creatividad e innovación: integración de datos en MySQL, pronósticos con modelos de series de tiempo (ARIMA y Prophet), minería de procesos con PM4Py y tableros en Power BI, construida con datos reales y bajo presión de tiempo.</p>
           <div class="proyecto-acciones">
             <a href="#contacto" class="btn-team" data-proyecto="Analítica avanzada con pronósticos" data-servicio="DS">Quiero un proyecto así</a>
           </div>
@@ -451,8 +499,26 @@ $videos_marcela = array_values(array_filter([
         </div>
       </article>
 
-
+      <?php foreach ($portafolio_luis as [$imagen, $areas, $etiqueta, $titulo, $texto, $tecnologias, $pagina, $servicio]): ?>
+      <article class="proyecto-tarjeta proyecto-extra" data-areas="<?= esc($areas) ?>">
+        <div class="proyecto-media"><img src="img/proyectos/portafolio/<?= esc($imagen) ?>" alt="<?= esc($titulo) ?>" loading="lazy"></div>
+        <div class="proyecto-cuerpo">
+          <span class="proyecto-cliente"><i class="fas fa-user-tie"></i>Portafolio de Luis Nieto</span>
+          <span class="proyecto-area"><i class="fas fa-layer-group"></i><?= esc($etiqueta) ?></span>
+          <h3><?= esc($titulo) ?></h3>
+          <p><?= esc($texto) ?></p>
+          <p class="proyecto-tecnologias"><i class="fas fa-screwdriver-wrench me-1"></i><?= esc($tecnologias) ?></p>
+          <div class="proyecto-acciones">
+            <a href="#contacto" class="btn-team" data-proyecto="<?= esc($titulo) ?>" data-servicio="<?= esc($servicio) ?>">Quiero un proyecto así</a>
+            <a href="https://portafolio-guillermo-nieto.onrender.com/project/<?= esc($pagina) ?>/" class="btn-proyecto-sec" target="_blank" rel="noopener noreferrer">Ver en el portafolio</a>
+          </div>
+        </div>
+      </article>
+      <?php endforeach; ?>
     </div>
+    <?php if ($portafolio_luis): ?>
+    <div class="ver-mas-proyectos"><button type="button" class="btn-proyecto-sec" id="verMasProyectos" hidden><i class="fas fa-plus me-2"></i>Ver más proyectos (<span class="ver-mas-total"></span>)</button></div>
+    <?php endif; ?>
 
     <?php if ($testimonios):
       $notas = array_filter(array_map(function ($t) { return (int) ($t['calificacion'] ?? 0); }, $testimonios), function ($n) { return $n >= 1 && $n <= 5; });
@@ -1076,20 +1142,38 @@ document.addEventListener("DOMContentLoaded", function () {
 })();
 </script>
 <script>
-// Proyectos: filtros por área; se ocultan los botones de áreas que no tienen proyectos
+// Proyectos: filtros por área; se ocultan los botones de áreas que no tienen proyectos.
+// En "Todos" se ven los principales y "Ver más proyectos" muestra también los del portafolio (.proyecto-extra).
 (function () {
   const tarjetas = Array.from(document.querySelectorAll('.proyectos-rejilla .proyecto-tarjeta'));
   const botones = Array.from(document.querySelectorAll('.filtro-proyecto'));
+  const verMas = document.getElementById('verMasProyectos');
   if (!tarjetas.length || !botones.length) return;
   const areas = (t) => (t.dataset.areas || '').split(' ');
+  const extras = tarjetas.filter((t) => t.classList.contains('proyecto-extra'));
+  let filtro = 'todos';
+  let expandido = false;
+  const aplicar = function () {
+    tarjetas.forEach((t) => {
+      const coincide = filtro === 'todos' || areas(t).includes(filtro);
+      t.hidden = !coincide || (filtro === 'todos' && !expandido && t.classList.contains('proyecto-extra'));
+    });
+    if (verMas) verMas.hidden = !(filtro === 'todos' && !expandido && extras.length);
+  };
   botones.forEach(function (b) {
     const f = b.dataset.filtro;
     if (f !== 'todos' && !tarjetas.some((t) => areas(t).includes(f))) b.hidden = true;
     b.addEventListener('click', function () {
       botones.forEach((o) => { o.classList.toggle('activo', o === b); o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
-      tarjetas.forEach((t) => { t.hidden = f !== 'todos' && !areas(t).includes(f); });
+      filtro = f;
+      aplicar();
     });
   });
+  if (verMas) {
+    verMas.querySelector('.ver-mas-total').textContent = extras.length;
+    verMas.addEventListener('click', function () { expandido = true; aplicar(); });
+  }
+  aplicar();
 })();
 </script>
 <script>

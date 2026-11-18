@@ -907,3 +907,8 @@ select.form-input option {
 
 /* Un solo video de Marcela: se muestra grande y centrado en lugar de una tarjeta pequeña */
 .conferencias-videos.un-video .videos-rejilla { grid-template-columns: minmax(0, 760px); justify-content: center; }
+
+/* Proyectos del portafolio de Luis: tecnologías y botón "Ver más proyectos" */
+.proyecto-tecnologias { font-size: .82rem; color: #64748b; margin: -4px 0 14px; }
+.ver-mas-proyectos { text-align: center; margin-top: 28px; }
+.ver-mas-proyectos .btn-proyecto-sec { cursor: pointer; background: #fff; }
