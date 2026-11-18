@@ -98,7 +98,6 @@ $menu_secciones = [
         <?php $menu_panel_visible = []; foreach ($menu_secciones as $menu_titulo => $menu_enlaces):
             $menu_visibles = array_filter($menu_enlaces, function ($enlace) use ($rol_user, $db, $es_admin) {
                 if ($enlace[0] === null) return $es_admin;
-                if ($enlace[0] === 'mi_resumen' && $rol_user !== 'Cliente') return false; // es el resumen de lo que compra un cliente
                 foreach ((array) $enlace[0] as $modulo_menu) {
                     if (tieneAcceso($rol_user, $modulo_menu, $db)) return true; // Enlaces de varios módulos: basta con uno
                 }

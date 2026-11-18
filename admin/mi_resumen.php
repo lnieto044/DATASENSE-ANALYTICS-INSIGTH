@@ -10,14 +10,6 @@ require_once __DIR__ . '/../includes/contabilidad.php';
 require_once __DIR__ . '/../includes/itsm.php';
 $db = require __DIR__ . '/../config/database.php';
 requiereAcceso($db, 'mi_resumen');
-// Es el resumen de un cliente (sus compras, facturas y casos). El equipo ve el de la empresa en su página de inicio.
-if (($_SESSION['admin_rol'] ?? 'Cliente') !== 'Cliente') {
-    $inicio_rol = paginaInicio($_SESSION['admin_rol'], $db);
-    if ($inicio_rol !== 'mi_resumen.php') {
-        header('Location: ' . $inicio_rol);
-        exit;
-    }
-}
 actualizarVencimientos($db);
 
 $id_usuario = (int) $_SESSION['admin_id'];

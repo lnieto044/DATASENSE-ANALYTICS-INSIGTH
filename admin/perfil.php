@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/seguridad.php';
 require_once __DIR__ . '/../includes/doble_factor.php';
+require_once __DIR__ . '/../includes/cuenta_demo.php';   // botón "Preparar mi cuenta" (solo en la base de demostración)
 $db = require __DIR__ . '/../config/database.php';
 requiereSesion($db);
 asegurarColumnasMfa($db);
@@ -168,6 +169,19 @@ if (!empty($perfil['foto'])) {
                             <a href="doble_factor.php?activar=1" class="btn btn-success btn-sm fw-bold w-100"><i class="fas fa-shield-halved me-1"></i> Activar ahora</a>
                         <?php endif; ?>
                     </div>
+
+                    <?php if (($perfil['rol'] ?? '') === 'Admin' && esDemostracion($db) && !cuentaPreparada($db, $perfil['id'])): ?>
+                    <div class="card card-form p-4 h-auto shadow-sm mb-4" id="prepararCuenta">
+                        <h6 class="fw-bold small mb-3 text-uppercase" style="color: #0A2E4F; letter-spacing: 0.5px;"><i class="fas fa-wand-magic-sparkles me-2"></i> Preparar mi cuenta</h6>
+                        <ul class="small text-muted ps-3 mb-3">
+                            <li class="mb-1">Quedas como <b>único administrador</b>: se borran las cuentas de administrador de ejemplo y lo que aprobaron pasa a tu nombre.</li>
+                            <li>Tu cuenta recibe el historial de un cliente de ejemplo (facturas, pagos, casos y reuniones) para que <b>Mi Resumen</b>, <b>Mis Facturas</b> y el <b>Centro de Soporte</b> no se vean vacíos.</li>
+                        </ul>
+                        <form method="post" action="preparar_cuenta.php" onsubmit="return confirm('¿Preparar tu cuenta? Se borrarán las cuentas de administrador de ejemplo. Esto se hace una sola vez.');">
+                            <button type="submit" class="btn btn-primary btn-sm fw-bold w-100"><i class="fas fa-wand-magic-sparkles me-1"></i> Preparar mi cuenta</button>
+                        </form>
+                    </div>
+                    <?php endif; ?>
 
                     <div class="card card-form p-4 h-auto shadow-sm">
                         <h6 class="fw-bold small mb-3 text-uppercase" style="color: #0A2E4F; letter-spacing: 0.5px;"><i class="fas fa-chart-line me-2"></i> Estadísticas de Actividad</h6>
