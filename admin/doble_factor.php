@@ -100,8 +100,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $vista = $codigos ? 'codigos' : $flujo['tipo'];
-// En la demostración la base vuelve a su estado inicial cuando el servidor se reinicia: se avisa al configurar
-$base_temporal = ($_ENV['APP_ENV'] ?? '') === 'demo';
+// En la demostración con la base dentro del servidor, los datos vuelven a su estado inicial cuando este se reinicia:
+// se avisa al configurar. Con una base permanente (externa) no aplica.
+require_once __DIR__ . '/../config/conexion.php';
+$base_temporal = ($_ENV['APP_ENV'] ?? '') === 'demo' && !configuracionBaseDatos()['externa'];
 $secreto_nuevo = $vista === 'configurar' ? $flujo['secreto_nuevo'] : '';
 $titulos = [
     'verificar' => ['Verificación en dos pasos', 'Escribe el código de 6 dígitos que muestra tu app autenticadora para DataSense.'],
