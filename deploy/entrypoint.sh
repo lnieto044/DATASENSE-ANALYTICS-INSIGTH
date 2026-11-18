@@ -90,7 +90,9 @@ fi
 
 if [ "$BASE_EXTERNA" = "si" ]; then
     # Base permanente: se prepara (y la primera vez se cargan los datos de demostración); MariaDB local no se usa
-    php /var/www/html/cron/preparar_base.php
+    # Si la base permanente no responde (clave cambiada, servicio caído), el sitio arranca igual y salud.php dice el
+    # motivo; las páginas muestran el aviso de que no hay conexión en lugar de quedar el servidor caído
+    php /var/www/html/cron/preparar_base.php || echo "AVISO: la base permanente no respondió; revisa DATABASE_URL" >&2
     # Un año de actividad para los tableros, una sola vez y en segundo plano (el sitio abre mientras tanto)
     (php /var/www/html/cron/datos_muestra.php || echo "No se generaron los datos de muestra" >&2) &
 else
