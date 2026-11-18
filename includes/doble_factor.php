@@ -14,8 +14,8 @@
  *   MFA_MODO=opcional      opcional (por defecto: al registrarse se ofrece configurarla y "Hacerlo después" deja
  *                          entrar; cada quien la activa cuando quiera en Mi perfil), obligatorio (todos la configuran
  *                          en su próximo ingreso y no se puede omitir) o desactivado.
- *   MFA_EQUIPO_OBLIGATORIO=1  en modo opcional, el equipo interno (todo rol distinto de Cliente) igual debe tenerla:
- *                          esas cuentas ven datos de todos los clientes. Con 0 también es opcional para el equipo.
+ *   MFA_EQUIPO_OBLIGATORIO=1  en modo opcional, exige la verificación al equipo interno (todo rol distinto de
+ *                          Cliente). Por defecto (0) también es opcional para el equipo.
  *   Quien ya la activó siempre debe escribir el código al entrar, en cualquier modo salvo desactivado.
  *   APP_KEY=...            clave para cifrar los secretos (32 bytes en base64). Sin ella se deriva de la clave de la base.
  *
@@ -155,7 +155,7 @@ function secretoUsuario(array $usuario) {
 function mfaObligatoria(array $usuario) {
     if (modoMfa() === 'desactivado') return false;
     if (modoMfa() === 'obligatorio') return true;
-    return ($usuario['rol'] ?? 'Cliente') !== 'Cliente' && ($_ENV['MFA_EQUIPO_OBLIGATORIO'] ?? '1') !== '0';
+    return ($usuario['rol'] ?? 'Cliente') !== 'Cliente' && ($_ENV['MFA_EQUIPO_OBLIGATORIO'] ?? '0') === '1';
 }
 
 // Qué le falta a la persona después de la contraseña: 'verificar' (escribir el código), 'configurar' (activar) o 'no'
@@ -274,5 +274,9 @@ function completarInicioSesion(PDO $db, array $usuario, $volver = '') {
     $_SESSION['admin_id']     = (int) $usuario['id'];
     $_SESSION['admin_nombre'] = $usuario['nombre'];
     $_SESSION['admin_rol']    = $usuario['rol'];
+    if (usaClavePublica($usuario)) {
+        $_SESSION['cambiar_clave'] = 1;
+        return 'cambiar_clave.php?res=obligatorio';
+    }
     return destinoTrasLogin($volver, paginaInicio($usuario['rol'], $db));
 }

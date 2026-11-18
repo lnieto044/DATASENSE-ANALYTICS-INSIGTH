@@ -30,12 +30,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         header("Location: cambiar_clave.php?res=debil");
         exit;
     }
+    if ($nueva === CLAVE_DEMO_PUBLICA) {
+        header("Location: cambiar_clave.php?res=publica");
+        exit;
+    }
 
     if (password_verify($actual, $perfil['password'])) {
         $nuevo_hash = password_hash($nueva, PASSWORD_DEFAULT);
         $update = $db->prepare("UPDATE usuarios SET password = ? WHERE id = ?");
         
         if ($update->execute([$nuevo_hash, $user_id])) {
+            unset($_SESSION['cambiar_clave']);   // ya puede usar el panel
             try {
                 $mail = nuevoCorreo('Seguridad DataSense');
                 $mail->addAddress($perfil['correo'], $perfil['nombre']);
@@ -182,6 +187,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 Swal.fire({ title: 'Aviso', text: 'Las nuevas contraseñas no coinciden.', icon: 'warning' });
             } else if(res === "debil") {
                 Swal.fire({ title: 'Contraseña débil', text: 'Usa entre 8 y 72 caracteres combinando letras y números.', icon: 'warning', confirmButtonColor: '#0A2E4F' });
+            } else if(res === "obligatorio") {
+                Swal.fire({ title: 'Cambia tu clave', text: 'Entraste con la clave de demostración, que está publicada. Para proteger tu cuenta, escribe una clave nueva solo tuya antes de continuar.', icon: 'info', confirmButtonColor: '#0A2E4F' });
+            } else if(res === "publica") {
+                Swal.fire({ title: 'Elige otra clave', text: 'Esa es la clave de demostración publicada. Escribe una diferente.', icon: 'warning', confirmButtonColor: '#0A2E4F' });
             } else if(res === "db") {
                 Swal.fire({ title: 'Error', text: 'No se pudo guardar la nueva clave. Intenta de nuevo.', icon: 'error', confirmButtonColor: '#0A2E4F' });
             }

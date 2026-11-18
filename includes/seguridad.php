@@ -10,6 +10,17 @@ require_once __DIR__ . '/utilidades.php';
 // Estados de cuenta que no pueden usar el sistema
 const ESTADOS_BLOQUEADOS = ['Suspendido', 'Retirado', 'Inactivo'];
 
+// Clave de las cuentas de demostración, publicada en el README
+const CLAVE_DEMO_PUBLICA = 'Demo2026*';
+
+// ¿Entró con la clave publicada en una base que no es la demostración temporal? Entonces debe cambiarla antes de usar
+// el panel: si no, cualquiera que lea el README podría entrar con esa cuenta.
+function usaClavePublica(array $usuario) {
+    if (empty($usuario['password']) || !password_verify(CLAVE_DEMO_PUBLICA, (string) $usuario['password'])) return false;
+    require_once __DIR__ . '/../config/conexion.php';
+    return configuracionBaseDatos()['externa'] || ($_ENV['APP_ENV'] ?? '') !== 'demo';
+}
+
 // Extensiones aceptadas en adjuntos y el tipo MIME con el que se entregan al descargarlos
 const TIPOS_ADJUNTOS = [
     'jpg'  => 'image/jpeg',
@@ -178,6 +189,16 @@ function requiereSesion(PDO $db, $modo = 'pagina') {
     }
 
     $_SESSION['admin_rol'] = $usuario['rol'];
+
+    // Entró con la clave publicada: primero la cambia (solo puede abrir esa página o salir)
+    if (!empty($_SESSION['cambiar_clave']) && !in_array(basename((string) ($_SERVER['SCRIPT_NAME'] ?? '')), ['cambiar_clave.php', 'logout.php'], true)) {
+        if ($modo === 'api') {
+            http_response_code(403);
+            exit('cambiar_clave');
+        }
+        header('Location: ' . urlBase() . 'admin/cambiar_clave.php?res=obligatorio');
+        exit;
+    }
 
     // Todo POST del panel debe traer el token CSRF (lo agrega el script de includes/sidebar.php)
     if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && !csrfValido()) {

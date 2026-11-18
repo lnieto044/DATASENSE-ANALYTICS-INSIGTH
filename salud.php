@@ -28,5 +28,8 @@ try {
 }
 
 http_response_code($respuesta['estado'] === 'ok' ? 200 : 503);
+// Versión publicada (Vercel informa el commit desplegado): sirve para saber si ya salió un cambio
+$version = substr((string) ($_ENV['VERCEL_GIT_COMMIT_SHA'] ?? getenv('VERCEL_GIT_COMMIT_SHA') ?: ''), 0, 7);
+if ($version !== '') $respuesta['version'] = $version;
 $respuesta['hora'] = date('c');
 echo json_encode($respuesta, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

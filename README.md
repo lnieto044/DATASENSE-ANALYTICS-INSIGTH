@@ -18,10 +18,10 @@ Todas las cuentas usan la clave `Demo2026*`:
 | `cliente@example.com` | Cliente | Su resumen, Centro de Soporte, facturas y pedidos |
 
 Verificación en dos pasos con Google Authenticator o Microsoft Authenticator (código QR y 8 códigos de recuperación de
-un solo uso). Por defecto (`MFA_MODO=opcional`) se le ofrece a quien se registra y puede tocar "Hacerlo después y
-entrar"; la activa cuando quiera en Mi perfil. El equipo interno (todo rol distinto de Cliente) sí debe configurarla en
-su primer ingreso, porque ve datos de todos los clientes (`MFA_EQUIPO_OBLIGATORIO=0` lo cambia). Quien ya la activó
-siempre escribe el código al entrar. Con `MFA_MODO=obligatorio` nadie puede omitirla.
+un solo uso). Por defecto (`MFA_MODO=opcional`) se ofrece una sola vez, al registrarse, con "Hacerlo después y entrar";
+al iniciar sesión no se pide a quien no la activó, y cada quien la activa o desactiva en Mi perfil. Quien la activó
+siempre escribe el código al entrar. `MFA_EQUIPO_OBLIGATORIO=1` la exige al equipo interno y `MFA_MODO=obligatorio`, a
+todos. En una base permanente, quien entra con la clave publicada `Demo2026*` debe cambiarla antes de usar el panel.
 
 Al arrancar, la demo mueve las fechas de los datos de prueba (cron/fechas_demo.php) para que el mes en curso tenga
 casos, PQRSD, mensajes, pagos y reuniones, sin cambiar el orden entre ellos.
