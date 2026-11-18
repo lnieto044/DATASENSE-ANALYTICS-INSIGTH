@@ -177,7 +177,7 @@ function requiereSesion(PDO $db, $modo = 'pagina') {
 
     $usuario = false;
     if (!empty($_SESSION['admin_id'])) {
-        $stmt = $db->prepare("SELECT id, nombre, rol, estado_cuenta FROM usuarios WHERE id = ?");
+        $stmt = $db->prepare("SELECT id, nombre, correo, rol, estado_cuenta FROM usuarios WHERE id = ?");
         $stmt->execute([$_SESSION['admin_id']]);
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -198,6 +198,22 @@ function requiereSesion(PDO $db, $modo = 'pagina') {
         }
         header('Location: ' . urlBase() . 'admin/cambiar_clave.php?res=obligatorio');
         exit;
+    }
+
+    // Base de demostración: la primera vez en la sesión que entra un administrador con correo propio, su cuenta se
+    // prepara sola (único administrador e historial de un cliente de ejemplo; ver includes/cuenta_demo.php)
+    if ($usuario['rol'] === 'Admin' && empty($_SESSION['cuenta_revisada']) && !preg_match('/@example\.com$/i', (string) $usuario['correo'])) {
+        $_SESSION['cuenta_revisada'] = 1;
+        require_once __DIR__ . '/cuenta_demo.php';
+        try {
+            if (!$db->inTransaction() && esDemostracion($db) && !cuentaPreparada($db, $usuario['id'])) {
+                $fila = $db->prepare("SELECT * FROM usuarios WHERE id = ?");
+                $fila->execute([$usuario['id']]);
+                prepararCuentaDemo($db, $fila->fetch(PDO::FETCH_ASSOC));
+            }
+        } catch (Throwable $e) {
+            error_log('Preparar la cuenta de demostración: ' . $e->getMessage());
+        }
     }
 
     // Todo POST del panel debe traer el token CSRF (lo agrega el script de includes/sidebar.php)

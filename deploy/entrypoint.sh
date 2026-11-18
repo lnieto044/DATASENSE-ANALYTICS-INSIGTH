@@ -75,6 +75,7 @@ if [ "${1:-}" = "--solo-base" ]; then
     CLAVE_TEMPORAL="$(head -c 18 /dev/urandom | od -An -tx1 | tr -d ' \n')"
     mariadb --socket="$SOCKET" -e "CREATE USER IF NOT EXISTS '${DB_USER}'@'127.0.0.1' IDENTIFIED BY '${CLAVE_TEMPORAL}'; GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'127.0.0.1';"
     DB_PASS="$CLAVE_TEMPORAL" php /var/www/html/cron/datos_muestra.php
+    DB_PASS="$CLAVE_TEMPORAL" php /var/www/html/cron/datos_muestra_extra.php
     mariadb-admin --socket="$SOCKET" shutdown
     exit 0
 fi
@@ -93,8 +94,9 @@ if [ "$BASE_EXTERNA" = "si" ]; then
     # Si la base permanente no responde (clave cambiada, servicio caído), el sitio arranca igual y salud.php dice el
     # motivo; las páginas muestran el aviso de que no hay conexión en lugar de quedar el servidor caído
     php /var/www/html/cron/preparar_base.php || echo "AVISO: la base permanente no respondió; revisa DATABASE_URL" >&2
-    # Un año de actividad para los tableros, una sola vez y en segundo plano (el sitio abre mientras tanto)
-    (php /var/www/html/cron/datos_muestra.php || echo "No se generaron los datos de muestra" >&2) &
+    # Un año de actividad para los tableros (una sola vez) y la actividad de hoy, en segundo plano: el sitio abre mientras tanto
+    (php /var/www/html/cron/datos_muestra.php && php /var/www/html/cron/datos_muestra_extra.php \
+        && php /var/www/html/cron/actividad_diaria.php || echo "No se generaron los datos de muestra" >&2) &
 else
     preparar_disco_base
     iniciar_mariadb
@@ -118,9 +120,12 @@ SQL
 
     # Un año de actividad para los tableros (ya viene en la imagen; esto completa bases locales anteriores)
     php /var/www/html/cron/datos_muestra.php || echo "No se generaron los datos de muestra" >&2
+    php /var/www/html/cron/datos_muestra_extra.php || echo "No se generaron los datos de muestra de contabilidad y tienda" >&2
 
     # Demostración: las fechas de los datos de prueba se mueven para que el mes en curso muestre información
     php /var/www/html/cron/fechas_demo.php || echo "No se pudieron poner al día las fechas de la demostración" >&2
+    # Actividad de hoy: casos nuevos, mensajes y chats hasta la hora actual
+    php /var/www/html/cron/actividad_diaria.php || echo "No se generó la actividad del día" >&2
 
     # Vigilante de la base de datos: si MariaDB deja de responder y su supervisor (mariadbd-safe) ya no está, la vuelve a
     # arrancar. Así un cierre inesperado de la base no deja el sitio caído hasta que alguien reinicie el contenedor.
@@ -145,6 +150,9 @@ export PUERTO_WEB="$PUERTO"
 (
     while true; do
         php /var/www/html/cron/publicar_redes.php || true
+        # Cada 10 minutos: la actividad del día (solo actúa una vez por día y solo en la demostración)
+        VUELTA=$(( ${VUELTA:-0} + 1 ))
+        if [ $(( VUELTA % 10 )) -eq 0 ]; then php /var/www/html/cron/actividad_diaria.php > /dev/null || true; fi
         sleep 60
     done
 ) &

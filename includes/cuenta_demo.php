@@ -135,6 +135,17 @@ function prepararCuentaDemo(PDO $db, array $yo) {
                 $resultado['cliente'] = $empresa_antes;
             }
         }
+        // Un caso en curso para que el Centro de Soporte de la cuenta muestre algo en proceso (el más reciente de ejemplo)
+        $abiertos = $db->prepare("SELECT COUNT(*) FROM soporte_tickets WHERE usuario_id = ? AND estado NOT LIKE 'Cerrado%'");
+        $abiertos->execute([$id]);
+        if (!$abiertos->fetchColumn()) {
+            $caso = $db->query("SELECT t.id FROM soporte_tickets t JOIN usuarios u ON u.id = t.usuario_id
+                                WHERE t.estado NOT LIKE 'Cerrado%' AND u.correo LIKE '%@example.com' ORDER BY t.created_at DESC LIMIT 1")->fetchColumn();
+            if ($caso) {
+                $db->prepare("UPDATE ticket_historial SET usuario_id = ? WHERE ticket_id = ? AND usuario_id = (SELECT usuario_id FROM soporte_tickets WHERE id = ?)")->execute([$id, $caso, $caso]);
+                $db->prepare("UPDATE soporte_tickets SET usuario_id = ? WHERE id = ?")->execute([$id, $caso]);
+            }
+        }
         $db->commit();
     } catch (Throwable $e) {
         if ($db->inTransaction()) $db->rollBack();

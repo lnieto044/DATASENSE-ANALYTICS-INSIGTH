@@ -134,8 +134,15 @@ honorarios, 4x1000), PQRSD con sus términos, mensajes del sitio, chats y reunio
 
 - Corre una sola vez por base: al construir la imagen y, en una base permanente creada con los datos de demostración,
   en segundo plano al primer arranque. Nunca en una base real. `DATOS_MUESTRA=0` lo apaga.
-- Todo es ficticio (correos `@example.com`, teléfonos 307 555). No crea pedidos ni reseñas de la tienda, porque la
-  tienda es pública y mostraría ventas y opiniones que no existieron.
+- `cron/datos_muestra_extra.php` completa cuentas por pagar con sus pagos, notas contables (depreciación), notas
+  crédito y débito, y pedidos de la tienda con su factura y pago; en una base permanente, además, la conciliación
+  bancaria de cada mes y el cierre contable de los meses terminados (con el cierre del año anterior).
+- `cron/actividad_diaria.php` crea cada día la actividad de hoy (casos nuevos en distintos estados, mensajes, chats y a
+  veces una PQRSD) y atiende los casos de ejemplo que llevan días abiertos.
+- En la base de demostración, el primer ingreso de un administrador con correo propio prepara su cuenta: queda como
+  único administrador (se borran los de ejemplo) y recibe el historial de un cliente de ejemplo.
+- Todo es ficticio (correos `@example.com`, teléfonos 307 555). Los pedidos de muestra no cambian los "vendidos" ni el
+  inventario que ve el público, y no se crean reseñas: la tienda es pública.
 
 ## Pagos con Mercado Pago
 
