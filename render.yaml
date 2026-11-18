@@ -7,7 +7,8 @@ services:
     plan: free
     region: virginia
     dockerfilePath: ./Dockerfile
-    healthCheckPath: /admin/login.php
+    # Responde 200 solo si la base de datos contesta (salud.php)
+    healthCheckPath: /salud.php
     autoDeploy: true
     envVars:
       # Clave del usuario de la base dentro del contenedor (Render la genera)

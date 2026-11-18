@@ -42,6 +42,13 @@ services:
       SOCIAL_INSTAGRAM: https://www.instagram.com/datasenseanalyticsinsigth/
       SOCIAL_LINKEDIN: https://www.linkedin.com/company/datasense-analytics-insights
       REDES_ENLACE: https://datasense-demo.onrender.com/
+    # Docker revisa cada minuto que el sitio y su base respondan (en "docker ps" aparece como healthy o unhealthy)
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:10000/salud.php"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     volumes:
       - datasense_base:/var/lib/mysql
       - datasense_archivos:/var/www/html/uploads

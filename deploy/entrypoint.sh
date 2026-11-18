@@ -51,6 +51,19 @@ PUERTO="${PORT:-10000}"
 sed -ri "s/^Listen .*/Listen ${PUERTO}/" /etc/apache2/ports.conf
 sed -ri "s/<VirtualHost \*:[0-9]+>/<VirtualHost *:${PUERTO}>/" /etc/apache2/sites-available/000-default.conf
 
+# Vigilante de la base de datos: si MariaDB deja de responder y su supervisor (mariadbd-safe) ya no está, la vuelve a
+# arrancar. Así un cierre inesperado de la base no deja el sitio caído hasta que alguien reinicie el contenedor.
+(
+    while true; do
+        sleep 30
+        if ! mariadb-admin --socket="$SOCKET" ping --silent > /dev/null 2>&1 && ! pgrep -f mariadbd-safe > /dev/null; then
+            echo "$(date '+%Y-%m-%d %H:%M:%S') MariaDB no respondía: se arranca de nuevo" >&2
+            mariadbd-safe --user=mysql --datadir="$DATOS" > /dev/null 2>&1 &
+            sleep 30
+        fi
+    done
+) &
+
 # Publicador de redes sociales: cada minuto publica lo que ya llegó a su fecha, aunque nadie tenga el panel abierto
 (
     while true; do
