@@ -110,10 +110,20 @@ function publicacionesListas(PDO $db) {
                 'etiqueta' => 'Conferencias corporativas',
                 'titulo' => 'Bienestar y *Desarrollo Humano* para equipos que crecen',
                 'texto' => 'Con Marcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano (FLACSO).',
-                'puntos' => ['Bienestar y salud mental', 'Inclusión y diversidad', 'Desarrollo humano y liderazgo'],
+                'puntos' => ['Bienestar y trabajo en equipo', 'Psicología de pareja', 'Orientación vocacional'],
                 'boton' => 'Solicita tu propuesta'],
-            'texto' => "Los equipos que se sienten bien, trabajan mejor. 🌱\n\nMarcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano, lleva a tu organización conferencias y talleres sobre bienestar y salud mental, inclusión y diversidad, y liderazgo.\n\nPresencial o virtual, para empresas, instituciones educativas y entidades.\n\n💬 Comenta CONFERENCIA y te enviamos la propuesta por mensaje privado 👉 {$sitio}#conferencias",
+            'texto' => "Los equipos que se sienten bien, trabajan mejor. 🌱\n\nMarcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano, con trayectoria en Prosperidad Social, la gestión del riesgo de desastres y el bienestar universitario, lleva a tu organización conferencias y talleres sobre bienestar y salud mental, trabajo en equipo, psicología de pareja, orientación vocacional y desarrollo humano.\n\nPresencial o virtual, para empresas, instituciones educativas y entidades.\n\n💬 Comenta CONFERENCIA y te enviamos la propuesta por mensaje privado 👉 {$sitio}#conferencias",
             'hashtags' => '#BienestarLaboral #DesarrolloHumano #SaludMental #Conferencias #DataSense',
+        ],
+        [
+            'id' => 'video-pareja', 'redes' => ['Facebook', 'Instagram'], 'tema_contenido' => 'Charla de Marcela',
+            'diseno' => ['plantilla' => 'foto', 'formato' => 'cuadrado', 'tema' => 'noche', 'imagen' => '../img/marcela.jpg',
+                'etiqueta' => 'Psicología de pareja',
+                'titulo' => 'Los 5 lenguajes *del amor*',
+                'texto' => 'Charla de Marcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano.',
+                'boton' => 'Mírala en YouTube'],
+            'texto' => "¿Sabes cuál es tu lenguaje del amor? ❤️\n\nEn esta charla, Marcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano, explica los 5 lenguajes del amor y cómo entenderlos mejora la comunicación en la pareja, en la familia y en el trabajo.\n\nMírala completa 👉 https://www.youtube.com/watch?v=SvjMfxZB0nA\n\n👇 ¿Cuál es el tuyo? Cuéntanos en los comentarios.\n💬 Comenta CONFERENCIA si quieres llevar esta charla a tu organización.",
+            'hashtags' => '#PsicologiaDePareja #LenguajesDelAmor #DesarrolloHumano #Bienestar #DataSense',
         ],
         [
             'id' => 'ceo', 'redes' => $todas, 'tema_contenido' => 'Nuestro CEO',
@@ -249,7 +259,7 @@ function publicacionesListas(PDO $db) {
             'diseno' => ['plantilla' => 'foto', 'formato' => 'historia', 'tema' => 'azul', 'imagen' => '../img/marcela.jpg',
                 'etiqueta' => 'Conferencias corporativas',
                 'titulo' => 'Lleva a Marcela a *tu organización*',
-                'texto' => 'Bienestar, inclusión y liderazgo para equipos que crecen. Presencial o virtual.',
+                'texto' => 'Bienestar, trabajo en equipo, pareja y orientación vocacional. Presencial o virtual.',
                 'boton' => 'Pide tu propuesta'],
             'texto' => "Conferencias y talleres de bienestar y desarrollo humano con Marcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano. Pide tu propuesta 👉 {$sitio}#conferencias",
             'hashtags' => '#BienestarLaboral #Conferencias #DataSense',
@@ -340,7 +350,7 @@ function respuestasAutomaticas() {
             ],
             [
                 'id' => 'palabra-conferencia', 'palabra' => 'CONFERENCIA', 'titulo' => 'Conferencias de Marcela',
-                'texto' => "¡Hola! Gracias por tu interés en las conferencias de Marcela Pacheco Parra 🌱\n\nPara enviarte la propuesta, cuéntanos:\n• Fecha tentativa\n• Número de asistentes\n• Ciudad, o si es virtual\n• Tema: bienestar y salud mental, inclusión y diversidad, o liderazgo\n\nMás información: {$sitio}#conferencias",
+                'texto' => "¡Hola! Gracias por tu interés en las conferencias de Marcela Pacheco Parra 🌱\n\nPara enviarte la propuesta, cuéntanos:\n• Fecha tentativa\n• Número de asistentes\n• Ciudad, o si es virtual\n• Tema: bienestar y salud mental, trabajo en equipo, psicología de pareja, orientación vocacional o desarrollo humano\n\nMás información: {$sitio}#conferencias",
             ],
             [
                 'id' => 'palabra-demo', 'palabra' => 'DEMO', 'titulo' => 'Demostración de la plataforma',
@@ -358,7 +368,7 @@ function respuestasAutomaticas() {
             ],
             [
                 'id' => 'conferencias', 'atajo' => '/conferencias', 'pregunta' => 'Quiero una conferencia para mi empresa',
-                'texto' => "¡Con gusto! Marcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano, dicta conferencias y talleres sobre bienestar y salud mental, inclusión y diversidad, y liderazgo, en modalidad presencial o virtual.\n\nIndícanos la fecha tentativa, el número de asistentes y la ciudad para enviarte la propuesta. Más información: {$sitio}#conferencias",
+                'texto' => "¡Con gusto! Marcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano, dicta conferencias y talleres sobre bienestar y salud mental, trabajo en equipo, psicología de pareja, orientación vocacional y desarrollo humano, en modalidad presencial o virtual.\n\nIndícanos la fecha tentativa, el número de asistentes y la ciudad para enviarte la propuesta. Más información: {$sitio}#conferencias",
             ],
             [
                 'id' => 'tienda', 'atajo' => '/tienda', 'pregunta' => '¿Cómo compro en la tienda?',

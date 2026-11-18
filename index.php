@@ -37,10 +37,7 @@ $testimonios = array_values(array_filter([
    Para agregar una, copia el código del video (lo que va después de "watch?v=" en el enlace) y su título.
    Ejemplo: ['id' => 'abcdEFGhijk', 'titulo' => 'Bienestar emocional en el trabajo']. Sin videos, el bloque no aparece. */
 $videos_marcela = array_values(array_filter([
-    // TEMPORAL: ejemplos mientras llegan los videos de Marcela (uno de ONU Derechos Humanos y dos del canal de Luis, youtube.com/@LUISGUILLERMONIETO)
-    ['id' => 'MkR7aCgOkUc', 'titulo' => 'Principios Rectores sobre las Empresas y los Derechos Humanos (ONU Derechos Humanos)'],
-    ['id' => 'ie6oFx1yuZo', 'titulo' => 'Estrategias de organización de eventos'],
-    ['id' => 'rWJvVq5Gu4I', 'titulo' => 'Oportunidades de mejora en medio ambiente y SST'],
+    ['id' => 'SvjMfxZB0nA', 'titulo' => 'Los 5 lenguajes del amor · Psicología de pareja'],
 ], function ($v) { return preg_match('/^[A-Za-z0-9_-]{11}$/', (string) ($v['id'] ?? '')); }));
 ?>
 
@@ -130,9 +127,10 @@ $videos_marcela = array_values(array_filter([
         </div>
         <h4 class="team-name">Marcela Pacheco Parra</h4>
         <span class="team-role">Co-Fundadora & CTO</span>
-        <div class="team-degree"><i class="fas fa-graduation-cap me-2"></i> Psicóloga · Magíster en Desarrollo Humano (FLACSO)</div>
-        <p class="team-desc">Magíster en Desarrollo Humano de FLACSO Argentina, con formación en Análisis de Datos certificada por el MinTIC. Integra la psicología y la analítica para que cada decisión basada en datos ponga a las personas en el centro y genere un impacto humano medible.</p>
-        <p class="team-desc mb-0"><i class="fas fa-comments me-2"></i><b>Conferencista en psicología</b> para organizaciones nacionales e internacionales: bienestar, inclusión y desarrollo humano.</p>
+        <div class="team-degree"><i class="fas fa-graduation-cap me-2"></i> Psicóloga (UNAD) · Magíster en Desarrollo Humano (FLACSO)</div>
+        <p class="team-desc">Psicóloga y magíster en Desarrollo Humano de FLACSO Argentina, con trayectoria en entidades públicas y privadas: Prosperidad Social, el Fondo Nacional de Gestión del Riesgo de Desastres y el bienestar universitario. Experta en formular, hacer seguimiento y evaluar planes, programas y políticas públicas, con formación en Análisis de Datos certificada por el MinTIC y dominio de Power BI.</p>
+        <p class="team-desc"><i class="fas fa-trophy me-2" style="color:#d4a017"></i><b>Primer lugar</b> en la Hackatón Región 7 Boyacá–Cundinamarca (2025).</p>
+        <p class="team-desc mb-0"><i class="fas fa-comments me-2"></i><b>Conferencista en psicología</b> para organizaciones nacionales e internacionales: bienestar, trabajo en equipo, psicología de pareja, orientación vocacional y desarrollo humano.</p>
         <div class="team-contacto">
           <a href="#contacto" class="btn-team">Solicita una conferencia</a>
           <?php if ($videos_marcela): ?>
@@ -249,7 +247,7 @@ $videos_marcela = array_values(array_filter([
           <i class="fas fa-comments"></i>
         </div>
         <h3>Conferencias de Psicología y Desarrollo Humano</h3>
-        <p>Conferencias y talleres corporativos para empresas, instituciones educativas y entidades sobre bienestar, inclusión y desarrollo humano, dirigidos por Marcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano. <a href="#contacto" class="fw-bold">Solicítala aquí</a>.</p>
+        <p>Conferencias y talleres para empresas, instituciones educativas y entidades sobre bienestar, trabajo en equipo, psicología de pareja, orientación vocacional y desarrollo humano, dirigidos por Marcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano. <a href="#contacto" class="fw-bold">Solicítala aquí</a>.</p>
       </div>
     </div>
     
@@ -272,9 +270,12 @@ $videos_marcela = array_values(array_filter([
       <div class="conferencias-texto">
         <span class="conferencias-etiqueta">Conferencias corporativas</span>
         <h2>Bienestar y Desarrollo Humano para equipos que crecen</h2>
-        <p>Marcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano de FLACSO Argentina, lleva a su organización conferencias y talleres que fortalecen el bienestar, la inclusión y el liderazgo, con la mirada de la psicología y el respaldo de los datos.</p>
+        <p>Marcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano de FLACSO Argentina, con trayectoria en Prosperidad Social, la gestión del riesgo de desastres y el bienestar universitario, lleva a su organización conferencias y talleres que fortalecen a las personas y a los equipos, con la mirada de la psicología y el respaldo de los datos.</p>
         <ul class="conferencias-temas">
           <li><i class="fas fa-brain" aria-hidden="true"></i>Bienestar y salud mental</li>
+          <li><i class="fas fa-people-group" aria-hidden="true"></i>Trabajo en equipo</li>
+          <li><i class="fas fa-heart" aria-hidden="true"></i>Psicología de pareja</li>
+          <li><i class="fas fa-compass" aria-hidden="true"></i>Orientación vocacional</li>
           <li><i class="fas fa-handshake-angle" aria-hidden="true"></i>Inclusión y diversidad</li>
           <li><i class="fas fa-seedling" aria-hidden="true"></i>Desarrollo humano y liderazgo</li>
         </ul>
@@ -290,7 +291,7 @@ $videos_marcela = array_values(array_filter([
     </div>
 
     <?php if ($videos_marcela): ?>
-    <div class="conferencias-videos" id="videosMarcela">
+    <div class="conferencias-videos<?= count($videos_marcela) === 1 ? ' un-video' : '' ?>" id="videosMarcela">
       <h3><i class="fa-brands fa-youtube"></i>Mira a Marcela en sus conferencias</h3>
       <div class="videos-rejilla">
         <?php foreach ($videos_marcela as $v): ?>
@@ -405,7 +406,7 @@ $videos_marcela = array_values(array_filter([
         <div class="proyecto-cuerpo">
           <span class="proyecto-area"><i class="fas fa-seedling"></i>Desarrollo humano</span>
           <h3>Inclusión educativa de estudiantes sordos</h3>
-          <p>Estudio de caso dirigido por Marcela Pacheco Parra en Fusagasugá, Colombia: entrevistas a estudiantes, docentes, intérpretes y familias, análisis de equidad, pertinencia y relevancia, y propuestas de política pública.</p>
+          <p>Estudio de caso dirigido por Marcela Pacheco Parra en Fusagasugá, Colombia: entrevistas a estudiantes, docentes, intérpretes y familias, análisis de equidad, pertinencia y relevancia, y propuestas de política pública. Publicado en la Biblioteca Digital de Vanguardia para la Investigación en Ciencias Sociales (Ecuador).</p>
           <div class="proyecto-acciones">
             <a href="#contacto" class="btn-team" data-proyecto="Inclusión educativa de estudiantes sordos" data-servicio="PSI">Quiero un proyecto así</a>
             <a href="#conferencias" class="btn-proyecto-sec">Conferencias de Marcela</a>
@@ -929,8 +930,10 @@ document.addEventListener("DOMContentLoaded", function () {
     function flujoPsicologia_Q2() {
         generarBotones("¿Qué tema les interesa más?", [
             { texto: "🧠 Bienestar y salud mental", accion: pedirCorreoFinal },
-            { texto: "🤝 Inclusión y diversidad", accion: pedirCorreoFinal },
-            { texto: "🌱 Desarrollo humano y liderazgo", accion: pedirCorreoFinal }
+            { texto: "👥 Trabajo en equipo", accion: pedirCorreoFinal },
+            { texto: "❤️ Psicología de pareja", accion: pedirCorreoFinal },
+            { texto: "🧭 Orientación vocacional", accion: pedirCorreoFinal },
+            { texto: "🌱 Inclusión y desarrollo humano", accion: pedirCorreoFinal }
         ]);
     }
 

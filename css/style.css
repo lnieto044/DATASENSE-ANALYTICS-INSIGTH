@@ -904,3 +904,6 @@ select.form-input option {
 .testimonio-pie a i { margin: 0 0 0 6px; color: inherit; }
 .testimonio-pie a:hover, .testimonio-pie a:focus-visible { text-decoration: underline; }
 @media (max-width: 600px) { .testimonios { padding: 28px 18px 30px; } .testimonios .testimonios-titulo { font-size: 1.45rem; } }
+
+/* Un solo video de Marcela: se muestra grande y centrado en lugar de una tarjeta pequeña */
+.conferencias-videos.un-video .videos-rejilla { grid-template-columns: minmax(0, 760px); justify-content: center; }
