@@ -19,6 +19,12 @@ if (!$c['externa'] && trim((string) ($_ENV['DATABASE_URL'] ?? '')) !== '') {
 try {
     $db = conectarBaseDatos($c, 3);
     if ((int) $db->query('SELECT 1')->fetchColumn() !== 1) throw new RuntimeException('sin respuesta');
+    // ¿Ya se cargó el año de datos de muestra (cron/datos_muestra.php)?
+    try {
+        $respuesta['datos_de_muestra'] = $db->query("SELECT estado FROM ds_instalacion WHERE id = 2")->fetchColumn() === 'muestra lista' ? 'cargados' : 'pendientes';
+    } catch (Throwable $e) {
+        // Base sin la tabla de instalación: no aplica
+    }
 } catch (Throwable $e) {
     error_log('Chequeo de salud: la base de datos no responde: ' . $e->getMessage());
     $codigo = $e instanceof PDOException ? (int) ($e->errorInfo[1] ?? 0) : 0;
