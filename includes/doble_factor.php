@@ -13,7 +13,7 @@
  * Variables del .env:
  *   MFA_MODO=obligatorio   obligatorio (todos la configuran en su próximo ingreso), opcional (cada quien decide en
  *                          Mi Perfil; las cuentas nuevas la configuran al registrarse) o desactivado.
- *   APP_KEY=...            clave para cifrar los secretos (32 bytes en base64). Sin ella se deriva de DB_PASS.
+ *   APP_KEY=...            clave para cifrar los secretos (32 bytes en base64). Sin ella se deriva de la clave de la base.
  *
  * Todas las cuentas, también las de la demostración, la configuran con su propia app: nadie ve el código en pantalla.
  */
@@ -57,7 +57,9 @@ function claveCifrado() {
         $bruta = base64_decode(preg_replace('/^base64:/', '', $app), true);
         return hash('sha256', $bruta !== false && strlen($bruta) >= 16 ? $bruta : $app, true);
     }
-    return hash('sha256', 'datasense-secretos|' . ($_ENV['DB_PASS'] ?? ''), true);
+    // Sin APP_KEY: se deriva de la clave de la base (la de DB_PASS o la que viene dentro de DATABASE_URL)
+    require_once __DIR__ . '/../config/conexion.php';
+    return hash('sha256', 'datasense-secretos|' . configuracionBaseDatos()['pass'], true);
 }
 
 function cifrarSecreto($texto) {

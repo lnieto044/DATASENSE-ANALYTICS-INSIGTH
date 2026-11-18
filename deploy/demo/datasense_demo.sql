@@ -1678,8 +1678,8 @@ INSERT INTO `usuarios` VALUES (1,'Wilson Orozco',NULL,'admin@example.com','$2y$1
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 
--- Verificación en dos pasos (includes/doble_factor.php). Las cuentas @example.com de la demostración la tienen
--- activa con un código de prueba que se muestra al ingresar.
+-- Verificación en dos pasos (includes/doble_factor.php). Cada cuenta la configura con su propia app autenticadora
+-- en su primer ingreso.
 ALTER TABLE `usuarios`
   ADD COLUMN `mfa_activo` tinyint(1) NOT NULL DEFAULT 0,
   ADD COLUMN `mfa_secreto` varchar(255) DEFAULT NULL,

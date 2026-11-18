@@ -7,6 +7,8 @@
 #   - Puerto: el de la variable PORT; sin ella, el 80 (el que espera Vercel).
 #   - Sin DB_PASS se genera una clave al azar para esa ejecución (la base solo escucha dentro del contenedor).
 #   - Si el disco es de solo lectura (fuera de /tmp), la base y los archivos de trabajo de Apache pasan a /tmp.
+#   - Base permanente: con DATABASE_URL (o DB_HOST de otro servidor, como TiDB Cloud) no se arranca MariaDB: se usa esa
+#     base, que carga los datos de demostración una sola vez y conserva todo lo que se guarde (cron/preparar_base.php).
 set -euo pipefail
 
 DATOS=/var/lib/mysql
@@ -18,7 +20,7 @@ escribible() {
     mkdir -p "$1" 2> /dev/null && touch "$prueba" 2> /dev/null && rm -f "$prueba"
 }
 
-preparar_disco() {
+preparar_disco_base() {
     if ! escribible "$DATOS"; then
         echo "Disco de solo lectura: la base de datos trabaja desde /tmp"
         rm -rf /tmp/mariadb
@@ -28,6 +30,9 @@ preparar_disco() {
     if ! escribible /run/mysqld; then
         SOCKET=/tmp/mysqld/mysqld.sock
     fi
+}
+
+preparar_disco_apache() {
     if ! escribible /var/run/apache2 || ! escribible /var/lock/apache2; then
         export APACHE_RUN_DIR=/tmp/apache2/run APACHE_LOCK_DIR=/tmp/apache2/lock APACHE_PID_FILE=/tmp/apache2/run/apache2.pid
         mkdir -p "$APACHE_RUN_DIR" "$APACHE_LOCK_DIR"
@@ -60,12 +65,8 @@ iniciar_mariadb() {
     exit 1
 }
 
-if [ "${1:-}" != "--solo-base" ]; then
-    preparar_disco
-fi
-iniciar_mariadb
-
 if [ "${1:-}" = "--solo-base" ]; then
+    iniciar_mariadb
     mariadb --socket="$SOCKET" -e "CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci"
     mariadb --socket="$SOCKET" --default-character-set=utf8mb4 "$DB_NAME" < /opt/datasense/datasense_demo.sql
     echo "Base de demostración lista: $(mariadb --socket="$SOCKET" -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '${DB_NAME}'") tablas"
@@ -73,14 +74,26 @@ if [ "${1:-}" = "--solo-base" ]; then
     exit 0
 fi
 
-# Usuario de la aplicación con la clave que genera Render (variable DB_PASS); MariaDB solo escucha dentro del contenedor.
-# Sin DB_PASS (por ejemplo en Vercel sin variables configuradas) se genera una para esta ejecución.
-if [ -z "${DB_PASS:-}" ]; then
-    DB_PASS="$(head -c 18 /dev/urandom | od -An -tx1 | tr -d ' \n')"
-    export DB_PASS
-    echo "Sin DB_PASS: se generó una clave para esta ejecución"
-fi
-mariadb --socket="$SOCKET" <<SQL
+preparar_disco_apache
+
+# ¿La base es permanente (fuera de este servidor)? Lo decide config/conexion.php con las mismas variables que usa el sitio
+BASE_EXTERNA="$(php -r 'require "/var/www/html/config/conexion.php"; echo configuracionBaseDatos()["externa"] ? "si" : "no";')"
+
+if [ "$BASE_EXTERNA" = "si" ]; then
+    # Base permanente: se prepara (y la primera vez se cargan los datos de demostración); MariaDB local no se usa
+    php /var/www/html/cron/preparar_base.php
+else
+    preparar_disco_base
+    iniciar_mariadb
+
+    # Usuario de la aplicación con la clave que genera Render (variable DB_PASS); MariaDB solo escucha dentro del contenedor.
+    # Sin DB_PASS (por ejemplo en Vercel sin variables configuradas) se genera una para esta ejecución.
+    if [ -z "${DB_PASS:-}" ]; then
+        DB_PASS="$(head -c 18 /dev/urandom | od -An -tx1 | tr -d ' \n')"
+        export DB_PASS
+        echo "Sin DB_PASS: se generó una clave para esta ejecución"
+    fi
+    mariadb --socket="$SOCKET" <<SQL
 CREATE USER IF NOT EXISTS '${DB_USER}'@'localhost' IDENTIFIED BY '${DB_PASS}';
 CREATE USER IF NOT EXISTS '${DB_USER}'@'127.0.0.1' IDENTIFIED BY '${DB_PASS}';
 ALTER USER '${DB_USER}'@'localhost' IDENTIFIED BY '${DB_PASS}';
@@ -90,26 +103,27 @@ GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'127.0.0.1';
 FLUSH PRIVILEGES;
 SQL
 
+    # Demostración: las fechas de los datos de prueba se mueven para que el mes en curso muestre información
+    php /var/www/html/cron/fechas_demo.php || echo "No se pudieron poner al día las fechas de la demostración" >&2
+
+    # Vigilante de la base de datos: si MariaDB deja de responder y su supervisor (mariadbd-safe) ya no está, la vuelve a
+    # arrancar. Así un cierre inesperado de la base no deja el sitio caído hasta que alguien reinicie el contenedor.
+    (
+        while true; do
+            sleep 30
+            if ! mariadb-admin --socket="$SOCKET" ping --silent > /dev/null 2>&1 && ! pgrep -f mariadbd-safe > /dev/null; then
+                echo "$(date '+%Y-%m-%d %H:%M:%S') MariaDB no respondía: se arranca de nuevo" >&2
+                arrancar_mariadbd
+                sleep 30
+            fi
+        done
+    ) &
+fi
+
 # Apache escucha en el puerto de la variable PORT (Render pone 10000); sin ella, en el 80, que es el que usa Vercel.
 # La configuración de Apache lee el puerto de PUERTO_WEB: así no hay que modificar archivos al arrancar.
 PUERTO="${PORT:-80}"
 export PUERTO_WEB="$PUERTO"
-
-# Demostración: las fechas de los datos de prueba se mueven para que el mes en curso muestre información
-php /var/www/html/cron/fechas_demo.php || echo "No se pudieron poner al día las fechas de la demostración" >&2
-
-# Vigilante de la base de datos: si MariaDB deja de responder y su supervisor (mariadbd-safe) ya no está, la vuelve a
-# arrancar. Así un cierre inesperado de la base no deja el sitio caído hasta que alguien reinicie el contenedor.
-(
-    while true; do
-        sleep 30
-        if ! mariadb-admin --socket="$SOCKET" ping --silent > /dev/null 2>&1 && ! pgrep -f mariadbd-safe > /dev/null; then
-            echo "$(date '+%Y-%m-%d %H:%M:%S') MariaDB no respondía: se arranca de nuevo" >&2
-            arrancar_mariadbd
-            sleep 30
-        fi
-    done
-) &
 
 # Publicador de redes sociales: cada minuto publica lo que ya llegó a su fecha, aunque nadie tenga el panel abierto
 (
@@ -119,5 +133,5 @@ php /var/www/html/cron/fechas_demo.php || echo "No se pudieron poner al día las
     done
 ) &
 
-echo "DataSense (demostración) escuchando en el puerto ${PUERTO}"
+echo "DataSense escuchando en el puerto ${PUERTO} (base $([ "$BASE_EXTERNA" = "si" ] && echo permanente || echo de demostración))"
 exec apache2-foreground

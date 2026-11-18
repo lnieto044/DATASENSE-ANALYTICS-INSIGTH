@@ -44,20 +44,21 @@ function columnasFecha(PDO $db, $tabla) {
 
 // Casos: la primera respuesta (y otras gestiones) quedaron meses después de la apertura: van horas después de abrirse.
 // En MariaDB las asignaciones de un UPDATE se aplican en orden, así que fecha_pausa usa la primera respuesta ya corregida.
+// Las sumas con expresión van en DATE_ADD(): TiDB lee "+ INTERVAL (expresión)" como la función INTERVAL().
 $db->exec("UPDATE soporte_tickets SET
-        fecha_primera_respuesta = IF(fecha_primera_respuesta > created_at + INTERVAL 30 DAY, created_at + INTERVAL (1 + id % 6) HOUR, fecha_primera_respuesta),
-        fecha_respuesta = IF(fecha_respuesta > created_at + INTERVAL 30 DAY, created_at + INTERVAL (1 + id % 6) HOUR, fecha_respuesta),
+        fecha_primera_respuesta = IF(fecha_primera_respuesta > created_at + INTERVAL 30 DAY, DATE_ADD(created_at, INTERVAL (1 + id % 6) HOUR), fecha_primera_respuesta),
+        fecha_respuesta = IF(fecha_respuesta > created_at + INTERVAL 30 DAY, DATE_ADD(created_at, INTERVAL (1 + id % 6) HOUR), fecha_respuesta),
         fecha_pausa = IF(fecha_pausa > created_at + INTERVAL 30 DAY, COALESCE(fecha_primera_respuesta, created_at) + INTERVAL 1 HOUR, fecha_pausa)
     WHERE fecha_primera_respuesta > created_at + INTERVAL 30 DAY OR fecha_respuesta > created_at + INTERVAL 30 DAY
        OR fecha_pausa > created_at + INTERVAL 30 DAY");
 
 // Casos: solución y cierre quedaron meses después de la apertura. Se ubican minutos después de la primera respuesta.
 $casos_corregidos = $db->exec("UPDATE soporte_tickets SET
-        fecha_resolucion = COALESCE(fecha_primera_respuesta, created_at) + INTERVAL (30 + (id * 7) % 90) MINUTE,
-        fecha_cierre = COALESCE(fecha_primera_respuesta, created_at) + INTERVAL (30 + (id * 7) % 90) MINUTE
-                       + INTERVAL (CASE WHEN estado LIKE '%Inactividad%' THEN 72 ELSE 20 END) HOUR,
-        ultima_gestion_fecha = COALESCE(fecha_primera_respuesta, created_at) + INTERVAL (30 + (id * 7) % 90) MINUTE
-                       + INTERVAL (CASE WHEN estado LIKE '%Inactividad%' THEN 72 ELSE 20 END) HOUR
+        fecha_resolucion = DATE_ADD(COALESCE(fecha_primera_respuesta, created_at), INTERVAL (30 + (id * 7) % 90) MINUTE),
+        fecha_cierre = DATE_ADD(DATE_ADD(COALESCE(fecha_primera_respuesta, created_at), INTERVAL (30 + (id * 7) % 90) MINUTE),
+                       INTERVAL (CASE WHEN estado LIKE '%Inactividad%' THEN 72 ELSE 20 END) HOUR),
+        ultima_gestion_fecha = DATE_ADD(DATE_ADD(COALESCE(fecha_primera_respuesta, created_at), INTERVAL (30 + (id * 7) % 90) MINUTE),
+                       INTERVAL (CASE WHEN estado LIKE '%Inactividad%' THEN 72 ELSE 20 END) HOUR)
     WHERE fecha_cierre IS NOT NULL AND fecha_cierre > created_at + INTERVAL 30 DAY");
 
 // Con los tiempos corregidos, el cumplimiento del ANS guardado en cada caso se recalcula con la misma regla de la mesa
@@ -75,7 +76,7 @@ if ($casos_corregidos > 0) {
 $db->exec("UPDATE ticket_historial h JOIN soporte_tickets t ON t.id = h.ticket_id SET h.fecha = CASE
         WHEN h.evento = 'Primera respuesta' THEN COALESCE(t.fecha_primera_respuesta, t.created_at + INTERVAL 2 HOUR)
         WHEN h.evento IN ('Correo al cliente', 'Llamada al cliente') THEN COALESCE(t.fecha_primera_respuesta, t.created_at) + INTERVAL 1 HOUR
-        WHEN h.evento = 'Cambio de estado' THEN COALESCE(t.fecha_primera_respuesta, t.created_at) + INTERVAL (10 + h.id % 50) MINUTE
+        WHEN h.evento = 'Cambio de estado' THEN DATE_ADD(COALESCE(t.fecha_primera_respuesta, t.created_at), INTERVAL (10 + h.id % 50) MINUTE)
         WHEN h.evento = 'Solución' THEN COALESCE(t.fecha_resolucion, t.created_at)
         ELSE COALESCE(t.fecha_cierre, t.created_at) END
     WHERE h.fecha > COALESCE(t.fecha_cierre, t.created_at) + INTERVAL 1 DAY OR h.fecha < t.created_at");

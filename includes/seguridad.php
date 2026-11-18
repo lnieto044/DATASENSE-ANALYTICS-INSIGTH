@@ -28,6 +28,65 @@ const TIPOS_ADJUNTOS = [
 ];
 
 // ================================================================
+// BASE PERMANENTE PARA SESIONES E INTENTOS
+// ================================================================
+// Con una base externa (TiDB Cloud u otra, ver config/conexion.php) las sesiones y los intentos fallidos se guardan en
+// ella y no en archivos del servidor: así sobreviven cuando Vercel apaga el contenedor y valen para todas sus copias
+// si corre varias a la vez. Las tablas las crea cron/preparar_base.php al arrancar. Con la base local, nada cambia.
+
+function baseCompartida() {
+    static $db = false;
+    if ($db === false) {
+        $db = null;
+        require_once __DIR__ . '/../config/conexion.php';
+        $c = configuracionBaseDatos();
+        if ($c['externa']) {
+            try {
+                $db = conectarBaseDatos($c);
+            } catch (Throwable $e) {
+                error_log('Sesiones: la base externa no responde, se usan archivos temporales: ' . $e->getMessage());
+            }
+        }
+    }
+    return $db;
+}
+
+class SesionesEnBase implements SessionHandlerInterface, SessionUpdateTimestampHandlerInterface {
+    private $db;
+    public function __construct(PDO $db) { $this->db = $db; }
+    private function vigencia() { return time() - (int) ini_get('session.gc_maxlifetime'); }
+    public function open($ruta, $nombre): bool { return true; }
+    public function close(): bool { return true; }
+    public function read($id): string|false {
+        $stmt = $this->db->prepare("SELECT datos FROM ds_sesiones WHERE id = ? AND actualizada >= ?");
+        $stmt->execute([hash('sha256', $id), $this->vigencia()]);
+        $datos = $stmt->fetchColumn();
+        return $datos === false ? '' : (string) $datos;
+    }
+    public function write($id, $datos): bool {
+        return $this->db->prepare("REPLACE INTO ds_sesiones (id, datos, actualizada) VALUES (?, ?, ?)")
+                        ->execute([hash('sha256', $id), $datos, time()]);
+    }
+    public function destroy($id): bool {
+        return $this->db->prepare("DELETE FROM ds_sesiones WHERE id = ?")->execute([hash('sha256', $id)]);
+    }
+    public function gc($segundos): int|false {
+        $stmt = $this->db->prepare("DELETE FROM ds_sesiones WHERE actualizada < ?");
+        $stmt->execute([time() - (int) $segundos]);
+        return $stmt->rowCount();
+    }
+    // Modo estricto: solo se aceptan identificadores que el servidor creó y siguen vigentes
+    public function validateId($id): bool {
+        $stmt = $this->db->prepare("SELECT 1 FROM ds_sesiones WHERE id = ? AND actualizada >= ?");
+        $stmt->execute([hash('sha256', $id), $this->vigencia()]);
+        return (bool) $stmt->fetchColumn();
+    }
+    public function updateTimestamp($id, $datos): bool {
+        return $this->db->prepare("UPDATE ds_sesiones SET actualizada = ? WHERE id = ?")->execute([time(), hash('sha256', $id)]);
+    }
+}
+
+// ================================================================
 // SESIÓN Y CONTROL DE ACCESO
 // ================================================================
 
@@ -35,6 +94,8 @@ const TIPOS_ADJUNTOS = [
 function iniciarSesionSegura() {
     if (session_status() === PHP_SESSION_ACTIVE) return;
 
+    $base = baseCompartida();
+    if ($base) session_set_save_handler(new SesionesEnBase($base), true);
     ini_set('session.use_strict_mode', '1');
     ini_set('session.use_only_cookies', '1');
     ini_set('session.cookie_httponly', '1');
@@ -183,7 +244,7 @@ function tomarAviso() {
 }
 
 // ================================================================
-// LÍMITE DE INTENTOS (sin tablas nuevas: un archivo por clave en la carpeta temporal del sistema)
+// LÍMITE DE INTENTOS (un archivo por clave en la carpeta temporal del sistema; con base externa, la tabla ds_intentos)
 // ================================================================
 
 function rutaLimitador($clave) {
@@ -196,6 +257,16 @@ function rutaLimitador($clave) {
 
 // Suma un intento a la clave y devuelve cuántos lleva dentro de la ventana (en segundos)
 function registrarIntento($clave, $ventana) {
+    if ($base = baseCompartida()) {
+        // Si la ventana anterior ya venció, el conteo vuelve a empezar (las asignaciones usan los valores anteriores)
+        $ahora = time();
+        $base->prepare("INSERT INTO ds_intentos (clave, total, desde) VALUES (?, 1, ?)
+                        ON DUPLICATE KEY UPDATE total = IF(desde < ?, 1, total + 1), desde = IF(desde < ?, ?, desde)")
+             ->execute([hash('sha256', $clave), $ahora, $ahora - $ventana, $ahora - $ventana, $ahora]);
+        $stmt = $base->prepare("SELECT total FROM ds_intentos WHERE clave = ?");
+        $stmt->execute([hash('sha256', $clave)]);
+        return (int) $stmt->fetchColumn();
+    }
     $ruta = rutaLimitador($clave);
     $datos = json_decode((string) @file_get_contents($ruta), true);
     if (!is_array($datos) || time() - (int) ($datos['desde'] ?? 0) > $ventana) {
@@ -208,7 +279,13 @@ function registrarIntento($clave, $ventana) {
 
 // Segundos que faltan para desbloquear la clave si ya alcanzó el máximo (0 = sin bloqueo)
 function segundosBloqueo($clave, $maximo, $ventana) {
-    $datos = json_decode((string) @file_get_contents(rutaLimitador($clave)), true);
+    if ($base = baseCompartida()) {
+        $stmt = $base->prepare("SELECT total, desde FROM ds_intentos WHERE clave = ?");
+        $stmt->execute([hash('sha256', $clave)]);
+        $datos = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    } else {
+        $datos = json_decode((string) @file_get_contents(rutaLimitador($clave)), true);
+    }
     if (!is_array($datos) || (int) ($datos['total'] ?? 0) < $maximo) {
         return 0;
     }
@@ -216,6 +293,10 @@ function segundosBloqueo($clave, $maximo, $ventana) {
 }
 
 function reiniciarIntentos($clave) {
+    if ($base = baseCompartida()) {
+        $base->prepare("DELETE FROM ds_intentos WHERE clave = ?")->execute([hash('sha256', $clave)]);
+        return;
+    }
     @unlink(rutaLimitador($clave));
 }
 

@@ -8,13 +8,11 @@ header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 header('X-Robots-Tag: noindex');
 
-require __DIR__ . '/vendor/autoload.php';
-Dotenv\Dotenv::createImmutable(__DIR__)->safeLoad();
+require __DIR__ . '/config/conexion.php';
 
 $bien = false;
 try {
-    $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4', $_ENV['DB_HOST'] ?? 'localhost', $_ENV['DB_PORT'] ?? '3306', $_ENV['DB_NAME'] ?? '');
-    $db = new PDO($dsn, $_ENV['DB_USER'] ?? 'root', $_ENV['DB_PASS'] ?? '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 3]);
+    $db = conectarBaseDatos(null, 3);
     $bien = (int) $db->query('SELECT 1')->fetchColumn() === 1;
 } catch (Throwable $e) {
     error_log('Chequeo de salud: la base de datos no responde: ' . $e->getMessage());

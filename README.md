@@ -102,10 +102,28 @@ Vercel ejecuta el mismo `Dockerfile` con su tiempo de ejecución de contenedores
 trae los valores de la demostración, escucha en el puerto 80 y genera la clave interna de la base al arrancar.
 
 - La base de demostración va dentro de la imagen; las fechas se ponen al día en cada arranque.
-- Tras unos minutos sin visitas Vercel apaga el contenedor: lo creado en la demo (casos, usuarios, archivos) se pierde
-  y la siguiente visita arranca con los datos iniciales. Mientras está apagado no corre la publicación automática.
+- Tras unos minutos sin visitas Vercel apaga el contenedor: sin base permanente, lo creado en la demo (casos,
+  usuarios, verificación en dos pasos) se pierde y la siguiente visita arranca con los datos iniciales. Mientras está
+  apagado no corre la publicación automática.
 - Los tokens de redes (`META_PAGE_TOKEN`, `LINKEDIN_TOKEN`, `LINKEDIN_ORG_ID`) son opcionales y se agregan en las
   variables de entorno del proyecto en Vercel, nunca en el código.
+
+### Base de datos permanente
+
+Con la variable `DATABASE_URL` el sitio usa una base externa en lugar de la que trae la imagen, y nada se borra al
+reiniciar. Probado con TiDB Cloud (plan gratuito, compatible con MySQL; elegir la región de AWS en N. Virginia, la misma
+de Vercel). En su consola: abrir la base → botón para conectar → generar la contraseña → copiar la cadena de conexión
+`mysql://usuario:clave@servidor:4000/test` y pegarla en Vercel como `DATABASE_URL`; luego volver a desplegar.
+
+- La primera vez la base se crea con el nombre `datasense` y recibe los datos de demostración con las fechas del mes
+  en curso. Desde ahí las fechas no se mueven y todo lo que se guarde queda.
+- La conexión es cifrada (TLS) y verifica el certificado del servidor.
+- Las sesiones y los intentos fallidos también se guardan en la base: un ingreso sigue abierto aunque Vercel reinicie
+  el servidor, y los bloqueos por intentos fallidos no se reinician.
+- Las cuentas de ejemplo reciben una clave al azar; solo `admin@example.com` conserva `Demo2026*` para el primer
+  ingreso. Conviene entrar de una vez, configurar la verificación en dos pasos y cambiar esa clave en Mi perfil.
+- Los archivos subidos (adjuntos, comprobantes, imágenes de afiches) siguen guardándose en el servidor y se pierden
+  cuando Vercel lo reinicia.
 
 ## Datos y licencias
 
