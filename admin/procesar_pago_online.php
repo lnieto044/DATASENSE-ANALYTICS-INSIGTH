@@ -283,8 +283,9 @@ if ($ENTORNO === 'PRODUCCION') {
 
     $data = json_decode((string) $response, true);
     if (($http_code == 200 || $http_code == 201) && !empty($data['init_point'])) {
-        // Con las credenciales de prueba (TEST-...) el pago va al ambiente de pruebas de Mercado Pago: ahí se paga con
-        // las tarjetas de prueba y no se mueve dinero. Con las de producción (APP_USR-...), es un pago real.
+        // Credenciales de prueba del panel anterior (TEST-...): el pago va al ambiente de pruebas (sandbox_init_point).
+        // Las del panel nuevo empiezan por APP_USR- también en prueba: pertenecen a una cuenta de prueba y usan la página
+        // normal (init_point) con las tarjetas de prueba. Con las credenciales de producción, el pago es real.
         $de_prueba = strpos($MP_ACCESS_TOKEN, 'TEST-') === 0;
         $url_checkout = ($de_prueba && !empty($data['sandbox_init_point'])) ? $data['sandbox_init_point'] : $data['init_point'];
 

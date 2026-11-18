@@ -142,8 +142,9 @@ honorarios, 4x1000), PQRSD con sus términos, mensajes del sitio, chats y reunio
 Con `PAGOS_ENTORNO=PRODUCCION` y `MP_ACCESS_TOKEN` el botón de pago de "Mis facturas" lleva a Mercado Pago (Checkout
 Pro) y el aviso de pago (`admin/webhook_pagos.php`) registra el recaudo y su comprobante de ingreso aprobado.
 
-- Con las credenciales de prueba de la aplicación (`TEST-...`) se paga en el ambiente de pruebas con las tarjetas de
-  prueba (titular `APRO` para aprobar); con las de producción (`APP_USR-...`) los pagos son reales.
+- Con las credenciales de prueba de la aplicación (en el panel nuevo de Mercado Pago también empiezan por `APP_USR-`;
+  en el anterior, por `TEST-`) se paga con las tarjetas de prueba (titular `APRO` para aprobar), mejor en una ventana
+  de incógnito; con las credenciales de producción los pagos son reales.
 - El aviso se confirma siempre consultando el pago en Mercado Pago y cada pago se contabiliza una sola vez.
 - Si Mercado Pago rechaza la solicitud, el motivo queda en el registro del servidor y el cliente ve un mensaje amable.
 
