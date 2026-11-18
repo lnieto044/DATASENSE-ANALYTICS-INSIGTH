@@ -79,6 +79,10 @@ preparar_disco_apache
 # ¿La base es permanente (fuera de este servidor)? Lo decide config/conexion.php con las mismas variables que usa el sitio
 BASE_EXTERNA="$(php -r 'require "/var/www/html/config/conexion.php"; echo configuracionBaseDatos()["externa"] ? "si" : "no";')"
 
+if [ -n "${DATABASE_URL:-}" ] && [ "$BASE_EXTERNA" != "si" ]; then
+    echo "AVISO: DATABASE_URL no tiene la forma mysql://usuario:clave@servidor:puerto/base; se usa la base de demostración" >&2
+fi
+
 if [ "$BASE_EXTERNA" = "si" ]; then
     # Base permanente: se prepara (y la primera vez se cargan los datos de demostración); MariaDB local no se usa
     php /var/www/html/cron/preparar_base.php

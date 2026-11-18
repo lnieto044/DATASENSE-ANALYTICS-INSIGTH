@@ -5,8 +5,8 @@
  *
  * Variables (del entorno del servidor o del archivo .env):
  *   DATABASE_URL=mysql://usuario:clave@servidor:4000/datasense
- *       Una sola línea con todo, como la entregan TiDB Cloud y otros servicios. Si la base del final es "test" o no
- *       viene, se usa "datasense". Tiene prioridad sobre las variables sueltas.
+ *       Una sola línea con todo, como la entregan TiDB Cloud y otros servicios. Si la base del final es una del sistema
+ *       ("test", "sys", "mysql"…) o no viene, se usa "datasense". Tiene prioridad sobre las variables sueltas.
  *   DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS
  *       Las mismas datos por separado (XAMPP, la base dentro del contenedor de Render o de docker-compose).
  *   DB_SSL=1 / 0
@@ -47,7 +47,9 @@ function configuracionBaseDatos() {
         $c['user'] = rawurldecode((string) ($partes['user'] ?? ''));
         $c['pass'] = rawurldecode((string) ($partes['pass'] ?? ''));
         $base = rawurldecode(trim((string) ($partes['path'] ?? ''), '/'));
-        $c['name'] = ($base === '' || $base === 'test') ? 'datasense' : $base;
+        // Las bases que trae el servidor (test, sys, mysql…) no son para datos propios: se usa "datasense"
+        $c['name'] = in_array(strtolower($base), ['', 'test', 'sys', 'mysql', 'information_schema', 'performance_schema', 'metrics_schema'], true)
+            ? 'datasense' : $base;
         parse_str((string) ($partes['query'] ?? ''), $opciones);
         $modo = strtolower((string) ($opciones['ssl-mode'] ?? $opciones['sslmode'] ?? ''));
         if ($modo === 'disabled' || $modo === 'disable' || ($opciones['ssl'] ?? '') === 'false') $c['ssl'] = false;
