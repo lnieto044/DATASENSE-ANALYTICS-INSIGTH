@@ -17,9 +17,11 @@ Todas las cuentas usan la clave `Demo2026*`:
 | `analista@example.com` | Analista | Dashboard, clientes, encuestas e historial del chatbot |
 | `cliente@example.com` | Cliente | Su resumen, Centro de Soporte, facturas y pedidos |
 
-Después de la clave se pide la verificación en dos pasos. Como estas cuentas son compartidas, en la demo la
-pantalla muestra el código del momento; una cuenta creada con "Crear cuenta" la configura con su propia app
-autenticadora.
+Después de la clave se pide la verificación en dos pasos, real para todas las cuentas: la primera vez se escanea un
+código QR con Google Authenticator o Microsoft Authenticator y se reciben 8 códigos de recuperación de un solo uso;
+desde ahí cada ingreso pide el código de 6 dígitos de la app (o uno de recuperación si se perdió el celular).
+En la demostración la base vuelve a su estado inicial cuando el servidor se reinicia (en Vercel, tras unos minutos sin
+visitas): entonces la cuenta pide configurar la app de nuevo, y hay que borrar de la app la entrada anterior.
 
 Al arrancar, la demo mueve las fechas de los datos de prueba (cron/fechas_demo.php) para que el mes en curso tenga
 casos, PQRSD, mensajes, pagos y reuniones, sin cambiar el orden entre ellos.

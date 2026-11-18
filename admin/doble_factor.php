@@ -23,7 +23,7 @@ if (isset($_GET['activar'])) {
     $stmt = $db->prepare("SELECT * FROM usuarios WHERE id = ?");
     $stmt->execute([$actual['id']]);
     $u = $stmt->fetch(PDO::FETCH_ASSOC);
-    if (esCuentaDemoMfa($u) || !empty($u['mfa_activo'])) irA('perfil.php');
+    if (!empty($u['mfa_activo'])) irA('perfil.php');
     iniciarFlujoMfa($u, 'configurar', 'perfil');
     irA('doble_factor.php');
 }
@@ -100,9 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $vista = $codigos ? 'codigos' : $flujo['tipo'];
-$es_demo = esCuentaDemoMfa($usuario);
-$codigo_demo = ($vista === 'verificar' && $es_demo) ? codigoTotp(secretoDemo($usuario['correo']), pasoActual()) : '';
-$segundos_demo = MFA_PERIODO - (time() % MFA_PERIODO);
+// En la demostración la base vuelve a su estado inicial cuando el servidor se reinicia: se avisa al configurar
+$base_temporal = ($_ENV['APP_ENV'] ?? '') === 'demo';
 $secreto_nuevo = $vista === 'configurar' ? $flujo['secreto_nuevo'] : '';
 $titulos = [
     'verificar' => ['Verificación en dos pasos', 'Escribe el código de 6 dígitos que muestra tu app autenticadora para DataSense.'],
@@ -142,8 +141,10 @@ $titulos = [
         .btn-mfa:hover, .btn-mfa:focus-visible { background: #134574; color: #fff; }
         .btn-mfa:disabled { background: #94a3b8; }
         .mfa-enlace { background: none; border: 0; padding: 0; color: #0A2E4F; font-weight: 600; font-size: .85rem; text-decoration: underline; text-underline-offset: 3px; }
-        .mfa-demo { background: #fff7e0; border: 1px dashed #f0b429; border-radius: 12px; padding: 12px 14px; font-size: .84rem; color: #6b4a00; margin-bottom: 18px; }
-        .mfa-demo b { font-size: 1.15rem; letter-spacing: .12em; color: #0A2E4F; font-variant-numeric: tabular-nums; }
+        .mfa-nota { background: #fff7e0; border: 1px dashed #f0b429; border-radius: 12px; padding: 10px 14px; font-size: .8rem; color: #6b4a00; margin-bottom: 18px; }
+        .mfa-apps { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+        .mfa-apps a { font-size: .76rem; font-weight: 600; color: #0A2E4F; background: #f1f5f9; border-radius: 999px; padding: 4px 10px; text-decoration: none; }
+        .mfa-apps a:hover { background: #e2e8f0; }
         .mfa-paso { display: flex; gap: 14px; margin-bottom: 18px; }
         .mfa-paso > span { width: 28px; height: 28px; border-radius: 50%; background: #3FAE49; color: #fff; font-weight: 800; font-size: .82rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
         .mfa-paso > div > b { display: block; font-size: .92rem; }
@@ -151,7 +152,7 @@ $titulos = [
         .mfa-qr { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px; margin-top: 10px; }
         .mfa-qr #qr { background: #fff; padding: 8px; border-radius: 10px; line-height: 0; }
         .mfa-qr #qr img, .mfa-qr #qr canvas { width: 168px; height: 168px; }
-        .mfa-clave { font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace; font-size: .9rem; font-weight: 700; color: #0A2E4F; word-break: break-all; background: #fff; border: 1px solid #e2e8f0; border-radius: 9px; padding: 8px 10px; }
+        .mfa-clave { font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace; font-size: .9rem; font-weight: 700; color: #0A2E4F; word-break: normal; overflow-wrap: anywhere; background: #fff; border: 1px solid #e2e8f0; border-radius: 9px; padding: 8px 10px; }
         .mfa-qr-texto { flex: 1 1 180px; min-width: 0; font-size: .8rem; color: #475569; }
         .mfa-lista { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px; margin-bottom: 14px; }
         .mfa-lista code { font-size: 1.02rem; font-weight: 700; color: #0A2E4F; text-align: center; background: #fff; border-radius: 8px; padding: 7px 4px; letter-spacing: .08em; }
@@ -178,11 +179,6 @@ $titulos = [
             <?php endif; ?>
 
             <?php if ($vista === 'verificar'): ?>
-                <?php if ($es_demo): ?>
-                    <div class="mfa-demo"><i class="fas fa-flask me-1" aria-hidden="true"></i> <strong>Cuenta de demostración.</strong> En la demo todos comparten esta cuenta, así que aquí ves el código del momento:
-                        <b id="codigoDemo"><?= esc(substr($codigo_demo, 0, 3) . ' ' . substr($codigo_demo, 3)) ?></b>
-                        <span class="d-block mt-1">Cambia en <span id="segundosDemo"><?= (int) $segundos_demo ?></span> s. Con tu cuenta real lo verás solo en tu celular.</span></div>
-                <?php endif; ?>
                 <form method="post" action="doble_factor.php" id="formCodigo" autocomplete="off">
                     <input type="hidden" name="csrf_token" value="<?= esc(tokenCsrf()) ?>">
                     <input type="hidden" name="modo" id="modoCodigo" value="app">
@@ -192,14 +188,21 @@ $titulos = [
                     <button type="submit" class="btn btn-mfa w-100 mt-3">Verificar y entrar <i class="fas fa-arrow-right ms-2" aria-hidden="true"></i></button>
                 </form>
                 <div class="d-flex justify-content-between flex-wrap gap-2 mt-3">
-                    <?php if (!$es_demo): ?>
-                        <button type="button" class="mfa-enlace" id="usarRecuperacion">¿Perdiste el celular? Usa un código de recuperación</button>
-                    <?php endif; ?>
+                    <button type="button" class="mfa-enlace" id="usarRecuperacion">¿Perdiste el celular? Usa un código de recuperación</button>
                     <a class="mfa-enlace ms-auto" href="doble_factor.php?cancelar=1">Volver al inicio de sesión</a>
                 </div>
 
             <?php elseif ($vista === 'configurar'): ?>
-                <div class="mfa-paso"><span>1</span><div><b>Instala una app autenticadora</b><p>Google Authenticator, Microsoft Authenticator o Authy, gratis en la tienda de tu celular.</p></div></div>
+                <?php if ($base_temporal): ?>
+                    <div class="mfa-nota"><i class="fas fa-circle-info me-1" aria-hidden="true"></i> En esta demostración los datos vuelven a su estado inicial cuando el servidor se reinicia. Si más adelante vuelves a ver esta pantalla, borra de tu app la entrada anterior de DataSense y escanea el código nuevo.</div>
+                <?php endif; ?>
+                <div class="mfa-paso"><span>1</span><div><b>Instala una app autenticadora</b><p>Google Authenticator o Microsoft Authenticator, gratis en la tienda de tu celular.</p>
+                    <div class="mfa-apps">
+                        <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank" rel="noopener"><i class="fab fa-google-play me-1" aria-hidden="true"></i>Google · Android</a>
+                        <a href="https://apps.apple.com/app/google-authenticator/id388497605" target="_blank" rel="noopener"><i class="fab fa-apple me-1" aria-hidden="true"></i>Google · iPhone</a>
+                        <a href="https://play.google.com/store/apps/details?id=com.azure.authenticator" target="_blank" rel="noopener"><i class="fab fa-google-play me-1" aria-hidden="true"></i>Microsoft · Android</a>
+                        <a href="https://apps.apple.com/app/microsoft-authenticator/id983156458" target="_blank" rel="noopener"><i class="fab fa-apple me-1" aria-hidden="true"></i>Microsoft · iPhone</a>
+                    </div></div></div>
                 <div class="mfa-paso"><span>2</span><div><b>Escanea este código con la app</b><p>En la app toca <b>+</b> y luego <b>Escanear código QR</b>.</p>
                     <div class="mfa-qr">
                         <div id="qr" role="img" aria-label="Código QR para agregar DataSense a tu app autenticadora"></div>
@@ -274,17 +277,6 @@ new QRCode(document.getElementById('qr'), { text: <?= jsJson(uriTotp($secreto_nu
         recuperacion.textContent = usar ? 'Usar el código de la app' : '¿Perdiste el celular? Usa un código de recuperación';
         campo.focus();
     });
-
-    // Demostración: cuenta regresiva del código mostrado; al vencer se recarga para ver el siguiente
-    const segundos = document.getElementById('segundosDemo');
-    if (segundos) {
-        let quedan = parseInt(segundos.textContent, 10);
-        setInterval(function () {
-            quedan--;
-            if (quedan <= 0 && !(campo && campo.value)) { window.location.reload(); return; }
-            segundos.textContent = Math.max(0, quedan);
-        }, 1000);
-    }
 
     const lista = document.getElementById('listaCodigos');
     if (lista) {

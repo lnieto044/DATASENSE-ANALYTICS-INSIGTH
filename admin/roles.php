@@ -151,9 +151,7 @@ $roles_mostrar = ['Admin', 'Soporte', 'Supervisor', 'Analista', 'Finanzas', 'Com
                             </td>
 
                             <td class="text-center" id="mfa-<?= (int) $user['id'] ?>">
-                                <?php if (esCuentaDemoMfa($user)): ?>
-                                    <span class="badge rounded-pill bg-info bg-opacity-10 text-info" title="Cuenta de demostración con código de prueba">Demo</span>
-                                <?php elseif (!empty($user['mfa_activo'])): ?>
+                                <?php if (!empty($user['mfa_activo'])): ?>
                                     <span class="badge rounded-pill bg-success bg-opacity-10 text-success"><i class="fas fa-shield-halved me-1"></i>Activa</span>
                                     <button type="button" class="btn btn-link btn-sm p-0 ms-1 text-decoration-none" title="Restablecer: la persona la configura de nuevo en su próximo ingreso"
                                             onclick="restablecerDobleFactor(<?= (int) $user['id'] ?>, <?= jsAttr($user['nombre']) ?>)"><i class="fas fa-rotate-left"></i></button>

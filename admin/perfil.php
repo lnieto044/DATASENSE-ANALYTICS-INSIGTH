@@ -143,8 +143,7 @@ if (!empty($perfil['foto'])) {
                     </div>
 
                     <?php
-                    $mfa_demo = esCuentaDemoMfa($perfil);
-                    $mfa_activa = $mfa_demo || !empty($perfil['mfa_activo']);
+                    $mfa_activa = !empty($perfil['mfa_activo']);
                     $mfa_restantes = codigosRecuperacionRestantes($perfil);
                     ?>
                     <div class="card card-form p-4 h-auto shadow-sm mb-4" id="dobleFactor">
@@ -152,21 +151,17 @@ if (!empty($perfil['foto'])) {
                         <?php if ($mfa_activa): ?>
                             <div class="d-flex align-items-center gap-2 mb-2">
                                 <span class="text-success fw-bold bg-success bg-opacity-10 px-3 py-1 rounded-pill small"><i class="fas fa-circle-check me-1"></i> ACTIVA</span>
-                                <?php if (!$mfa_demo && !empty($perfil['mfa_activado_en'])): ?><span class="small text-muted">desde el <?= esc(date('d/m/Y', strtotime($perfil['mfa_activado_en']))) ?></span><?php endif; ?>
+                                <?php if (!empty($perfil['mfa_activado_en'])): ?><span class="small text-muted">desde el <?= esc(date('d/m/Y', strtotime($perfil['mfa_activado_en']))) ?></span><?php endif; ?>
                             </div>
-                            <?php if ($mfa_demo): ?>
-                                <p class="small text-muted mb-0">Cuenta de demostración: la verificación está activa con un código de prueba que se muestra al ingresar. Con tu cuenta real usas tu propia app autenticadora.</p>
-                            <?php else: ?>
-                                <p class="small text-muted mb-3">Cada ingreso pide el código de tu app autenticadora. Te quedan <b class="<?= $mfa_restantes <= 2 ? 'text-danger' : 'text-dark' ?>"><?= (int) $mfa_restantes ?></b> códigos de recuperación.</p>
-                                <form method="post" action="seguridad_cuenta.php" class="d-grid gap-2">
-                                    <label for="mfaCodigo" class="small fw-bold text-muted mb-0">Código actual de tu app (para confirmar cambios)</label>
-                                    <input type="text" class="form-control text-center fw-bold" id="mfaCodigo" name="codigo" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9 ]{6,7}" maxlength="7" placeholder="000000" required style="letter-spacing: .3em;">
-                                    <button type="submit" name="accion" value="codigos" class="btn btn-outline-primary btn-sm fw-bold"><i class="fas fa-key me-1"></i> Generar códigos de recuperación nuevos</button>
-                                    <?php if (modoMfa() !== 'obligatorio'): ?>
-                                    <button type="submit" name="accion" value="desactivar" class="btn btn-outline-danger btn-sm fw-bold"><i class="fas fa-power-off me-1"></i> Desactivar la verificación</button>
-                                    <?php endif; ?>
-                                </form>
-                            <?php endif; ?>
+                            <p class="small text-muted mb-3">Cada ingreso pide el código de tu app autenticadora. Te quedan <b class="<?= $mfa_restantes <= 2 ? 'text-danger' : 'text-dark' ?>"><?= (int) $mfa_restantes ?></b> códigos de recuperación.</p>
+                            <form method="post" action="seguridad_cuenta.php" class="d-grid gap-2">
+                                <label for="mfaCodigo" class="small fw-bold text-muted mb-0">Código actual de tu app (para confirmar cambios)</label>
+                                <input type="text" class="form-control text-center fw-bold" id="mfaCodigo" name="codigo" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9 ]{6,7}" maxlength="7" placeholder="000000" required style="letter-spacing: .3em;">
+                                <button type="submit" name="accion" value="codigos" class="btn btn-outline-primary btn-sm fw-bold"><i class="fas fa-key me-1"></i> Generar códigos de recuperación nuevos</button>
+                                <?php if (modoMfa() !== 'obligatorio'): ?>
+                                <button type="submit" name="accion" value="desactivar" class="btn btn-outline-danger btn-sm fw-bold"><i class="fas fa-power-off me-1"></i> Desactivar la verificación</button>
+                                <?php endif; ?>
+                            </form>
                         <?php else: ?>
                             <span class="text-warning fw-bold bg-warning bg-opacity-10 px-3 py-1 rounded-pill small d-inline-block mb-2"><i class="fas fa-triangle-exclamation me-1"></i> INACTIVA</span>
                             <p class="small text-muted mb-3">Protege tu cuenta: además de la contraseña, cada ingreso pedirá un código de tu celular.</p>

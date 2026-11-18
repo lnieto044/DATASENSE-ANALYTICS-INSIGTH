@@ -20,7 +20,7 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 $accion = $_POST['accion'] ?? '';
 $clave_limite = 'mfa|' . (int) $usuario['id'];
 
-if (esCuentaDemoMfa($usuario) || empty($usuario['mfa_activo'])) {
+if (empty($usuario['mfa_activo'])) {
     header('Location: perfil.php');
     exit;
 }

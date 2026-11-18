@@ -15,8 +15,7 @@
  *                          Mi Perfil; las cuentas nuevas la configuran al registrarse) o desactivado.
  *   APP_KEY=...            clave para cifrar los secretos (32 bytes en base64). Sin ella se deriva de DB_PASS.
  *
- * En la demostración (APP_ENV=demo) las cuentas de ejemplo (@example.com) son compartidas: tienen la verificación
- * activa con un secreto fijo y la pantalla muestra el código del momento, para que cualquiera pueda probar el paso.
+ * Todas las cuentas, también las de la demostración, la configuran con su propia app: nadie ve el código en pantalla.
  */
 require_once __DIR__ . '/seguridad.php';
 
@@ -142,23 +141,13 @@ function uriTotp($secreto, $correo) {
 // CUENTAS
 // ================================================================
 
-function esCuentaDemoMfa(array $usuario) {
-    return ($_ENV['APP_ENV'] ?? '') === 'demo' && preg_match('/@example\.com$/i', (string) ($usuario['correo'] ?? ''));
-}
-
-function secretoDemo($correo) {
-    return base32Codificar(substr(hash_hmac('sha1', strtolower((string) $correo), 'datasense-demo-2fa', true), 0, 20));
-}
-
 function secretoUsuario(array $usuario) {
-    if (esCuentaDemoMfa($usuario)) return secretoDemo($usuario['correo']);
     return descifrarSecreto($usuario['mfa_secreto'] ?? null);
 }
 
 // Qué le falta a la persona después de la contraseña: 'verificar' (escribir el código), 'configurar' (activar) o 'no'
 function pasoMfaPendiente(array $usuario) {
     if (modoMfa() === 'desactivado') return 'no';
-    if (esCuentaDemoMfa($usuario)) return 'verificar';
     if (!empty($usuario['mfa_activo']) && secretoUsuario($usuario)) return 'verificar';
     return modoMfa() === 'obligatorio' ? 'configurar' : 'no';
 }
@@ -225,13 +214,11 @@ function usarCodigoRecuperacion(PDO $db, array $usuario, $codigo) {
 // Verifica el código de la app (o de recuperación) de un usuario y registra el paso usado. true si es válido.
 function comprobarCodigoUsuario(PDO $db, array $usuario, $codigo, $esRecuperacion = false) {
     if ($esRecuperacion) {
-        return !esCuentaDemoMfa($usuario) && usarCodigoRecuperacion($db, $usuario, $codigo);
+        return usarCodigoRecuperacion($db, $usuario, $codigo);
     }
     $paso = verificarTotp(secretoUsuario($usuario), $codigo, $usuario['mfa_ultimo_paso'] ?? null);
     if ($paso === false) return false;
-    if (!esCuentaDemoMfa($usuario)) {
-        $db->prepare("UPDATE usuarios SET mfa_ultimo_paso = ? WHERE id = ?")->execute([$paso, (int) $usuario['id']]);
-    }
+    $db->prepare("UPDATE usuarios SET mfa_ultimo_paso = ? WHERE id = ?")->execute([$paso, (int) $usuario['id']]);
     return true;
 }
 
