@@ -21,6 +21,9 @@ Después de la clave se pide la verificación en dos pasos. Como estas cuentas s
 pantalla muestra el código del momento; una cuenta creada con "Crear cuenta" la configura con su propia app
 autenticadora.
 
+Al arrancar, la demo mueve las fechas de los datos de prueba (cron/fechas_demo.php) para que el mes en curso tenga
+casos, PQRSD, mensajes, pagos y reuniones, sin cambiar el orden entre ellos.
+
 En la demo los pagos van a un simulador y el correo está desactivado. Cada vez que el servidor se reinicia los
 datos vuelven a su estado inicial; en el plan gratuito de Render el servidor se apaga tras 15 minutos sin visitas
 y la primera visita después tarda alrededor de un minuto.

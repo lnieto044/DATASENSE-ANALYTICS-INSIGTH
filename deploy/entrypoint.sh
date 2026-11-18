@@ -51,6 +51,9 @@ PUERTO="${PORT:-10000}"
 sed -ri "s/^Listen .*/Listen ${PUERTO}/" /etc/apache2/ports.conf
 sed -ri "s/<VirtualHost \*:[0-9]+>/<VirtualHost *:${PUERTO}>/" /etc/apache2/sites-available/000-default.conf
 
+# Demostración: las fechas de los datos de prueba se mueven para que el mes en curso muestre información
+php /var/www/html/cron/fechas_demo.php || echo "No se pudieron poner al día las fechas de la demostración" >&2
+
 # Vigilante de la base de datos: si MariaDB deja de responder y su supervisor (mariadbd-safe) ya no está, la vuelve a
 # arrancar. Así un cierre inesperado de la base no deja el sitio caído hasta que alguien reinicie el contenedor.
 (
