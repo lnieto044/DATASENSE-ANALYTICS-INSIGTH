@@ -148,8 +148,11 @@ $videos_marcela = array_values(array_filter([
         </div>
         <h4 class="team-name">Luis Guillermo Nieto Patiño</h4>
         <span class="team-role">Co-Fundador & CEO</span>
-        <div class="team-degree"><i class="fas fa-graduation-cap me-2"></i> Candidato a Magíster en Analítica de Datos</div>
-        <p class="team-desc">Candidato a magíster en Analítica de Datos, con formación en Análisis de Datos certificada por el MinTIC. Lidera la estrategia de negocio y la visión tecnológica de DataSense. Acompaña a gerencias y entidades nacionales e internacionales a convertir sus datos en decisiones rentables: tableros ejecutivos, analítica avanzada y software a la medida que reducen costos, aceleran la gestión y muestran resultados desde el primer mes.</p>
+        <div class="team-degree"><i class="fas fa-graduation-cap me-2"></i> Ingeniero de Sistemas · Maestría en Administración con énfasis en Análisis de Datos (en curso)</div>
+        <p class="team-desc">Ingeniero de Sistemas con trayectoria en tecnología desde 2013, especializado en analítica y calidad de la información. Ha trabajado en el sector público y en el privado: administró los sistemas de información del Ministerio de las Culturas, validó información académica y laboral en la Gerencia de Prevención del Fraude de Colpensiones y lideró mesa de ayuda bajo ITIL para la banca. Lidera la estrategia de negocio y la visión tecnológica de DataSense, y acompaña a gerencias y entidades a convertir sus datos en decisiones: tableros ejecutivos, verificación de información, analítica avanzada y software a la medida.</p>
+        <p class="team-desc"><i class="fas fa-award me-2" style="color:#d4a017"></i><b>Premio Alfonso Palacio Rudas 2026</b> de la Contraloría General de la República, categoría Académico, por una metodología de verificación de información pública.</p>
+        <p class="team-desc"><i class="fas fa-trophy me-2" style="color:#d4a017"></i><b>Primer lugar</b> en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca (MinTIC) y creador de CuentaVoz en la Hackatón Colsubsidio × 30X 2026.</p>
+        <p class="team-desc"><i class="fas fa-screwdriver-wrench me-2"></i>Power BI · SQL Server y MySQL · Python · calidad y cruce de datos · Amazon Cognito y doble factor · ITIL y ANS · desarrollo web y APIs.</p>
         <p class="team-desc mb-0"><i class="fas fa-handshake me-2"></i><b>¿Tu organización necesita decidir con datos?</b> Conversemos sobre tu reto.</p>
         <div class="team-contacto">
           <a href="#contacto" class="btn-team">Agenda una reunión</a>
@@ -329,16 +332,50 @@ $videos_marcela = array_values(array_filter([
 
     <div class="proyectos-rejilla">
       <!-- CuentaVoz (Colsubsidio) -->
-      <article class="proyecto-tarjeta proyecto-destacado" data-areas="analitica software">
+      <article class="proyecto-tarjeta proyecto-destacado" data-areas="analitica software hackaton">
         <div class="proyecto-media"><img src="img/proyectos/cuentavoz.jpg" alt="CuentaVoz: reportes de análisis de consumo con recomendación automática del agente" loading="lazy"></div>
         <div class="proyecto-cuerpo">
           <span class="proyecto-cliente"><i class="fas fa-building"></i>Colsubsidio</span>
-          <span class="proyecto-area"><i class="fas fa-microphone-lines"></i>Analítica e IA · Desarrollo de software</span>
+          <span class="proyecto-area"><i class="fas fa-microphone-lines"></i>Analítica e IA · Desarrollo de software · Hackatón Colsubsidio × 30X 2026</span>
           <h3>CuentaVoz: inventario por voz con agente inteligente</h3>
-          <p>Aplicación para contar inventario por voz en las bodegas, con un agente que responde preguntas por voz o texto, análisis de consumo frente a la receta con recomendaciones automáticas, auditoría, legalización y un panel gerencial con alertas y tiempos de conteo.</p>
+          <p>Aplicación para contar inventario por voz en las bodegas, con un agente que responde preguntas por voz o texto, análisis de consumo frente a la receta con recomendaciones automáticas, auditoría, legalización y un panel gerencial con alertas y tiempos de conteo. Construida sobre datos reales de la operación: 53 bodegas, 1.040 artículos y 79 inconsistencias de existencias detectadas antes de su cargue al sistema corporativo, con acceso protegido por Amazon Cognito y doble factor.</p>
           <div class="proyecto-acciones">
             <a href="#contacto" class="btn-team" data-proyecto="CuentaVoz (inventario por voz con agente inteligente)" data-servicio="DS">Quiero un proyecto así</a>
             <a href="https://www.youtube.com/watch?v=V-ZtG-wGlo4" class="btn-proyecto-sec" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-youtube me-2"></i>Ver el recorrido</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Premio Alfonso Palacio Rudas 2026 (Contraloría General de la República) -->
+      <article class="proyecto-tarjeta" data-areas="analitica publico">
+        <div class="proyecto-media proyecto-media-icono" aria-hidden="true">
+          <i class="fas fa-award"></i>
+          <span>Premio Alfonso Palacio Rudas 2026</span>
+        </div>
+        <div class="proyecto-cuerpo">
+          <span class="proyecto-cliente"><i class="fas fa-landmark"></i>Contraloría General de la República</span>
+          <span class="proyecto-area"><i class="fas fa-magnifying-glass-chart"></i>Calidad de la información · Sector público</span>
+          <h3>Metodología de verificación de información pública</h3>
+          <p>Análisis de datos aplicado a la veracidad, calidad y consistencia de la información que reportan las entidades públicas: cruza fuentes independientes (SECOP II, informes de control fiscal, actos administrativos y estados financieros) para detectar inconsistencias y sustentar cada hallazgo con trazabilidad documental. Reconocida con el Premio Alfonso Palacio Rudas 2026, categoría Académico.</p>
+          <div class="proyecto-acciones">
+            <a href="#contacto" class="btn-team" data-proyecto="Verificación de información pública" data-servicio="ASP">Quiero un proyecto así</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Hackatón Talento Tech Región 7 (MinTIC): primer lugar -->
+      <article class="proyecto-tarjeta" data-areas="analitica hackaton">
+        <div class="proyecto-media proyecto-media-icono" aria-hidden="true">
+          <i class="fas fa-trophy"></i>
+          <span>Primer lugar · Hackatón Talento Tech Región 7</span>
+        </div>
+        <div class="proyecto-cuerpo">
+          <span class="proyecto-cliente"><i class="fas fa-flag"></i>Ministerio TIC · Talento Tech</span>
+          <span class="proyecto-area"><i class="fas fa-chart-line"></i>Analítica avanzada · Hackatón</span>
+          <h3>Analítica avanzada con pronósticos y minería de procesos</h3>
+          <p>Solución ganadora del primer lugar regional en Boyacá y Cundinamarca, reconocida por su excelencia, creatividad e innovación: integración de datos en MySQL, pronósticos con modelos de series de tiempo (ARIMA y Prophet), minería de procesos con PM4Py y tableros en Power BI, construida con datos reales y bajo presión de tiempo.</p>
+          <div class="proyecto-acciones">
+            <a href="#contacto" class="btn-team" data-proyecto="Analítica avanzada con pronósticos" data-servicio="DS">Quiero un proyecto así</a>
           </div>
         </div>
       </article>
