@@ -93,6 +93,18 @@ uno de la página de Facebook (con permisos `pages_manage_posts`, `pages_read_en
 El repositorio incluye `render.yaml` y un `Dockerfile` que arman un solo contenedor con Apache, PHP 8.2 y MariaDB
 con la base de demostración. En Render: **New → Blueprint**, elegir este repositorio y **Apply**.
 
+## Publicar la demo en Vercel
+
+Vercel ejecuta el mismo `Dockerfile` con su tiempo de ejecución de contenedores (`vercel.json` lo indica con
+`"framework": "container"`). En vercel.com/new se importa este repositorio y se despliega, sin variables: la imagen
+trae los valores de la demostración, escucha en el puerto 80 y genera la clave interna de la base al arrancar.
+
+- La base de demostración va dentro de la imagen; las fechas se ponen al día en cada arranque.
+- Tras unos minutos sin visitas Vercel apaga el contenedor: lo creado en la demo (casos, usuarios, archivos) se pierde
+  y la siguiente visita arranca con los datos iniciales. Mientras está apagado no corre la publicación automática.
+- Los tokens de redes (`META_PAGE_TOKEN`, `LINKEDIN_TOKEN`, `LINKEDIN_ORG_ID`) son opcionales y se agregan en las
+  variables de entorno del proyecto en Vercel, nunca en el código.
+
 ## Datos y licencias
 
 - La base de datos real no está en el repositorio. `deploy/demo/datasense_demo.sql` tiene solo datos ficticios.

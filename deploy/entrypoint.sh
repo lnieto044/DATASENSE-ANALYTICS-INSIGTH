@@ -2,18 +2,54 @@
 # Arranque del contenedor de demostración:
 #   datasense-entrypoint --solo-base  -> (al construir la imagen) crea la base y carga los datos de demostración
 #   datasense-entrypoint              -> (al iniciar el servicio) arranca MariaDB, crea el usuario de la app y abre Apache en $PORT
+#
+# Funciona igual en Render, en la copia local (docker compose) y en Vercel (tiempo de ejecución de contenedores):
+#   - Puerto: el de la variable PORT; sin ella, el 80 (el que espera Vercel).
+#   - Sin DB_PASS se genera una clave al azar para esa ejecución (la base solo escucha dentro del contenedor).
+#   - Si el disco es de solo lectura (fuera de /tmp), la base y los archivos de trabajo de Apache pasan a /tmp.
 set -euo pipefail
 
 DATOS=/var/lib/mysql
 SOCKET=/run/mysqld/mysqld.sock
 
+# ¿Se puede escribir en esta carpeta? (sin crearla ni dejar rastro)
+escribible() {
+    local prueba="$1/.prueba-escritura-$$"
+    mkdir -p "$1" 2> /dev/null && touch "$prueba" 2> /dev/null && rm -f "$prueba"
+}
+
+preparar_disco() {
+    if ! escribible "$DATOS"; then
+        echo "Disco de solo lectura: la base de datos trabaja desde /tmp"
+        rm -rf /tmp/mariadb
+        cp -a "$DATOS" /tmp/mariadb
+        DATOS=/tmp/mariadb
+    fi
+    if ! escribible /run/mysqld; then
+        SOCKET=/tmp/mysqld/mysqld.sock
+    fi
+    if ! escribible /var/run/apache2 || ! escribible /var/lock/apache2; then
+        export APACHE_RUN_DIR=/tmp/apache2/run APACHE_LOCK_DIR=/tmp/apache2/lock APACHE_PID_FILE=/tmp/apache2/run/apache2.pid
+        mkdir -p "$APACHE_RUN_DIR" "$APACHE_LOCK_DIR"
+    fi
+}
+
+# MariaDB con su supervisor (mariadbd-safe), que la vuelve a levantar si se cierra.
+# USER=root: con el disco en solo lectura el supervisor no detecta que corre como administrador y no cambia al usuario
+# mysql, y MariaDB se niega a arrancar.
+arrancar_mariadbd() {
+    USER=root mariadbd-safe --user=mysql --datadir="$DATOS" --socket="$SOCKET" --pid-file="$(dirname "$SOCKET")/mysqld.pid" > /dev/null 2>&1 &
+}
+
 iniciar_mariadb() {
-    mkdir -p /run/mysqld
-    chown mysql:mysql /run/mysqld
+    local carpeta_socket
+    carpeta_socket="$(dirname "$SOCKET")"
+    mkdir -p "$carpeta_socket"
+    chown mysql:mysql "$carpeta_socket"
     if [ ! -d "$DATOS/mysql" ]; then
         mariadb-install-db --user=mysql --datadir="$DATOS" --skip-test-db > /dev/null
     fi
-    mariadbd-safe --user=mysql --datadir="$DATOS" > /dev/null 2>&1 &
+    arrancar_mariadbd
     for _ in $(seq 1 60); do
         if mariadb-admin --socket="$SOCKET" ping --silent > /dev/null 2>&1; then
             return 0
@@ -24,6 +60,9 @@ iniciar_mariadb() {
     exit 1
 }
 
+if [ "${1:-}" != "--solo-base" ]; then
+    preparar_disco
+fi
 iniciar_mariadb
 
 if [ "${1:-}" = "--solo-base" ]; then
@@ -34,8 +73,13 @@ if [ "${1:-}" = "--solo-base" ]; then
     exit 0
 fi
 
-# Usuario de la aplicación con la clave que genera Render (variable DB_PASS); MariaDB solo escucha dentro del contenedor
-: "${DB_PASS:?Falta la variable de entorno DB_PASS}"
+# Usuario de la aplicación con la clave que genera Render (variable DB_PASS); MariaDB solo escucha dentro del contenedor.
+# Sin DB_PASS (por ejemplo en Vercel sin variables configuradas) se genera una para esta ejecución.
+if [ -z "${DB_PASS:-}" ]; then
+    DB_PASS="$(head -c 18 /dev/urandom | od -An -tx1 | tr -d ' \n')"
+    export DB_PASS
+    echo "Sin DB_PASS: se generó una clave para esta ejecución"
+fi
 mariadb --socket="$SOCKET" <<SQL
 CREATE USER IF NOT EXISTS '${DB_USER}'@'localhost' IDENTIFIED BY '${DB_PASS}';
 CREATE USER IF NOT EXISTS '${DB_USER}'@'127.0.0.1' IDENTIFIED BY '${DB_PASS}';
@@ -46,10 +90,10 @@ GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'127.0.0.1';
 FLUSH PRIVILEGES;
 SQL
 
-# Apache escucha en el puerto que asigna Render
-PUERTO="${PORT:-10000}"
-sed -ri "s/^Listen .*/Listen ${PUERTO}/" /etc/apache2/ports.conf
-sed -ri "s/<VirtualHost \*:[0-9]+>/<VirtualHost *:${PUERTO}>/" /etc/apache2/sites-available/000-default.conf
+# Apache escucha en el puerto de la variable PORT (Render pone 10000); sin ella, en el 80, que es el que usa Vercel.
+# La configuración de Apache lee el puerto de PUERTO_WEB: así no hay que modificar archivos al arrancar.
+PUERTO="${PORT:-80}"
+export PUERTO_WEB="$PUERTO"
 
 # Demostración: las fechas de los datos de prueba se mueven para que el mes en curso muestre información
 php /var/www/html/cron/fechas_demo.php || echo "No se pudieron poner al día las fechas de la demostración" >&2
@@ -61,7 +105,7 @@ php /var/www/html/cron/fechas_demo.php || echo "No se pudieron poner al día las
         sleep 30
         if ! mariadb-admin --socket="$SOCKET" ping --silent > /dev/null 2>&1 && ! pgrep -f mariadbd-safe > /dev/null; then
             echo "$(date '+%Y-%m-%d %H:%M:%S') MariaDB no respondía: se arranca de nuevo" >&2
-            mariadbd-safe --user=mysql --datadir="$DATOS" > /dev/null 2>&1 &
+            arrancar_mariadbd
             sleep 30
         fi
     done

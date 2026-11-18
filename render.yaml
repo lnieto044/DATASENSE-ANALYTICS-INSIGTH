@@ -11,6 +11,9 @@ services:
     healthCheckPath: /salud.php
     autoDeploy: true
     envVars:
+      # Puerto en el que escucha el contenedor (el que Render espera por defecto)
+      - key: PORT
+        value: "10000"
       # Clave del usuario de la base dentro del contenedor (Render la genera)
       - key: DB_PASS
         generateValue: true

@@ -26,6 +26,8 @@ services:
     ports:
       - "8080:10000"
     environment:
+      # El servidor escucha en este puerto dentro del contenedor (fuera se ve como 8080)
+      PORT: "10000"
       # Solo para esta copia: MariaDB vive dentro del contenedor y no se expone fuera de él
       DB_PASS: datasense-local
       # Modo demostración: pagos con simulador y las cuentas @example.com muestran el código de verificación
