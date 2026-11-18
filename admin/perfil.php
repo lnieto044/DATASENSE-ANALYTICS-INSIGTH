@@ -158,7 +158,7 @@ if (!empty($perfil['foto'])) {
                                 <label for="mfaCodigo" class="small fw-bold text-muted mb-0">Código actual de tu app (para confirmar cambios)</label>
                                 <input type="text" class="form-control text-center fw-bold" id="mfaCodigo" name="codigo" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9 ]{6,7}" maxlength="7" placeholder="000000" required style="letter-spacing: .3em;">
                                 <button type="submit" name="accion" value="codigos" class="btn btn-outline-primary btn-sm fw-bold"><i class="fas fa-key me-1"></i> Generar códigos de recuperación nuevos</button>
-                                <?php if (modoMfa() !== 'obligatorio'): ?>
+                                <?php if (!mfaObligatoria($perfil)): ?>
                                 <button type="submit" name="accion" value="desactivar" class="btn btn-outline-danger btn-sm fw-bold"><i class="fas fa-power-off me-1"></i> Desactivar la verificación</button>
                                 <?php endif; ?>
                             </form>

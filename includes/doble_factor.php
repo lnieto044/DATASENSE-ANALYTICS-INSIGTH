@@ -11,8 +11,12 @@
  *   - El flujo (contraseña correcta, falta el código) vive en la sesión y caduca a los 10 minutos.
  *
  * Variables del .env:
- *   MFA_MODO=obligatorio   obligatorio (todos la configuran en su próximo ingreso), opcional (cada quien decide en
- *                          Mi Perfil; las cuentas nuevas la configuran al registrarse) o desactivado.
+ *   MFA_MODO=opcional      opcional (por defecto: al registrarse se ofrece configurarla y "Hacerlo después" deja
+ *                          entrar; cada quien la activa cuando quiera en Mi perfil), obligatorio (todos la configuran
+ *                          en su próximo ingreso y no se puede omitir) o desactivado.
+ *   MFA_EQUIPO_OBLIGATORIO=1  en modo opcional, el equipo interno (todo rol distinto de Cliente) igual debe tenerla:
+ *                          esas cuentas ven datos de todos los clientes. Con 0 también es opcional para el equipo.
+ *   Quien ya la activó siempre debe escribir el código al entrar, en cualquier modo salvo desactivado.
  *   APP_KEY=...            clave para cifrar los secretos (32 bytes en base64). Sin ella se deriva de la clave de la base.
  *
  * Todas las cuentas, también las de la demostración, la configuran con su propia app: nadie ve el código en pantalla.
@@ -27,8 +31,8 @@ const MFA_MINUTOS_FLUJO = 10;
 const MFA_ALFABETO_RECUPERACION = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // sin 0/O ni 1/I, que se confunden al copiarlos
 
 function modoMfa() {
-    $modo = strtolower(trim((string) ($_ENV['MFA_MODO'] ?? 'obligatorio')));
-    return in_array($modo, ['obligatorio', 'opcional', 'desactivado'], true) ? $modo : 'obligatorio';
+    $modo = strtolower(trim((string) ($_ENV['MFA_MODO'] ?? 'opcional')));
+    return in_array($modo, ['obligatorio', 'opcional', 'desactivado'], true) ? $modo : 'opcional';
 }
 
 // Bases anteriores a este módulo: se agregan las columnas la primera vez que se necesitan
@@ -147,11 +151,18 @@ function secretoUsuario(array $usuario) {
     return descifrarSecreto($usuario['mfa_secreto'] ?? null);
 }
 
+// ¿Esta persona debe tener la verificación (no puede omitirla ni desactivarla)?
+function mfaObligatoria(array $usuario) {
+    if (modoMfa() === 'desactivado') return false;
+    if (modoMfa() === 'obligatorio') return true;
+    return ($usuario['rol'] ?? 'Cliente') !== 'Cliente' && ($_ENV['MFA_EQUIPO_OBLIGATORIO'] ?? '1') !== '0';
+}
+
 // Qué le falta a la persona después de la contraseña: 'verificar' (escribir el código), 'configurar' (activar) o 'no'
 function pasoMfaPendiente(array $usuario) {
     if (modoMfa() === 'desactivado') return 'no';
     if (!empty($usuario['mfa_activo']) && secretoUsuario($usuario)) return 'verificar';
-    return modoMfa() === 'obligatorio' ? 'configurar' : 'no';
+    return mfaObligatoria($usuario) ? 'configurar' : 'no';
 }
 
 function generarCodigosRecuperacion() {

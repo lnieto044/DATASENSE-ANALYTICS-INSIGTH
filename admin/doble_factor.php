@@ -3,7 +3,8 @@
  * SEGUNDO PASO DEL INGRESO (verificación en dos pasos)
  *   - Verificar: después de la contraseña se escribe el código de 6 dígitos de la app (o un código de recuperación).
  *   - Configurar: se escanea el código QR con la app y se confirma con un código. Ocurre al registrarse, en el primer
- *     ingreso cuando MFA_MODO=obligatorio, o desde Mi Perfil (?activar=1).
+ *     ingreso cuando MFA_MODO=obligatorio, o desde Mi Perfil (?activar=1). Si no es obligatoria, "Hacerlo después"
+ *     (?omitir=1) deja entrar al panel sin configurarla.
  *   - Códigos: al activarla se muestran una sola vez los códigos de recuperación.
  * La lógica está en includes/doble_factor.php.
  */
@@ -26,6 +27,18 @@ if (isset($_GET['activar'])) {
     if (!empty($u['mfa_activo'])) irA('perfil.php');
     iniciarFlujoMfa($u, 'configurar', 'perfil');
     irA('doble_factor.php');
+}
+
+// "Hacerlo después" al registrarse o al entrar: si la verificación no es obligatoria, entra al panel sin configurarla
+// (la contraseña ya se comprobó al iniciar este flujo). Se puede activar cuando quiera desde Mi perfil.
+if (isset($_GET['omitir'])) {
+    $flujo = flujoMfaVigente();
+    if (!$flujo || $flujo['tipo'] !== 'configurar' || $flujo['origen'] === 'perfil') irA('doble_factor.php?cancelar=1');
+    $stmt = $db->prepare("SELECT * FROM usuarios WHERE id = ?");
+    $stmt->execute([(int) $flujo['id']]);
+    $u = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$u || mfaObligatoria($u) || in_array($u['estado_cuenta'] ?? 'Activo', ESTADOS_BLOQUEADOS, true)) irA('doble_factor.php?cancelar=1');
+    irA(completarInicioSesion($db, $u, $flujo['volver']));
 }
 
 if (isset($_GET['cancelar'])) {
@@ -143,6 +156,8 @@ $titulos = [
         .btn-mfa:hover, .btn-mfa:focus-visible { background: #134574; color: #fff; }
         .btn-mfa:disabled { background: #94a3b8; }
         .mfa-enlace { background: none; border: 0; padding: 0; color: #0A2E4F; font-weight: 600; font-size: .85rem; text-decoration: underline; text-underline-offset: 3px; }
+        .mfa-despues { text-align: right; font-size: .8rem; color: #64748b; }
+        .mfa-despues span { display: block; margin-top: 4px; }
         .mfa-nota { background: #fff7e0; border: 1px dashed #f0b429; border-radius: 12px; padding: 10px 14px; font-size: .8rem; color: #6b4a00; margin-bottom: 18px; }
         .mfa-apps { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
         .mfa-apps a { font-size: .76rem; font-weight: 600; color: #0A2E4F; background: #f1f5f9; border-radius: 999px; padding: 4px 10px; text-decoration: none; }
@@ -224,7 +239,16 @@ $titulos = [
                         <button type="submit" class="btn btn-mfa w-100 mt-3"><i class="fas fa-shield-halved me-2" aria-hidden="true"></i>Activar la verificación</button>
                     </form>
                 </div></div>
-                <div class="text-end"><a class="mfa-enlace" href="doble_factor.php?cancelar=1"><?= $flujo['origen'] === 'perfil' ? 'Cancelar' : 'Hacerlo después y salir' ?></a></div>
+                <?php if ($flujo['origen'] === 'perfil'): ?>
+                    <div class="text-end"><a class="mfa-enlace" href="doble_factor.php?cancelar=1">Cancelar</a></div>
+                <?php elseif (!mfaObligatoria($usuario)): ?>
+                    <div class="mfa-despues">
+                        <a class="mfa-enlace" href="doble_factor.php?omitir=1">Hacerlo después y entrar</a>
+                        <span>Podrás activarla cuando quieras en <b>Mi perfil</b>.</span>
+                    </div>
+                <?php else: ?>
+                    <div class="text-end"><a class="mfa-enlace" href="doble_factor.php?cancelar=1">Hacerlo después y salir</a></div>
+                <?php endif; ?>
 
             <?php else: ?>
                 <div class="mfa-lista" id="listaCodigos">

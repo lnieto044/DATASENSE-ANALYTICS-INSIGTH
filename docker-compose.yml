@@ -33,7 +33,7 @@ services:
       # Modo demostración: pagos con simulador y las cuentas @example.com muestran el código de verificación
       APP_ENV: demo
       PAGOS_ENTORNO: LOCAL
-      MFA_MODO: obligatorio
+      MFA_MODO: opcional
       # Correo desactivado (no hay servidor de correo en la copia local)
       MAIL_HOST: 127.0.0.1
       MAIL_PORT: "9"

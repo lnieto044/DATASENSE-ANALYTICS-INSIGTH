@@ -2,7 +2,7 @@
 /**
  * VERIFICACIÓN EN DOS PASOS DESDE MI PERFIL
  * Con el código actual de la app: generar códigos de recuperación nuevos o desactivar la verificación
- * (esto último solo si MFA_MODO no es obligatorio). Activarla se hace en doble_factor.php?activar=1.
+ * (esto último solo si no es obligatoria para esa persona: mfaObligatoria()). Activarla se hace en doble_factor.php?activar=1.
  */
 require_once __DIR__ . '/../includes/doble_factor.php';
 $db = require __DIR__ . '/../config/database.php';
@@ -43,7 +43,7 @@ if ($accion === 'codigos') {
     header('Location: doble_factor.php');
     exit;
 }
-if ($accion === 'desactivar' && modoMfa() !== 'obligatorio') {
+if ($accion === 'desactivar' && !mfaObligatoria($usuario)) {
     desactivarMfa($db, $usuario['id']);
     avisoSiguiente('warning', 'Desactivaste la verificación en dos pasos. Tu cuenta queda protegida solo con la contraseña.');
 }

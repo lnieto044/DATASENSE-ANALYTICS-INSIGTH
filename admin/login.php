@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     }
                 } else {
                     // Si está 'Activo' o en 'Vacaciones': contraseña correcta. Falta el segundo paso si la cuenta lo tiene
-                    // (o debe configurarlo porque MFA_MODO=obligatorio); si no, entra directo.
+                    // activo (o debe configurarlo porque MFA_MODO=obligatorio); si no, entra directo.
                     reiniciarIntentos($clave_correo);
                     $volver = is_string($_GET['volver'] ?? null) ? $_GET['volver'] : '';
                     $paso_mfa = pasoMfaPendiente($usuario);
@@ -130,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 $stmt_enlace_exacto = $db->prepare("UPDATE contactos SET id_usuario_final = ? WHERE correo = ? AND id_usuario_final IS NULL");
                 $stmt_enlace_exacto->execute([$nuevo_id_usuario, $email]);
 
-                // La cuenta nueva configura de una vez la verificación en dos pasos y entra al panel
+                // A la cuenta nueva se le ofrece configurar la verificación; si no es obligatoria, puede hacerlo después
                 if (modoMfa() !== 'desactivado') {
                     iniciarFlujoMfa(['id' => $nuevo_id_usuario], 'configurar', 'registro', is_string($_GET['volver'] ?? null) ? $_GET['volver'] : '');
                     header("Location: doble_factor.php");
