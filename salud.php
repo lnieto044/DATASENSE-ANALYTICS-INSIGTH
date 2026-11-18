@@ -14,7 +14,7 @@ require __DIR__ . '/config/conexion.php';
 $c = configuracionBaseDatos();
 $respuesta = ['estado' => 'ok', 'base' => $c['externa'] ? 'permanente' : 'temporal'];
 if (!$c['externa'] && trim((string) ($_ENV['DATABASE_URL'] ?? '')) !== '') {
-    $respuesta['aviso'] = 'DATABASE_URL no tiene la forma mysql://usuario:clave@servidor:puerto/base';
+    $respuesta['aviso'] = 'DATABASE_URL no se entiende: ' . pistaDatabaseUrl($_ENV['DATABASE_URL']);
 }
 try {
     $db = conectarBaseDatos($c, 3);

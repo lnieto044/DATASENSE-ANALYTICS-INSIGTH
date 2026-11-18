@@ -28,6 +28,63 @@ function cargarEntorno() {
     }
 }
 
+/**
+ * Lee DATABASE_URL aunque se haya pegado con detalles de más: el nombre de la variable delante ("DATABASE_URL=…"),
+ * comillas, espacios o saltos de línea, una clave con @ o #, o la línea de comando de mysql que muestran algunos
+ * paneles (mysql -u usuario -h servidor -P puerto -D base -pclave). Devuelve host, port, user, pass, base y ssl
+ * (false si pide conexión sin cifrar), o null si no la entiende.
+ */
+function leerDatabaseUrl($texto) {
+    $t = trim((string) $texto, " \t\n\r\"'");
+    $t = trim(preg_replace('/^(export\s+)?DATABASE_URL\s*=\s*/i', '', $t), " \t\n\r\"'");
+    if ($t === '') return null;
+
+    // Línea de comando de mysql
+    if (preg_match('/^(mysql|mariadb)\s+-/i', $t)) {
+        $opcion = function (array $patrones) use ($t) {
+            foreach ($patrones as $p) {
+                if (preg_match($p, $t, $m)) return trim($m[1], "'\"");
+            }
+            return '';
+        };
+        $host = $opcion(['/(?:^|\s)-h\s*(\S+)/', '/--host[=\s](\S+)/']);
+        if ($host === '') return null;
+        return [
+            'host' => $host,
+            'port' => $opcion(['/(?:^|\s)-P\s*(\d+)/', '/--port[=\s](\d+)/']) ?: '3306',
+            'user' => $opcion(["/(?:^|\\s)-u\\s*('[^']*'|\"[^\"]*\"|\\S+)/", "/--user[=\\s]('[^']*'|\\S+)/"]),
+            'pass' => $opcion(["/(?:^|\\s)-p('[^']*'|\"[^\"]*\"|\\S+)/", "/--password[=\\s]('[^']*'|\\S+)/"]),
+            'base' => $opcion(["/(?:^|\\s)-D\\s*('[^']*'|\\S+)/", "/--database[=\\s]('[^']*'|\\S+)/"]),
+            'ssl'  => stripos($t, 'ssl-mode=disabled') !== false ? false : null,
+        ];
+    }
+
+    // Dirección mysql://usuario:clave@servidor:puerto/base?opciones (una URL no lleva espacios)
+    $t = preg_replace('/\s+/', '', $t);
+    if (!preg_match('#^(?:mysql2?|mariadb)://([^:@/]+)(?::(.*))?@([^:@/?]+)(?::(\d+))?(?:/([^?]*))?(?:\?(.*))?$#i', $t, $m)) return null;
+    if (preg_match('/<[A-Z_]+>/', $m[2] ?? '')) return null;   // quedó el texto de ejemplo <PASSWORD> en lugar de la clave
+    parse_str($m[6] ?? '', $opciones);
+    $modo = strtolower((string) ($opciones['ssl-mode'] ?? $opciones['sslmode'] ?? ''));
+    return [
+        'host' => $m[3],
+        'port' => ($m[4] ?? '') !== '' ? $m[4] : '3306',
+        'user' => rawurldecode($m[1]),
+        'pass' => rawurldecode($m[2] ?? ''),
+        'base' => rawurldecode(trim($m[5] ?? '', '/')),
+        'ssl'  => ($modo === 'disabled' || $modo === 'disable' || ($opciones['ssl'] ?? '') === 'false') ? false : null,
+    ];
+}
+
+// Pista para salud.php cuando DATABASE_URL no se entiende (sin mostrar nada de su contenido)
+function pistaDatabaseUrl($texto) {
+    $t = trim((string) $texto);
+    if ($t === '') return null;
+    if (strpos($t, '<PASSWORD>') !== false || strpos($t, '<') !== false) return 'la línea todavía tiene <PASSWORD>: cámbialo por tu contraseña';
+    if (!preg_match('#mysql2?://|mariadb://#i', $t) && !preg_match('/^(mysql|mariadb)\s+-/i', $t)) return 'no empieza por mysql:// (¿se pegó solo la contraseña u otro dato?)';
+    if (substr_count($t, 'mysql://') > 1) return 'la línea está pegada dos veces';
+    return 'la línea está incompleta: debe tener usuario, contraseña y servidor';
+}
+
 function configuracionBaseDatos() {
     cargarEntorno();
     $c = [
@@ -39,20 +96,16 @@ function configuracionBaseDatos() {
         'ssl'  => null,
     ];
 
-    $url = trim((string) ($_ENV['DATABASE_URL'] ?? ''), " \t\n\r\"'");
-    $partes = $url !== '' ? parse_url($url) : false;
-    if ($partes && !empty($partes['host'])) {
+    $partes = leerDatabaseUrl((string) ($_ENV['DATABASE_URL'] ?? ''));
+    if ($partes) {
         $c['host'] = $partes['host'];
-        $c['port'] = (string) ($partes['port'] ?? 3306);
-        $c['user'] = rawurldecode((string) ($partes['user'] ?? ''));
-        $c['pass'] = rawurldecode((string) ($partes['pass'] ?? ''));
-        $base = rawurldecode(trim((string) ($partes['path'] ?? ''), '/'));
+        $c['port'] = $partes['port'];
+        $c['user'] = $partes['user'];
+        $c['pass'] = $partes['pass'];
         // Las bases que trae el servidor (test, sys, mysql…) no son para datos propios: se usa "datasense"
-        $c['name'] = in_array(strtolower($base), ['', 'test', 'sys', 'mysql', 'information_schema', 'performance_schema', 'metrics_schema'], true)
-            ? 'datasense' : $base;
-        parse_str((string) ($partes['query'] ?? ''), $opciones);
-        $modo = strtolower((string) ($opciones['ssl-mode'] ?? $opciones['sslmode'] ?? ''));
-        if ($modo === 'disabled' || $modo === 'disable' || ($opciones['ssl'] ?? '') === 'false') $c['ssl'] = false;
+        $c['name'] = in_array(strtolower($partes['base']), ['', 'test', 'sys', 'mysql', 'information_schema', 'performance_schema', 'metrics_schema'], true)
+            ? 'datasense' : $partes['base'];
+        if ($partes['ssl'] === false) $c['ssl'] = false;
     }
 
     $c['externa'] = !in_array(strtolower($c['host']), ['', 'localhost', '127.0.0.1', '::1'], true);
