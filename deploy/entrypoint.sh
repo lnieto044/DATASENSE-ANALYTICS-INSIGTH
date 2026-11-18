@@ -70,6 +70,11 @@ if [ "${1:-}" = "--solo-base" ]; then
     mariadb --socket="$SOCKET" -e "CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci"
     mariadb --socket="$SOCKET" --default-character-set=utf8mb4 "$DB_NAME" < /opt/datasense/datasense_demo.sql
     echo "Base de demostración lista: $(mariadb --socket="$SOCKET" -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '${DB_NAME}'") tablas"
+    # Un año de actividad para los tableros (cron/datos_muestra.php), con un usuario temporal: al arrancar el servicio
+    # el usuario de la aplicación recibe su clave definitiva
+    CLAVE_TEMPORAL="$(head -c 18 /dev/urandom | od -An -tx1 | tr -d ' \n')"
+    mariadb --socket="$SOCKET" -e "CREATE USER IF NOT EXISTS '${DB_USER}'@'127.0.0.1' IDENTIFIED BY '${CLAVE_TEMPORAL}'; GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'127.0.0.1';"
+    DB_PASS="$CLAVE_TEMPORAL" php /var/www/html/cron/datos_muestra.php
     mariadb-admin --socket="$SOCKET" shutdown
     exit 0
 fi
@@ -86,6 +91,8 @@ fi
 if [ "$BASE_EXTERNA" = "si" ]; then
     # Base permanente: se prepara (y la primera vez se cargan los datos de demostración); MariaDB local no se usa
     php /var/www/html/cron/preparar_base.php
+    # Un año de actividad para los tableros, una sola vez y en segundo plano (el sitio abre mientras tanto)
+    (php /var/www/html/cron/datos_muestra.php || echo "No se generaron los datos de muestra" >&2) &
 else
     preparar_disco_base
     iniciar_mariadb
@@ -106,6 +113,9 @@ GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'localhost';
 GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'127.0.0.1';
 FLUSH PRIVILEGES;
 SQL
+
+    # Un año de actividad para los tableros (ya viene en la imagen; esto completa bases locales anteriores)
+    php /var/www/html/cron/datos_muestra.php || echo "No se generaron los datos de muestra" >&2
 
     # Demostración: las fechas de los datos de prueba se mueven para que el mes en curso muestre información
     php /var/www/html/cron/fechas_demo.php || echo "No se pudieron poner al día las fechas de la demostración" >&2

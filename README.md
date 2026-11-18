@@ -125,6 +125,28 @@ de Vercel). En su consola: abrir la base → botón para conectar → generar la
 - Los archivos subidos (adjuntos, comprobantes, imágenes de afiches) siguen guardándose en el servidor y se pierden
   cuando Vercel lo reinicia.
 
+### Un año de actividad para los tableros
+
+`cron/datos_muestra.php` completa la demostración con los últimos doce meses: casos de la mesa con sus tiempos, ANS y
+encuestas, facturas con pagos, retenciones y comprobantes aprobados, gastos mensuales (nómina, arriendo, servicios,
+honorarios, 4x1000), PQRSD con sus términos, mensajes del sitio, chats y reuniones. Usa las reglas de la plataforma
+(partida doble, consecutivos, días hábiles y festivos) y al final numera todo en orden de fecha.
+
+- Corre una sola vez por base: al construir la imagen y, en una base permanente creada con los datos de demostración,
+  en segundo plano al primer arranque. Nunca en una base real. `DATOS_MUESTRA=0` lo apaga.
+- Todo es ficticio (correos `@example.com`, teléfonos 307 555). No crea pedidos ni reseñas de la tienda, porque la
+  tienda es pública y mostraría ventas y opiniones que no existieron.
+
+## Pagos con Mercado Pago
+
+Con `PAGOS_ENTORNO=PRODUCCION` y `MP_ACCESS_TOKEN` el botón de pago de "Mis facturas" lleva a Mercado Pago (Checkout
+Pro) y el aviso de pago (`admin/webhook_pagos.php`) registra el recaudo y su comprobante de ingreso aprobado.
+
+- Con las credenciales de prueba de la aplicación (`TEST-...`) se paga en el ambiente de pruebas con las tarjetas de
+  prueba (titular `APRO` para aprobar); con las de producción (`APP_USR-...`) los pagos son reales.
+- El aviso se confirma siempre consultando el pago en Mercado Pago y cada pago se contabiliza una sola vez.
+- Si Mercado Pago rechaza la solicitud, el motivo queda en el registro del servidor y el cliente ve un mensaje amable.
+
 ## Datos y licencias
 
 - La base de datos real no está en el repositorio. `deploy/demo/datasense_demo.sql` tiene solo datos ficticios.

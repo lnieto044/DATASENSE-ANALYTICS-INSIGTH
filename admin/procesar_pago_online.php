@@ -245,7 +245,7 @@ if ($ENTORNO === 'PRODUCCION') {
                 "title" => "Pago de Factura " . $factura['numero_factura'],
                 "quantity" => 1,
                 "currency_id" => "COP",
-                "unit_price" => $por_pagar
+                "unit_price" => (float) round($por_pagar)   // los pesos colombianos van sin centavos
             ]
         ],
         "payer" => [
@@ -281,9 +281,12 @@ if ($ENTORNO === 'PRODUCCION') {
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
 
-    if ($http_code == 200 || $http_code == 201) {
-        $data = json_decode($response, true);
-        $url_checkout = $data['init_point']; 
+    $data = json_decode((string) $response, true);
+    if (($http_code == 200 || $http_code == 201) && !empty($data['init_point'])) {
+        // Con las credenciales de prueba (TEST-...) el pago va al ambiente de pruebas de Mercado Pago: ahí se paga con
+        // las tarjetas de prueba y no se mueve dinero. Con las de producción (APP_USR-...), es un pago real.
+        $de_prueba = strpos($MP_ACCESS_TOKEN, 'TEST-') === 0;
+        $url_checkout = ($de_prueba && !empty($data['sandbox_init_point'])) ? $data['sandbox_init_point'] : $data['init_point'];
 
         $db->prepare("INSERT INTO pagos_registro (factura_id, metodo_pago, monto_pagado, estado_transaccion, fecha_pago) VALUES (?, 'Pasarela_Real', ?, 'Pendiente_Validacion', NOW())")->execute([$factura_id, $por_pagar]);
         recalcularFactura($db, $factura_id);
@@ -291,7 +294,9 @@ if ($ENTORNO === 'PRODUCCION') {
         header("Location: " . $url_checkout);
         exit;
     } else {
-        die("<h3>Error crítico del servidor bancario.</h3>");
+        // El motivo queda en el registro del servidor (credencial vencida, dato rechazado…), nunca en la pantalla
+        error_log('procesar_pago_online.php: Mercado Pago respondió ' . $http_code . ': ' . substr((string) $response, 0, 500));
+        die("<h3>No pudimos conectar con Mercado Pago.</h3><p>Intenta de nuevo en unos minutos o escríbenos para completar tu pago.</p>");
     }
 }
 ?>
