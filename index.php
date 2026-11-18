@@ -171,6 +171,10 @@ $videos_marcela = array_values(array_filter([
       </p>
     </div>
 
+    <figure class="equipo-foto">
+      <img src="img/equipo/equipo-datasense.jpg" alt="Equipo de DataSense Analytics Insights" loading="lazy">
+    </figure>
+
     <div class="team-grid">
       <div class="team-card">
         <div class="team-img-wrapper">
@@ -413,10 +417,7 @@ $videos_marcela = array_values(array_filter([
 
       <!-- Hackatón Talento Tech Región 7 (MinTIC): primer lugar -->
       <article class="proyecto-tarjeta" data-areas="analitica hackaton">
-        <div class="proyecto-media proyecto-media-icono" aria-hidden="true">
-          <i class="fas fa-trophy"></i>
-          <span>Primer lugar · Hackatón Talento Tech Región 7 · 2025</span>
-        </div>
+        <div class="proyecto-media"><img src="img/proyectos/talento-tech-primer-lugar.jpg" alt="Primer lugar en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca 2025: Luis Guillermo Nieto Patiño con el trofeo y el certificado de reconocimiento" loading="lazy"></div>
         <div class="proyecto-cuerpo">
           <span class="proyecto-cliente"><i class="fas fa-flag"></i>Ministerio TIC · Talento Tech</span>
           <span class="proyecto-area"><i class="fas fa-chart-line"></i>Analítica avanzada · Hackatón</span>
@@ -1174,6 +1175,47 @@ document.addEventListener("DOMContentLoaded", function () {
     verMas.addEventListener('click', function () { expandido = true; aplicar(); });
   }
   aplicar();
+})();
+</script>
+<div class="visor-imagen" id="visorImagen" hidden role="dialog" aria-modal="true" aria-label="Imagen ampliada">
+  <button type="button" class="visor-cerrar" aria-label="Cerrar"><i class="fas fa-xmark"></i></button>
+  <img src="" alt="">
+  <p class="visor-titulo"></p>
+</div>
+<script>
+// Imágenes de proyectos y del equipo: al tocarlas se ven en grande (se cierra con la X, tocando afuera o con Esc)
+(function () {
+  const visor = document.getElementById('visorImagen');
+  if (!visor) return;
+  const grande = visor.querySelector('img');
+  const titulo = visor.querySelector('.visor-titulo');
+  const cerrar = visor.querySelector('.visor-cerrar');
+  let origen = null;
+  const abrir = function (img) {
+    origen = img;
+    grande.src = img.currentSrc || img.src;
+    grande.alt = img.alt;
+    titulo.textContent = img.alt;
+    visor.hidden = false;
+    document.body.style.overflow = 'hidden';
+    cerrar.focus();
+  };
+  const salir = function () {
+    visor.hidden = true;
+    grande.src = '';
+    document.body.style.overflow = '';
+    if (origen) origen.focus();
+  };
+  document.querySelectorAll('.proyecto-media img, .equipo-foto img').forEach(function (img) {
+    img.tabIndex = 0;
+    img.setAttribute('role', 'button');
+    img.title = 'Ver en grande';
+    img.addEventListener('click', function () { abrir(img); });
+    img.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrir(img); } });
+  });
+  cerrar.addEventListener('click', salir);
+  visor.addEventListener('click', function (e) { if (e.target === visor) salir(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !visor.hidden) salir(); });
 })();
 </script>
 <script>
