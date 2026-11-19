@@ -77,7 +77,7 @@ $testimonios = array_values(array_filter([
      'enlace' => 'https://www.youtube.com/watch?v=V-ZtG-wGlo4'],
     ['nombre' => 'Andrés Soto', 'imagen' => 'tour-mountain-adventure.jpg', 'cargo' => 'Gerente', 'organizacion' => 'Tour Mountain Adventure', 'proyecto' => 'Plataforma web de caminatas guiadas', 'calificacion' => 5,
      'texto' => 'DataSense nos dio una plataforma a la altura de una empresa: los viajeros consultan las caminatas y el calendario de salidas, las empresas cotizan sus salidas en línea y dejamos atrás el trabajo manual de responder y organizar cada solicitud. Hoy proyectamos una imagen mucho más profesional.',
-     'enlace' => 'https://tour-mountain-adventure.onrender.com/'],
+     'enlace' => 'https://www.youtube.com/watch?v=_UPF_P78MTk'],
     ['nombre' => 'Diana Linares', 'imagen' => 'colpensiones-fraude.jpg', 'cargo' => 'Apoyo de Gerencia de Fraude', 'organizacion' => 'Colpensiones', 'proyecto' => 'Tablero de indicadores para la Gerencia de Fraude', 'calificacion' => 5,
      'texto' => 'El tablero que construyó DataSense le dio a la Gerencia de Fraude una vista clara y actualizada de los casos y las alertas. Ahora priorizamos con datos, identificamos más rápido los patrones que requieren revisión y presentamos la información a la dirección sin armar informes a mano.'],
 ], function ($t) use ($es_demo) {
@@ -434,7 +434,11 @@ $videos_marcela = array_values(array_filter([
 
       <!-- Kauta: Hackatón 30X 2026, reto Blinka -->
       <article class="proyecto-tarjeta" data-areas="analitica software hackaton">
-        <div class="proyecto-media"><img src="img/proyectos/portadas/kauta.jpg" data-grande="img/proyectos/kauta.jpg" alt="Kauta: panel de cuentas por pagar con las facturas que el agente consulta, pagos exitosos y vencimientos" loading="lazy"></div>
+        <div class="proyecto-media con-video">
+          <img src="img/proyectos/portadas/kauta.jpg" data-youtube="_cG8uustYMU" data-pagina="https://kauta.vercel.app/" data-pagina-texto="Visitar la plataforma" alt="Kauta: pitch en video del agente de cuentas por pagar (Hackatón 30X)" loading="lazy">
+          <span class="proyecto-reproducir" aria-hidden="true"><i class="fas fa-play"></i></span>
+          <span class="proyecto-video-etiqueta" aria-hidden="true"><i class="fas fa-video"></i>Pitch en video</span>
+        </div>
         <div class="proyecto-cuerpo">
           <span class="proyecto-cliente"><i class="fas fa-flag"></i>Hackatón 30X · Reto Blinka</span>
           <span class="proyecto-area"><i class="fas fa-robot"></i>IA aplicada · Finanzas</span>
@@ -443,7 +447,7 @@ $videos_marcela = array_values(array_filter([
           <p>Lee facturas en cualquier formato (correo, chat, PDF, foto o XML), las revisa contra 13 reglas de la empresa y paga desde la wallet: paga lo que cumple, frena lo que no y consulta a una persona lo dudoso. La IA solo lee; las decisiones las toma código auditable, con token para aprobar y pagar, aprobación del CEO para montos altos y un registro que nadie puede alterar. Desarrollado en equipo.</p>
           <div class="proyecto-acciones">
             <a href="#contacto" class="btn-team" data-proyecto="Kauta (agente de cuentas por pagar)" data-servicio="DSW">Quiero un proyecto así</a>
-            <a href="https://kauta.vercel.app/" class="btn-proyecto-sec" target="_blank" rel="noopener noreferrer"><i class="fas fa-arrow-up-right-from-square"></i>Ver el proyecto</a>
+            <a href="https://www.youtube.com/watch?v=_cG8uustYMU" class="btn-proyecto-sec" data-abrir-video target="_blank" rel="noopener noreferrer"><i class="fas fa-play"></i>Ver el video</a>
           </div>
         </div>
       </article>
@@ -509,7 +513,11 @@ $videos_marcela = array_values(array_filter([
       </article>
 
       <article class="proyecto-tarjeta" data-areas="software">
-        <div class="proyecto-media"><img src="img/proyectos/portadas/tour-mountain-adventure.jpg" data-grande="img/proyectos/tour-mountain-adventure.jpg" alt="Sitio web de Tour Mountain Adventure: caminatas guiadas por Cundinamarca" loading="lazy"></div>
+        <div class="proyecto-media con-video" style="--reproducir-x: 74%; --reproducir-y: 46%">
+          <img src="img/proyectos/portadas/tour-mountain-adventure.jpg" data-youtube="_UPF_P78MTk" alt="Tour Mountain Adventure: recorrido en video por la plataforma de caminatas guiadas por Cundinamarca" loading="lazy">
+          <span class="proyecto-reproducir" aria-hidden="true"><i class="fas fa-play"></i></span>
+          <span class="proyecto-video-etiqueta" aria-hidden="true"><i class="fas fa-video"></i>Recorrido en video</span>
+        </div>
         <div class="proyecto-cuerpo">
           <span class="proyecto-cliente"><i class="fas fa-mountain-sun"></i>Tour Mountain Adventure</span>
           <span class="proyecto-area"><i class="fas fa-code"></i>Desarrollo web · Turismo</span>
@@ -517,7 +525,7 @@ $videos_marcela = array_values(array_filter([
           <p>Sitio de la agencia con catálogo de caminatas por tipo de aventura, calendario de salidas, cotización de salidas empresariales, tienda, blog y cuentas para los viajeros.</p>
           <div class="proyecto-acciones">
             <a href="#contacto" class="btn-team" data-proyecto="la plataforma web de Tour Mountain Adventure" data-servicio="DSW">Quiero un proyecto así</a>
-            <a href="https://tour-mountain-adventure.onrender.com/" class="btn-proyecto-sec" target="_blank" rel="noopener noreferrer"><i class="fas fa-arrow-up-right-from-square"></i>Visitar el sitio</a>
+            <a href="https://www.youtube.com/watch?v=_UPF_P78MTk" class="btn-proyecto-sec" data-abrir-video target="_blank" rel="noopener noreferrer"><i class="fas fa-play"></i>Ver el recorrido</a>
           </div>
         </div>
       </article>
