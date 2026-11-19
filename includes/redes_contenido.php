@@ -140,6 +140,17 @@ function publicacionesListas(PDO $db) {
             'hashtags' => '#Liderazgo #AnaliticaDeDatos #EstrategiaDeDatos #DataSense',
         ],
         [
+            'id' => 'cofundadora', 'redes' => $todas, 'tema_contenido' => 'Nuestra cofundadora',
+            'diseno' => ['plantilla' => 'foto', 'formato' => 'vertical', 'tema' => 'verde', 'imagen' => '../img/marcela.jpg',
+                'etiqueta' => 'Co-Fundadora & CTO',
+                'titulo' => 'Datos con *enfoque humano* para decidir mejor',
+                'texto' => 'Marcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano (FLACSO), con formación en Análisis de Datos del MinTIC.',
+                'puntos' => ['Tableros e indicadores en Power BI', 'Seguimiento y evaluación de planes y programas'],
+                'boton' => 'Agenda una reunión'],
+            'texto' => "Conoce a Marcela Pacheco Parra, Co-Fundadora y CTO de DataSense Analytics Insights. 💼\n\nPsicóloga y magíster en Desarrollo Humano (FLACSO Argentina), con formación en Análisis de Datos certificada por el MinTIC y primer lugar en la Hackatón Talento Tech Región 7 (2025), co-lidera los proyectos de la empresa y acompaña a organizaciones públicas y privadas a convertir sus datos en decisiones: tableros en Power BI, indicadores de gestión y seguimiento y evaluación de planes, programas y políticas públicas.\n\nAdemás, es conferencista en bienestar y desarrollo humano.\n\n¿Tu organización necesita medir mejor su gestión? Agenda una reunión con ella 👉 {$sitio}#contacto",
+            'hashtags' => '#Liderazgo #AnaliticaDeDatos #DesarrolloHumano #DataSense',
+        ],
+        [
             'id' => 'premio-contraloria', 'redes' => $todas, 'tema_contenido' => 'Reconocimiento',
             'diseno' => ['plantilla' => 'foto', 'formato' => 'vertical', 'tema' => 'azul', 'imagen' => '../img/luis.jpg',
                 'etiqueta' => 'Premio Alfonso Palacio Rudas 2026',
@@ -193,7 +204,7 @@ function publicacionesListas(PDO $db) {
                 'titulo' => 'Psicología y analítica de datos *en un mismo equipo*',
                 'texto' => 'Marcela Pacheco Parra, Co-Fundadora y CTO, y Luis Guillermo Nieto Patiño, Co-Fundador y CEO.',
                 'boton' => 'Conócenos'],
-            'texto' => "Detrás de DataSense hay dos fundadores con una misma convicción: las organizaciones crecen cuando cuidan a su gente y deciden con datos. 🤝\n\nMarcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano (FLACSO), y Luis Guillermo Nieto Patiño, candidato a magíster en Analítica de Datos, unen el desarrollo humano y la analítica para acompañar a empresas y entidades.\n\n¿Qué te gustaría preguntarles? Déjalo en los comentarios 👇\n\nConócenos 👉 {$sitio}#quienes",
+            'texto' => "Detrás de DataSense hay dos fundadores con una misma convicción: las organizaciones crecen cuando cuidan a su gente y deciden con datos. 🤝\n\nMarcela Pacheco Parra, psicóloga y magíster en Desarrollo Humano (FLACSO) con formación en Análisis de Datos, y Luis Guillermo Nieto Patiño, ingeniero de sistemas especializado en analítica, lideran juntos los proyectos de datos de DataSense y suman el desarrollo humano para acompañar a empresas y entidades.\n\n¿Qué te gustaría preguntarles? Déjalo en los comentarios 👇\n\nConócenos 👉 {$sitio}#quienes",
             'hashtags' => '#Emprendimiento #DesarrolloHumano #AnaliticaDeDatos #DataSense',
         ],
         [

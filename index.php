@@ -182,7 +182,7 @@ $videos_marcela = array_values(array_filter([
             <p class="fundador-titulo">Psicóloga (UNAD) · Magíster en Desarrollo Humano (FLACSO Argentina)</p>
           </div>
         </header>
-        <p class="fundador-bio">Formula, hace seguimiento y evalúa planes, programas y políticas públicas, y une la mirada humana con el análisis de datos, con formación en Análisis de Datos certificada por el MinTIC y dominio de Power BI.</p>
+        <p class="fundador-bio">Co-lidera DataSense y los proyectos con sus clientes. Con formación en Análisis de Datos certificada por el MinTIC y dominio de Power BI, acompaña a gerencias y entidades a convertir sus datos en decisiones: tableros, indicadores de gestión y evaluación de planes, programas y políticas públicas, con una mirada humana.</p>
         <div class="fundador-bloque">
           <p class="fundador-etiqueta">Trayectoria</p>
           <ul class="fundador-chips">
@@ -199,22 +199,33 @@ $videos_marcela = array_values(array_filter([
           </ul>
         </div>
         <div class="fundador-bloque">
-          <p class="fundador-etiqueta">Conferencias para organizaciones nacionales e internacionales</p>
+          <p class="fundador-etiqueta">Especialidades</p>
           <ul class="fundador-chips fundador-chips-tema">
+            <li>Power BI</li>
+            <li>Análisis de datos</li>
+            <li>Tableros e indicadores de gestión</li>
+            <li>Formulación y evaluación de políticas públicas</li>
+            <li>Seguimiento de planes y programas</li>
+          </ul>
+        </div>
+        <div class="fundador-bloque">
+          <p class="fundador-etiqueta">Además, conferencista para organizaciones nacionales e internacionales</p>
+          <ul class="fundador-chips fundador-chips-conferencia">
             <li>Bienestar</li>
             <li>Trabajo en equipo</li>
             <li>Psicología de pareja</li>
             <li>Orientación vocacional</li>
             <li>Desarrollo humano</li>
           </ul>
+          <?php if ($videos_marcela): ?>
+          <a href="#videosMarcela" class="fundador-enlace fundador-enlace-video"><i class="fa-brands fa-youtube" aria-hidden="true"></i>Mira sus conferencias</a>
+          <?php endif; ?>
         </div>
         <div class="fundador-acciones">
-          <a href="#contacto" class="btn-team">Solicita una conferencia</a>
-          <?php if ($videos_marcela): ?>
-          <a href="#videosMarcela" class="btn-team btn-team-yt"><i class="fa-brands fa-youtube"></i>Sus conferencias</a>
-          <?php endif; ?>
+          <a href="#contacto" class="btn-team">Agenda una reunión</a>
+          <a href="#conferencias" class="btn-team btn-team-borde">Solicita una conferencia</a>
           <?php $wpp = preg_replace('/\D+/', '', (string) ($_ENV['SOCIAL_WHATSAPP'] ?? '')); if (strlen($wpp) >= 10): ?>
-          <a href="https://wa.me/<?= esc($wpp) ?>?text=<?= rawurlencode('Hola Marcela, vengo del sitio de DataSense y quiero información sobre sus conferencias de psicología.') ?>" class="btn-team btn-team-wpp" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>
+          <a href="https://wa.me/<?= esc($wpp) ?>?text=<?= rawurlencode('Hola Marcela, vengo del sitio de DataSense y quiero conversar sobre un proyecto de datos o una conferencia.') ?>" class="btn-team btn-team-wpp" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>
           <?php endif; ?>
         </div>
       </article>
@@ -243,7 +254,6 @@ $videos_marcela = array_values(array_filter([
             <li><i class="fas fa-award" aria-hidden="true"></i><span><b>Premio Alfonso Palacio Rudas 2026</b> · Contraloría General de la República, categoría Académico.</span></li>
             <li><i class="fas fa-trophy" aria-hidden="true"></i><span><b>Primer lugar</b> · Hackatón Talento Tech Región 7 Boyacá–Cundinamarca (MinTIC, 2025), junto con Marcela Pacheco Parra.</span></li>
             <li><i class="fas fa-medal" aria-hidden="true"></i><span><b>Finalista</b> · Hackatón en Pasto con AgroSmartic.</span></li>
-            <li><i class="fas fa-rocket" aria-hidden="true"></i><span><b>Hackatones 2026</b> · 30X, Platzi Conf Bogotá y Colombia 5.0. <a href="#proyectos" class="fundador-enlace" data-ir-filtro="hackaton">Ver proyectos</a></span></li>
           </ul>
         </div>
         <div class="fundador-bloque">
@@ -257,6 +267,17 @@ $videos_marcela = array_values(array_filter([
             <li>ITIL y ANS</li>
             <li>Desarrollo web y APIs</li>
           </ul>
+        </div>
+        <div class="fundador-bloque">
+          <p class="fundador-etiqueta">Proyectos en hackatones</p>
+          <ul class="fundador-chips fundador-chips-conferencia">
+            <li>CuentaVoz</li>
+            <li>Kauta</li>
+            <li>ReActiva Territorio</li>
+            <li>Desenmascara</li>
+            <li>AgroSmartic</li>
+          </ul>
+          <a href="#proyectos" class="fundador-enlace fundador-enlace-video" data-ir-filtro="hackaton"><i class="fas fa-arrow-right" aria-hidden="true"></i>Ver sus proyectos</a>
         </div>
         <div class="fundador-acciones">
           <a href="#contacto" class="btn-team">Agenda una reunión</a>

@@ -943,3 +943,10 @@ select.form-input option {
   .fundador-nombre { font-size: 1.18rem; }
   .fundador-titulo { font-size: .84rem; }
 }
+/* Botón secundario de los perfiles (borde azul) y etiquetas de los temas de conferencia */
+.btn-team-borde { background: transparent; color: #0A2E4F; border: 2px solid #0A2E4F; box-shadow: none; padding: 8px 22px; }
+.btn-team-borde:hover, .btn-team-borde:focus-visible { background: #0A2E4F; color: #fff; }
+.fundador-chips-conferencia li { color: #1e3a8a; background: #eff6ff; border-color: #bfdbfe; }
+.fundador-enlace-video { display: inline-flex; align-items: center; gap: 7px; margin-top: 12px; font-size: .9rem; }
+.fundador-enlace-video i { font-size: 1.05rem; }
+.fundador-enlace-video .fa-youtube { color: #dc2626; }
