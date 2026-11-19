@@ -415,7 +415,7 @@ $videos_marcela = array_values(array_filter([
 
       <!-- Hackatón Talento Tech Región 7 (MinTIC): primer lugar -->
       <article class="proyecto-tarjeta" data-areas="analitica hackaton">
-        <div class="proyecto-media"><img src="img/proyectos/portadas/talento-tech-primer-lugar.jpg" data-grande="img/proyectos/talento-tech-primer-lugar.jpg" alt="Primer lugar en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca 2025: Luis Guillermo Nieto Patiño con el trofeo y el certificado de reconocimiento" loading="lazy"></div>
+        <div class="proyecto-media"><img src="img/proyectos/portadas/talento-tech-marcela-luis.jpg" data-grande="img/proyectos/talento-tech-marcela-luis.jpg" alt="Marcela Pacheco Parra y Luis Guillermo Nieto Patiño con el trofeo y sus certificados del primer lugar en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca 2025" loading="lazy"></div>
         <div class="proyecto-cuerpo">
           <span class="proyecto-cliente"><i class="fas fa-flag"></i>Ministerio TIC · Talento Tech</span>
           <span class="proyecto-area"><i class="fas fa-chart-line"></i>Analítica avanzada</span>

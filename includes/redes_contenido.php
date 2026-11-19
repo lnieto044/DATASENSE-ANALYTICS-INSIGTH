@@ -49,7 +49,8 @@ function galeriaAfiches(PDO $db) {
         ['Equipo', 'Marcela Pacheco Parra', 'img/marcela.jpg'],
         ['Equipo', 'Luis Guillermo Nieto Patiño', 'img/luis.jpg'],
         ['Equipo', 'Marcela y Luis, fundadores', 'img/equipo/fundadores.jpg'],
-        ['Reconocimientos', 'Primer lugar Talento Tech 2025', 'img/proyectos/talento-tech-primer-lugar.jpg'],
+        ['Reconocimientos', 'Marcela y Luis, primer lugar Talento Tech 2025', 'img/proyectos/talento-tech-marcela-luis.jpg'],
+        ['Reconocimientos', 'Afiche del primer lugar Talento Tech 2025', 'img/proyectos/talento-tech-primer-lugar.jpg'],
         ['Reconocimientos', 'Premio Alfonso Palacio Rudas 2026', 'img/proyectos/premio-alfonso-palacio-rudas.jpg'],
         ['Proyectos', 'CuentaVoz · inventario por voz', 'img/proyectos/cuentavoz.jpg'],
         ['Proyectos', 'Tour Mountain Adventure', 'img/proyectos/tour-mountain-adventure.jpg'],
@@ -151,7 +152,7 @@ function publicacionesListas(PDO $db) {
         ],
         [
             'id' => 'talento-tech', 'redes' => $todas, 'tema_contenido' => 'Reconocimiento',
-            'diseno' => ['plantilla' => 'foto', 'formato' => 'vertical', 'tema' => 'azul', 'imagen' => '../img/equipo/fundadores.jpg',
+            'diseno' => ['plantilla' => 'foto', 'formato' => 'vertical', 'tema' => 'azul', 'imagen' => '../img/proyectos/talento-tech-marcela-luis.jpg',
                 'etiqueta' => 'Primer lugar · Talento Tech 2025',
                 'titulo' => 'Datos que *ganan* retos reales',
                 'texto' => 'Marcela Pacheco Parra y Luis Guillermo Nieto Patiño, primer lugar en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca.',
