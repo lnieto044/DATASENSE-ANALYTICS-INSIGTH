@@ -579,39 +579,43 @@ $videos_marcela = array_values(array_filter([
   </div>
 </section>
 
-<section id="elegirnos" class="section gray section-padding" style="background:#f8fafc;">
+<section id="elegirnos" class="section section-padding enfoque-seccion">
   <div class="container">
-    <div class="section-header text-center" style="margin-bottom: 50px;">
-      <h2 style="font-size: 2.5rem; color: #0A2E4F; margin-bottom:10px;">Nuestro Enfoque</h2>
-      <span class="section-line" style="display:block; width:60px; height:4px; background:#3FAE49; margin: 0 auto; border-radius:2px;"></span>
-    </div>
-    
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
-      
-      <div class="enfoque-card">
-        <div class="enfoque-icon-box">
-          <i class="fas fa-check-circle"></i>
+    <div class="enfoque-pro">
+      <div class="enfoque-intro">
+        <span class="enfoque-ceja">Nuestro enfoque</span>
+        <h2 class="enfoque-titulo">Analítica con rigor, pensada para decidir</h2>
+        <p class="enfoque-texto">Cada proyecto combina método técnico, trazabilidad de la información y uso responsable de los datos. Así acompañamos a entidades públicas y empresas privadas a pasar de los datos a decisiones que se pueden sustentar.</p>
+        <div class="enfoque-sellos">
+          <span class="enfoque-sello"><i class="fas fa-award"></i>Premio Alfonso Palacio Rudas 2026</span>
+          <span class="enfoque-sello"><i class="fas fa-trophy"></i>Primer lugar Talento Tech 2025</span>
+          <span class="enfoque-sello"><i class="fas fa-user-shield"></i>Datos protegidos · Ley 1581 de 2012</span>
         </div>
-        <h3>Datos que se usan</h3>
-        <p>Diseñamos análisis orientados a la toma de decisiones reales, evitando informes extensos que no generan impacto.</p>
       </div>
 
-      <div class="enfoque-card">
-        <div class="enfoque-icon-box">
-          <i class="fas fa-shield-alt"></i>
-        </div>
-        <h3>Respaldo técnico</h3>
-        <p>Nuestros análisis brindan sustento técnico y trazabilidad para respaldar decisiones estratégicas.</p>
+      <div class="enfoque-lista">
+        <article class="enfoque-item">
+          <div class="enfoque-icono"><i class="fas fa-bullseye"></i><span class="enfoque-numero">01</span></div>
+          <div>
+            <h3>Decisiones, no informes</h3>
+            <p>Tableros e indicadores que responden las preguntas concretas de la gerencia. Menos reportes extensos y más decisiones a tiempo.</p>
+          </div>
+        </article>
+        <article class="enfoque-item">
+          <div class="enfoque-icono"><i class="fas fa-magnifying-glass-chart"></i><span class="enfoque-numero">02</span></div>
+          <div>
+            <h3>Rigor y trazabilidad</h3>
+            <p>Cada cifra se puede rastrear hasta su fuente: cruzamos fuentes independientes, documentamos el método y sustentamos cada hallazgo.</p>
+          </div>
+        </article>
+        <article class="enfoque-item">
+          <div class="enfoque-icono"><i class="fas fa-scale-balanced"></i><span class="enfoque-numero">03</span></div>
+          <div>
+            <h3>Uso responsable de los datos</h3>
+            <p>Soluciones viables y medibles, con protección de datos personales, acceso seguro con verificación en dos pasos y respeto por la confidencialidad.</p>
+          </div>
+        </article>
       </div>
-
-      <div class="enfoque-card">
-        <div class="enfoque-icon-box">
-          <i class="fas fa-balance-scale"></i>
-        </div>
-        <h3>Uso responsable</h3>
-        <p>Priorizamos soluciones viables, sostenibles y medibles para organizaciones públicas y privadas.</p>
-      </div>
-
     </div>
   </div>
 </section>
