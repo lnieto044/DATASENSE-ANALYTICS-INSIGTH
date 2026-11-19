@@ -172,18 +172,43 @@ $videos_marcela = array_values(array_filter([
       </p>
     </div>
 
-    <div class="team-grid">
-      <div class="team-card">
-        <div class="team-img-wrapper">
-          <img src="img/marcela.jpg" alt="Marcela Pacheco Parra" onerror="this.src='https://ui-avatars.com/api/?name=Marcela+Pacheco&background=0A2E4F&color=fff&size=200&bold=true'">
+    <div class="fundadores-grid">
+      <article class="fundador-card">
+        <header class="fundador-cabecera">
+          <img class="fundador-foto" src="img/equipo/marcela-retrato.jpg" alt="Marcela Pacheco Parra" loading="lazy">
+          <div>
+            <span class="fundador-cargo">Co-Fundadora &amp; CTO</span>
+            <h3 class="fundador-nombre">Marcela Pacheco Parra</h3>
+            <p class="fundador-titulo">Psicóloga (UNAD) · Magíster en Desarrollo Humano (FLACSO Argentina)</p>
+          </div>
+        </header>
+        <p class="fundador-bio">Formula, hace seguimiento y evalúa planes, programas y políticas públicas, y une la mirada humana con el análisis de datos, con formación en Análisis de Datos certificada por el MinTIC y dominio de Power BI.</p>
+        <div class="fundador-bloque">
+          <p class="fundador-etiqueta">Trayectoria</p>
+          <ul class="fundador-chips">
+            <li>Prosperidad Social</li>
+            <li>Fondo Nacional de Gestión del Riesgo de Desastres</li>
+            <li>Bienestar universitario</li>
+          </ul>
         </div>
-        <h4 class="team-name">Marcela Pacheco Parra</h4>
-        <span class="team-role">Co-Fundadora & CTO</span>
-        <div class="team-degree"><i class="fas fa-graduation-cap me-2"></i> Psicóloga (UNAD) · Magíster en Desarrollo Humano (FLACSO)</div>
-        <p class="team-desc">Psicóloga y magíster en Desarrollo Humano de FLACSO Argentina, con trayectoria en entidades públicas y privadas: Prosperidad Social, el Fondo Nacional de Gestión del Riesgo de Desastres y el bienestar universitario. Experta en formular, hacer seguimiento y evaluar planes, programas y políticas públicas, con formación en Análisis de Datos certificada por el MinTIC y dominio de Power BI.</p>
-        <p class="team-desc"><i class="fas fa-trophy me-2" style="color:#d4a017"></i><b>Primer lugar</b>, junto con Luis Guillermo Nieto Patiño, en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca (MinTIC, 2025).</p>
-        <p class="team-desc mb-0"><i class="fas fa-comments me-2"></i><b>Conferencista en psicología</b> para organizaciones nacionales e internacionales: bienestar, trabajo en equipo, psicología de pareja, orientación vocacional y desarrollo humano.</p>
-        <div class="team-contacto">
+        <div class="fundador-bloque">
+          <p class="fundador-etiqueta">Logros y reconocimientos</p>
+          <ul class="fundador-logros">
+            <li><i class="fas fa-trophy" aria-hidden="true"></i><span><b>Primer lugar</b> · Hackatón Talento Tech Región 7 Boyacá–Cundinamarca (MinTIC, 2025), junto con Luis Guillermo Nieto Patiño.</span></li>
+            <li><i class="fas fa-book-open" aria-hidden="true"></i><span><b>Investigación publicada</b> · Inclusión educativa de estudiantes sordos, estudio de caso en Fusagasugá. <a href="#proyectos" class="fundador-enlace" data-ir-filtro="humano">Ver proyecto</a></span></li>
+          </ul>
+        </div>
+        <div class="fundador-bloque">
+          <p class="fundador-etiqueta">Conferencias para organizaciones nacionales e internacionales</p>
+          <ul class="fundador-chips fundador-chips-tema">
+            <li>Bienestar</li>
+            <li>Trabajo en equipo</li>
+            <li>Psicología de pareja</li>
+            <li>Orientación vocacional</li>
+            <li>Desarrollo humano</li>
+          </ul>
+        </div>
+        <div class="fundador-acciones">
           <a href="#contacto" class="btn-team">Solicita una conferencia</a>
           <?php if ($videos_marcela): ?>
           <a href="#videosMarcela" class="btn-team btn-team-yt"><i class="fa-brands fa-youtube"></i>Sus conferencias</a>
@@ -192,27 +217,54 @@ $videos_marcela = array_values(array_filter([
           <a href="https://wa.me/<?= esc($wpp) ?>?text=<?= rawurlencode('Hola Marcela, vengo del sitio de DataSense y quiero información sobre sus conferencias de psicología.') ?>" class="btn-team btn-team-wpp" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>
           <?php endif; ?>
         </div>
-      </div>
+      </article>
 
-      <div class="team-card">
-        <div class="team-img-wrapper">
-          <img src="img/luis.jpg" style="object-position: 50% 20%;" alt="Luis Guillermo Nieto Patiño" onerror="this.src='https://ui-avatars.com/api/?name=Luis+Guillermo&background=0A2E4F&color=fff&size=200&bold=true'">
+      <article class="fundador-card">
+        <header class="fundador-cabecera">
+          <img class="fundador-foto" src="img/equipo/luis-retrato.jpg" alt="Luis Guillermo Nieto Patiño" loading="lazy">
+          <div>
+            <span class="fundador-cargo">Co-Fundador &amp; CEO</span>
+            <h3 class="fundador-nombre">Luis Guillermo Nieto Patiño</h3>
+            <p class="fundador-titulo">Ingeniero de Sistemas · Maestría en Administración con énfasis en Análisis de Datos (en curso)</p>
+          </div>
+        </header>
+        <p class="fundador-bio">Lidera la estrategia y la visión tecnológica de DataSense. En tecnología desde 2013 y especializado en analítica y calidad de la información, acompaña a gerencias y entidades a convertir sus datos en decisiones: tableros ejecutivos, verificación de información, analítica avanzada y software a la medida.</p>
+        <div class="fundador-bloque">
+          <p class="fundador-etiqueta">Trayectoria</p>
+          <ul class="fundador-chips">
+            <li>Ministerio de las Culturas</li>
+            <li>Colpensiones · Prevención del Fraude</li>
+            <li>Banca · Mesa de ayuda ITIL</li>
+          </ul>
         </div>
-        <h4 class="team-name">Luis Guillermo Nieto Patiño</h4>
-        <span class="team-role">Co-Fundador & CEO</span>
-        <div class="team-degree"><i class="fas fa-graduation-cap me-2"></i> Ingeniero de Sistemas · Maestría en Administración con énfasis en Análisis de Datos (en curso)</div>
-        <p class="team-desc">Ingeniero de Sistemas con trayectoria en tecnología desde 2013, especializado en analítica y calidad de la información. Ha trabajado en el sector público y en el privado: administró los sistemas de información del Ministerio de las Culturas, validó información académica y laboral en la Gerencia de Prevención del Fraude de Colpensiones y lideró mesa de ayuda bajo ITIL para la banca. Lidera la estrategia de negocio y la visión tecnológica de DataSense, y acompaña a gerencias y entidades a convertir sus datos en decisiones: tableros ejecutivos, verificación de información, analítica avanzada y software a la medida.</p>
-        <p class="team-desc"><i class="fas fa-award me-2" style="color:#d4a017"></i><b>Premio Alfonso Palacio Rudas 2026</b> de la Contraloría General de la República, categoría Académico, por una metodología de verificación de información pública.</p>
-        <p class="team-desc"><i class="fas fa-trophy me-2" style="color:#d4a017"></i><b>Primer lugar</b>, junto con Marcela Pacheco Parra, en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca (MinTIC, 2025), y finalista en una hackatón en Pasto con AgroSmartic. En 2026 creó CuentaVoz y Kauta en la Hackatón 30X, ReActiva Territorio en la hackatón de Platzi Conf Bogotá y Desenmascara en la Hackatón Colombia 5.0.</p>
-        <p class="team-desc"><i class="fas fa-screwdriver-wrench me-2"></i>Power BI · SQL Server y MySQL · Python · calidad y cruce de datos · Amazon Cognito y doble factor · ITIL y ANS · desarrollo web y APIs.</p>
-        <p class="team-desc mb-0"><i class="fas fa-handshake me-2"></i><b>¿Tu organización necesita decidir con datos?</b> Conversemos sobre tu reto.</p>
-        <div class="team-contacto">
+        <div class="fundador-bloque">
+          <p class="fundador-etiqueta">Logros y reconocimientos</p>
+          <ul class="fundador-logros">
+            <li><i class="fas fa-award" aria-hidden="true"></i><span><b>Premio Alfonso Palacio Rudas 2026</b> · Contraloría General de la República, categoría Académico.</span></li>
+            <li><i class="fas fa-trophy" aria-hidden="true"></i><span><b>Primer lugar</b> · Hackatón Talento Tech Región 7 Boyacá–Cundinamarca (MinTIC, 2025), junto con Marcela Pacheco Parra.</span></li>
+            <li><i class="fas fa-medal" aria-hidden="true"></i><span><b>Finalista</b> · Hackatón en Pasto con AgroSmartic.</span></li>
+            <li><i class="fas fa-rocket" aria-hidden="true"></i><span><b>Hackatones 2026</b> · 30X, Platzi Conf Bogotá y Colombia 5.0. <a href="#proyectos" class="fundador-enlace" data-ir-filtro="hackaton">Ver proyectos</a></span></li>
+          </ul>
+        </div>
+        <div class="fundador-bloque">
+          <p class="fundador-etiqueta">Especialidades</p>
+          <ul class="fundador-chips fundador-chips-tema">
+            <li>Power BI</li>
+            <li>SQL Server y MySQL</li>
+            <li>Python</li>
+            <li>Calidad y cruce de datos</li>
+            <li>Amazon Cognito y doble factor</li>
+            <li>ITIL y ANS</li>
+            <li>Desarrollo web y APIs</li>
+          </ul>
+        </div>
+        <div class="fundador-acciones">
           <a href="#contacto" class="btn-team">Agenda una reunión</a>
-          <?php $wpp = preg_replace('/\D+/', '', (string) ($_ENV['SOCIAL_WHATSAPP'] ?? '')); if (strlen($wpp) >= 10): ?>
+          <?php if (strlen($wpp) >= 10): ?>
           <a href="https://wa.me/<?= esc($wpp) ?>?text=<?= rawurlencode('Hola Luis, vengo del sitio de DataSense y quiero conversar sobre un proyecto de datos.') ?>" class="btn-team btn-team-wpp" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>
           <?php endif; ?>
         </div>
-      </div>
+      </article>
     </div>
   </div>
 </section>
@@ -1372,6 +1424,15 @@ document.addEventListener("DOMContentLoaded", function () {
   visor.addEventListener('click', function (e) { if (e.target === visor) salir(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !visor.hidden) salir(); });
 })();
+</script>
+<script>
+// Enlaces que llevan a Proyectos con un filtro ya elegido (por ejemplo "Ver proyectos" de hackatones en Quiénes Somos)
+document.querySelectorAll('[data-ir-filtro]').forEach(function (enlace) {
+  enlace.addEventListener('click', function () {
+    const boton = document.querySelector('.filtro-proyecto[data-filtro="' + enlace.dataset.irFiltro + '"]');
+    if (boton && !boton.hidden) boton.click();
+  });
+});
 </script>
 <script>
 // Proyectos: "Quiero un proyecto así" deja elegido el servicio y empieza el mensaje del formulario de contacto
