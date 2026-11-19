@@ -446,7 +446,11 @@ $videos_marcela = array_values(array_filter([
 
       <!-- Desenmascara: Hackatón Colombia 5.0 (2026) -->
       <article class="proyecto-tarjeta" data-areas="software hackaton">
-        <div class="proyecto-media"><img src="img/proyectos/portadas/desenmascara.jpg" data-grande="img/proyectos/desenmascara.jpg" alt="Desenmascara: pitch del bot antiestafas con la Llamada Verificada y los resultados de la prueba" loading="lazy"></div>
+        <div class="proyecto-media con-video" style="--reproducir-x: 76%">
+          <img src="img/proyectos/portadas/desenmascara-video.jpg" data-video="https://desenmascara.onrender.com/pitch/desenmascara-pitch.mp4" data-pagina="https://desenmascara.onrender.com/pitch/" alt="Desenmascara · «El día de Doña Rosa»: pitch en video del bot antiestafas (Hackatón Colombia 5.0)" loading="lazy">
+          <span class="proyecto-reproducir" aria-hidden="true"><i class="fas fa-play"></i></span>
+          <span class="proyecto-video-etiqueta" aria-hidden="true"><i class="fas fa-video"></i>Pitch en video</span>
+        </div>
         <div class="proyecto-cuerpo">
           <span class="proyecto-cliente"><i class="fas fa-flag"></i>Hackatón Colombia 5.0</span>
           <span class="proyecto-area"><i class="fas fa-shield-halved"></i>IA aplicada · Prevención de estafas</span>
@@ -455,7 +459,7 @@ $videos_marcela = array_values(array_filter([
           <p>Reenvías el mensaje o el número sospechoso a un bot de Telegram y en segundos recibes un semáforo con el porqué; cuando puede, confirma con la fuente: tu familiar o tu banco. Incluye una app de Android que avisa antes de contestar, Llamada Verificada para las entidades, banco de números reportados y un radar de campañas de estafa. En la prueba con mensajes reales de Colombia detectó 20 de 20 estafas, sin falsos positivos.</p>
           <div class="proyecto-acciones">
             <a href="#contacto" class="btn-team" data-proyecto="Desenmascara (bot antiestafas)" data-servicio="DSW">Quiero un proyecto así</a>
-            <a href="https://desenmascara.onrender.com/pitch/" class="btn-proyecto-sec" target="_blank" rel="noopener noreferrer"><i class="fas fa-play"></i>Ver el pitch</a>
+            <a href="https://desenmascara.onrender.com/pitch/" class="btn-proyecto-sec" data-abrir-video target="_blank" rel="noopener noreferrer"><i class="fas fa-play"></i>Ver el video</a>
           </div>
         </div>
       </article>
@@ -1221,38 +1225,77 @@ document.addEventListener("DOMContentLoaded", function () {
 <div class="visor-imagen" id="visorImagen" hidden role="dialog" aria-modal="true" aria-label="Imagen ampliada">
   <button type="button" class="visor-cerrar" aria-label="Cerrar"><i class="fas fa-xmark"></i></button>
   <img src="" alt="">
+  <video controls playsinline preload="none" hidden></video>
   <p class="visor-titulo"></p>
+  <a class="visor-enlace" target="_blank" rel="noopener noreferrer" hidden>Abrir la página del pitch<i class="fas fa-arrow-up-right-from-square"></i></a>
 </div>
 <script>
-// Imágenes de los proyectos: al tocarlas se ven en grande (se cierra con la X, tocando afuera o con Esc)
+// Imágenes de los proyectos: al tocarlas se ven en grande (se cierra con la X, tocando afuera o con Esc).
+// Si la imagen tiene data-video, se abre el video con sonido y controles; solo se descarga cuando alguien lo pide.
 (function () {
   const visor = document.getElementById('visorImagen');
   if (!visor) return;
   const grande = visor.querySelector('img');
+  const video = visor.querySelector('video');
   const titulo = visor.querySelector('.visor-titulo');
+  const enlace = visor.querySelector('.visor-enlace');
   const cerrar = visor.querySelector('.visor-cerrar');
   let origen = null;
-  const abrir = function (img) {
-    origen = img;
-    grande.src = img.dataset.grande || img.currentSrc || img.src;
-    grande.alt = img.alt;
+  const abrir = function (img, desde) {
+    origen = desde || img;
+    const esVideo = Boolean(img.dataset.video);
+    grande.hidden = esVideo;
+    video.hidden = !esVideo;
+    enlace.hidden = !(esVideo && img.dataset.pagina);
     titulo.textContent = img.alt;
+    visor.setAttribute('aria-label', esVideo ? 'Video del proyecto' : 'Imagen ampliada');
+    if (esVideo) {
+      if (img.dataset.pagina) enlace.href = img.dataset.pagina;
+      video.poster = img.currentSrc || img.src;
+      video.src = img.dataset.video;
+      const intento = video.play();
+      if (intento && intento.catch) intento.catch(function () {});   // si el navegador no deja arrancar solo, quedan los controles
+    } else {
+      grande.src = img.dataset.grande || img.currentSrc || img.src;
+      grande.alt = img.alt;
+    }
     visor.hidden = false;
     document.body.style.overflow = 'hidden';
     cerrar.focus();
   };
   const salir = function () {
     visor.hidden = true;
-    grande.src = '';
+    grande.removeAttribute('src');
+    if (video.getAttribute('src')) {
+      video.pause();
+      video.removeAttribute('src');
+      video.load();   // corta la descarga del video
+    }
     document.body.style.overflow = '';
     if (origen) origen.focus();
   };
+  video.addEventListener('error', function () {
+    if (visor.hidden || !video.getAttribute('src')) return;
+    titulo.textContent = 'No se pudo cargar el video aquí. Puedes verlo en la página del pitch.';
+    enlace.hidden = !enlace.getAttribute('href');
+  });
   document.querySelectorAll('.proyecto-media img').forEach(function (img) {
     img.tabIndex = 0;
     img.setAttribute('role', 'button');
-    img.title = 'Ver en grande';
+    img.title = img.dataset.video ? 'Ver el video' : 'Ver en grande';
     img.addEventListener('click', function () { abrir(img); });
     img.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrir(img); } });
+  });
+  // Botones "Ver el video" de las tarjetas: abren el mismo visor (sin JavaScript, el enlace lleva a la página del pitch)
+  document.querySelectorAll('[data-abrir-video]').forEach(function (boton) {
+    const tarjeta = boton.closest('.proyecto-tarjeta');
+    const img = tarjeta && tarjeta.querySelector('.proyecto-media img[data-video]');
+    if (!img) return;
+    boton.addEventListener('click', function (e) {
+      if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
+      e.preventDefault();
+      abrir(img, boton);
+    });
   });
   cerrar.addEventListener('click', salir);
   visor.addEventListener('click', function (e) { if (e.target === visor) salir(); });
