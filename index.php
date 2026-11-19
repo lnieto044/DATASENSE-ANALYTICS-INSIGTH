@@ -202,7 +202,7 @@ $videos_marcela = array_values(array_filter([
         <div class="team-degree"><i class="fas fa-graduation-cap me-2"></i> Ingeniero de Sistemas · Maestría en Administración con énfasis en Análisis de Datos (en curso)</div>
         <p class="team-desc">Ingeniero de Sistemas con trayectoria en tecnología desde 2013, especializado en analítica y calidad de la información. Ha trabajado en el sector público y en el privado: administró los sistemas de información del Ministerio de las Culturas, validó información académica y laboral en la Gerencia de Prevención del Fraude de Colpensiones y lideró mesa de ayuda bajo ITIL para la banca. Lidera la estrategia de negocio y la visión tecnológica de DataSense, y acompaña a gerencias y entidades a convertir sus datos en decisiones: tableros ejecutivos, verificación de información, analítica avanzada y software a la medida.</p>
         <p class="team-desc"><i class="fas fa-award me-2" style="color:#d4a017"></i><b>Premio Alfonso Palacio Rudas 2026</b> de la Contraloría General de la República, categoría Académico, por una metodología de verificación de información pública.</p>
-        <p class="team-desc"><i class="fas fa-trophy me-2" style="color:#d4a017"></i><b>Primer lugar</b>, junto con Marcela Pacheco Parra, en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca (MinTIC, 2025). En 2026 creó CuentaVoz y Kauta en la Hackatón 30X, ReActiva Territorio en la hackatón de Platzi Conf Bogotá y Desenmascara en la Hackatón Colombia 5.0.</p>
+        <p class="team-desc"><i class="fas fa-trophy me-2" style="color:#d4a017"></i><b>Primer lugar</b>, junto con Marcela Pacheco Parra, en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca (MinTIC, 2025), y finalista en una hackatón en Pasto con AgroSmartic. En 2026 creó CuentaVoz y Kauta en la Hackatón 30X, ReActiva Territorio en la hackatón de Platzi Conf Bogotá y Desenmascara en la Hackatón Colombia 5.0.</p>
         <p class="team-desc"><i class="fas fa-screwdriver-wrench me-2"></i>Power BI · SQL Server y MySQL · Python · calidad y cruce de datos · Amazon Cognito y doble factor · ITIL y ANS · desarrollo web y APIs.</p>
         <p class="team-desc mb-0"><i class="fas fa-handshake me-2"></i><b>¿Tu organización necesita decidir con datos?</b> Conversemos sobre tu reto.</p>
         <div class="team-contacto">
@@ -384,7 +384,11 @@ $videos_marcela = array_values(array_filter([
     <div class="proyectos-rejilla">
       <!-- CuentaVoz (Colsubsidio) -->
       <article class="proyecto-tarjeta proyecto-destacado" data-areas="analitica software hackaton">
-        <div class="proyecto-media"><img src="img/proyectos/portadas/cuentavoz.jpg" data-grande="img/proyectos/cuentavoz.jpg" alt="CuentaVoz: reportes de análisis de consumo con recomendación automática del agente" loading="lazy"></div>
+        <div class="proyecto-media con-video">
+          <img src="img/proyectos/portadas/cuentavoz.jpg" data-youtube="V-ZtG-wGlo4" alt="CuentaVoz: recorrido en video por la plataforma de inventario por voz, con el agente y los reportes de consumo" loading="lazy">
+          <span class="proyecto-reproducir" aria-hidden="true"><i class="fas fa-play"></i></span>
+          <span class="proyecto-video-etiqueta" aria-hidden="true"><i class="fas fa-video"></i>Recorrido en video</span>
+        </div>
         <div class="proyecto-cuerpo">
           <span class="proyecto-cliente"><i class="fas fa-building"></i>Colsubsidio</span>
           <span class="proyecto-area"><i class="fas fa-microphone-lines"></i>Analítica e IA · Software</span>
@@ -393,7 +397,7 @@ $videos_marcela = array_values(array_filter([
           <p>Conteo de inventario por voz en bodega, con un agente que responde por voz o texto, análisis de consumo frente a la receta y un panel gerencial con alertas. Probada con datos reales de la operación: 53 bodegas, 1.040 artículos y 79 inconsistencias detectadas antes del cargue, con acceso protegido por Amazon Cognito y doble factor.</p>
           <div class="proyecto-acciones">
             <a href="#contacto" class="btn-team" data-proyecto="CuentaVoz (inventario por voz con agente inteligente)" data-servicio="DS">Quiero un proyecto así</a>
-            <a href="https://www.youtube.com/watch?v=V-ZtG-wGlo4" class="btn-proyecto-sec" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-youtube me-2"></i>Ver el recorrido</a>
+            <a href="https://www.youtube.com/watch?v=V-ZtG-wGlo4" class="btn-proyecto-sec" data-abrir-video target="_blank" rel="noopener noreferrer"><i class="fas fa-play"></i>Ver el recorrido</a>
           </div>
         </div>
       </article>
@@ -480,6 +484,26 @@ $videos_marcela = array_values(array_filter([
           <div class="proyecto-acciones">
             <a href="#contacto" class="btn-team" data-proyecto="ReActiva Territorio (recuperación después de desastres)" data-servicio="DSW">Quiero un proyecto así</a>
             <a href="https://www.youtube.com/watch?v=ZHtUpvOqVfI" class="btn-proyecto-sec" data-abrir-video target="_blank" rel="noopener noreferrer"><i class="fas fa-play"></i>Ver el video</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- AgroSmartic: hackatón en Pasto (finalista) -->
+      <article class="proyecto-tarjeta" data-areas="software hackaton">
+        <div class="proyecto-media con-video" style="--reproducir-x: 80%">
+          <img src="img/proyectos/portadas/agrosmartic.jpg" data-youtube="66E-MyD43Z4" data-youtube-inicio="123" alt="AgroSmartic: pitch y demostración en video de la plataforma agrícola (finalista en una hackatón en Pasto)" loading="lazy">
+          <span class="proyecto-reproducir" aria-hidden="true"><i class="fas fa-play"></i></span>
+          <span class="proyecto-video-etiqueta" aria-hidden="true"><i class="fas fa-video"></i>Pitch en video</span>
+        </div>
+        <div class="proyecto-cuerpo">
+          <span class="proyecto-cliente"><i class="fas fa-flag"></i>Hackatón · Pasto (Nariño)</span>
+          <span class="proyecto-area"><i class="fas fa-seedling"></i>Agrotecnología · Sostenibilidad</span>
+          <span class="proyecto-distincion"><i class="fas fa-medal"></i>Finalista · Hackatón en Pasto · 2025</span>
+          <h3>AgroSmartic: tecnología para el campo</h3>
+          <p>Plataforma web para productores agrícolas: registran sus cultivos por parcela, llevan el calendario de cosechas y reciben alertas cuando el pronóstico del clima anuncia un riesgo para el día de la cosecha. También muestra la demanda y las recomendaciones de siembra por región, y un panel con la analítica de uso. Hecha con Python (Flask) y SQLite. Desarrollado en equipo.</p>
+          <div class="proyecto-acciones">
+            <a href="#contacto" class="btn-team" data-proyecto="AgroSmartic (tecnología para el campo)" data-servicio="DSW">Quiero un proyecto así</a>
+            <a href="https://www.youtube.com/watch?v=66E-MyD43Z4&amp;t=123s" class="btn-proyecto-sec" data-abrir-video target="_blank" rel="noopener noreferrer"><i class="fas fa-play"></i>Ver el video</a>
           </div>
         </div>
       </article>
@@ -1278,7 +1302,8 @@ document.addEventListener("DOMContentLoaded", function () {
     titulo.textContent = img.alt;
     visor.setAttribute('aria-label', tipo === 'imagen' ? 'Imagen ampliada' : 'Video del proyecto');
     if (tipo === 'youtube') {
-      marco.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(img.dataset.youtube) + '?autoplay=1&rel=0&playsinline=1';
+      const inicio = parseInt(img.dataset.youtubeInicio || '0', 10);   // segundo en el que empieza el video
+      marco.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(img.dataset.youtube) + '?autoplay=1&rel=0&playsinline=1' + (inicio > 0 ? '&start=' + inicio : '');
     } else if (tipo === 'video') {
       video.poster = img.currentSrc || img.src;
       video.src = img.dataset.video;
