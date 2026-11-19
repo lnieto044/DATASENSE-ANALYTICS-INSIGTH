@@ -49,7 +49,6 @@ function galeriaAfiches(PDO $db) {
         ['Equipo', 'Marcela Pacheco Parra', 'img/marcela.jpg'],
         ['Equipo', 'Luis Guillermo Nieto Patiño', 'img/luis.jpg'],
         ['Equipo', 'Marcela y Luis, fundadores', 'img/equipo/fundadores.jpg'],
-        ['Equipo', 'Equipo DataSense', 'img/equipo/equipo-datasense.jpg'],
         ['Reconocimientos', 'Primer lugar Talento Tech 2025', 'img/proyectos/talento-tech-primer-lugar.jpg'],
         ['Reconocimientos', 'Premio Alfonso Palacio Rudas 2026', 'img/proyectos/premio-alfonso-palacio-rudas.jpg'],
         ['Proyectos', 'CuentaVoz · inventario por voz', 'img/proyectos/cuentavoz.jpg'],

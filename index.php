@@ -171,10 +171,6 @@ $videos_marcela = array_values(array_filter([
       </p>
     </div>
 
-    <figure class="equipo-foto">
-      <img src="img/equipo/equipo-datasense.jpg" alt="Equipo de DataSense Analytics Insights" loading="lazy">
-    </figure>
-
     <div class="team-grid">
       <div class="team-card">
         <div class="team-img-wrapper">
@@ -388,12 +384,13 @@ $videos_marcela = array_values(array_filter([
     <div class="proyectos-rejilla">
       <!-- CuentaVoz (Colsubsidio) -->
       <article class="proyecto-tarjeta proyecto-destacado" data-areas="analitica software hackaton">
-        <div class="proyecto-media"><img src="img/proyectos/cuentavoz.jpg" alt="CuentaVoz: reportes de análisis de consumo con recomendación automática del agente" loading="lazy"></div>
+        <div class="proyecto-media"><img src="img/proyectos/portadas/cuentavoz.jpg" data-grande="img/proyectos/cuentavoz.jpg" alt="CuentaVoz: reportes de análisis de consumo con recomendación automática del agente" loading="lazy"></div>
         <div class="proyecto-cuerpo">
           <span class="proyecto-cliente"><i class="fas fa-building"></i>Colsubsidio</span>
-          <span class="proyecto-area"><i class="fas fa-microphone-lines"></i>Analítica e IA · Desarrollo de software · Hackatón Colsubsidio × 30X 2026</span>
+          <span class="proyecto-area"><i class="fas fa-microphone-lines"></i>Analítica e IA · Software</span>
+          <span class="proyecto-distincion"><i class="fas fa-trophy"></i>Hackatón Colsubsidio × 30X · 2026</span>
           <h3>CuentaVoz: inventario por voz con agente inteligente</h3>
-          <p>Aplicación para contar inventario por voz en las bodegas, con un agente que responde preguntas por voz o texto, análisis de consumo frente a la receta con recomendaciones automáticas, auditoría, legalización y un panel gerencial con alertas y tiempos de conteo. Construida sobre datos reales de la operación: 53 bodegas, 1.040 artículos y 79 inconsistencias de existencias detectadas antes de su cargue al sistema corporativo, con acceso protegido por Amazon Cognito y doble factor.</p>
+          <p>Conteo de inventario por voz en bodega, con un agente que responde por voz o texto, análisis de consumo frente a la receta y un panel gerencial con alertas. Probada con datos reales de la operación: 53 bodegas, 1.040 artículos y 79 inconsistencias detectadas antes del cargue, con acceso protegido por Amazon Cognito y doble factor.</p>
           <div class="proyecto-acciones">
             <a href="#contacto" class="btn-team" data-proyecto="CuentaVoz (inventario por voz con agente inteligente)" data-servicio="DS">Quiero un proyecto así</a>
             <a href="https://www.youtube.com/watch?v=V-ZtG-wGlo4" class="btn-proyecto-sec" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-youtube me-2"></i>Ver el recorrido</a>
@@ -407,8 +404,9 @@ $videos_marcela = array_values(array_filter([
         <div class="proyecto-cuerpo">
           <span class="proyecto-cliente"><i class="fas fa-landmark"></i>Contraloría General de la República</span>
           <span class="proyecto-area"><i class="fas fa-magnifying-glass-chart"></i>Calidad de la información · Sector público</span>
+          <span class="proyecto-distincion"><i class="fas fa-award"></i>Premio Alfonso Palacio Rudas · 2026</span>
           <h3>Metodología de verificación de información pública</h3>
-          <p>Análisis de datos aplicado a la veracidad, calidad y consistencia de la información que reportan las entidades públicas: cruza fuentes independientes (SECOP II, informes de control fiscal, actos administrativos y estados financieros) para detectar inconsistencias y sustentar cada hallazgo con trazabilidad documental. Reconocida con el Premio Alfonso Palacio Rudas 2026, categoría Académico.</p>
+          <p>Análisis de datos aplicado a la veracidad, calidad y consistencia de la información que reportan las entidades públicas: cruza fuentes independientes (SECOP II, informes de control fiscal, actos administrativos y estados financieros) para detectar inconsistencias y sustentar cada hallazgo con trazabilidad documental. Distinción nacional en la categoría Académico.</p>
           <div class="proyecto-acciones">
             <a href="#contacto" class="btn-team" data-proyecto="Verificación de información pública" data-servicio="ASP">Quiero un proyecto así</a>
           </div>
@@ -417,10 +415,11 @@ $videos_marcela = array_values(array_filter([
 
       <!-- Hackatón Talento Tech Región 7 (MinTIC): primer lugar -->
       <article class="proyecto-tarjeta" data-areas="analitica hackaton">
-        <div class="proyecto-media"><img src="img/proyectos/talento-tech-primer-lugar.jpg" alt="Primer lugar en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca 2025: Luis Guillermo Nieto Patiño con el trofeo y el certificado de reconocimiento" loading="lazy"></div>
+        <div class="proyecto-media"><img src="img/proyectos/portadas/talento-tech-primer-lugar.jpg" data-grande="img/proyectos/talento-tech-primer-lugar.jpg" alt="Primer lugar en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca 2025: Luis Guillermo Nieto Patiño con el trofeo y el certificado de reconocimiento" loading="lazy"></div>
         <div class="proyecto-cuerpo">
           <span class="proyecto-cliente"><i class="fas fa-flag"></i>Ministerio TIC · Talento Tech</span>
-          <span class="proyecto-area"><i class="fas fa-chart-line"></i>Analítica avanzada · Hackatón</span>
+          <span class="proyecto-area"><i class="fas fa-chart-line"></i>Analítica avanzada</span>
+          <span class="proyecto-distincion"><i class="fas fa-trophy"></i>Primer lugar · Hackatón Talento Tech · 2025</span>
           <h3>Analítica avanzada con pronósticos y minería de procesos</h3>
           <p>Solución ganadora del primer lugar regional en Boyacá y Cundinamarca en 2025, reconocida por su excelencia, creatividad e innovación: integración de datos en MySQL, pronósticos con modelos de series de tiempo (ARIMA y Prophet), minería de procesos con PM4Py y tableros en Power BI, construida con datos reales y bajo presión de tiempo.</p>
           <div class="proyecto-acciones">
@@ -430,7 +429,7 @@ $videos_marcela = array_values(array_filter([
       </article>
 
       <article class="proyecto-tarjeta" data-areas="software">
-        <div class="proyecto-media"><img src="img/proyectos/tour-mountain-adventure.jpg" alt="Sitio web de Tour Mountain Adventure: caminatas guiadas por Cundinamarca" loading="lazy"></div>
+        <div class="proyecto-media"><img src="img/proyectos/portadas/tour-mountain-adventure.jpg" data-grande="img/proyectos/tour-mountain-adventure.jpg" alt="Sitio web de Tour Mountain Adventure: caminatas guiadas por Cundinamarca" loading="lazy"></div>
         <div class="proyecto-cuerpo">
           <span class="proyecto-cliente"><i class="fas fa-mountain-sun"></i>Tour Mountain Adventure</span>
           <span class="proyecto-area"><i class="fas fa-code"></i>Desarrollo web · Turismo</span>
@@ -459,7 +458,7 @@ $videos_marcela = array_values(array_filter([
       </article>
 
       <article class="proyecto-tarjeta" data-areas="software publico">
-        <div class="proyecto-media"><img src="img/proyectos/plataforma-datasense.jpg" alt="Panel de la plataforma DataSense con sus módulos de operación, mesa de servicios, PQRSD, facturación y contabilidad" loading="lazy"></div>
+        <div class="proyecto-media"><img src="img/proyectos/portadas/plataforma-datasense.jpg" data-grande="img/proyectos/plataforma-datasense.jpg" alt="Panel de la plataforma DataSense con sus módulos de operación, mesa de servicios, PQRSD, facturación y contabilidad" loading="lazy"></div>
         <div class="proyecto-cuerpo">
           <span class="proyecto-area"><i class="fas fa-code"></i>Desarrollo de software</span>
           <h3>Plataforma de gestión DataSense</h3>
@@ -472,7 +471,7 @@ $videos_marcela = array_values(array_filter([
       </article>
 
       <article class="proyecto-tarjeta" data-areas="analitica publico">
-        <div class="proyecto-media"><img src="img/productos/prod_6d6fee582c7499d3.jpg" alt="Tablero de ejecución presupuestal con indicadores, ejecución por sector y porcentaje de ejecución" loading="lazy"></div>
+        <div class="proyecto-media"><img src="img/proyectos/portadas/transparencia-presupuestal.jpg" data-grande="img/productos/prod_6d6fee582c7499d3.jpg" alt="Tablero de ejecución presupuestal con indicadores, ejecución por sector y porcentaje de ejecución" loading="lazy"></div>
         <div class="proyecto-cuerpo">
           <span class="proyecto-area"><i class="fas fa-landmark"></i>Analítica sector público</span>
           <h3>Tablero de Transparencia Presupuestal</h3>
@@ -502,7 +501,7 @@ $videos_marcela = array_values(array_filter([
 
       <?php foreach ($portafolio_luis as [$imagen, $areas, $etiqueta, $titulo, $texto, $tecnologias, $pagina, $servicio]): ?>
       <article class="proyecto-tarjeta proyecto-extra" data-areas="<?= esc($areas) ?>">
-        <div class="proyecto-media"><img src="img/proyectos/portafolio/<?= esc($imagen) ?>" alt="<?= esc($titulo) ?>" loading="lazy"></div>
+        <div class="proyecto-media"><img src="img/proyectos/portafolio/<?= esc($imagen) ?>" data-grande="img/proyectos/portafolio/completas/<?= esc($imagen) ?>" alt="<?= esc($titulo) ?>" loading="lazy"></div>
         <div class="proyecto-cuerpo">
           <span class="proyecto-cliente"><i class="fas fa-user-tie"></i>Portafolio de Luis Nieto</span>
           <span class="proyecto-area"><i class="fas fa-layer-group"></i><?= esc($etiqueta) ?></span>
@@ -518,7 +517,7 @@ $videos_marcela = array_values(array_filter([
       <?php endforeach; ?>
     </div>
     <?php if ($portafolio_luis): ?>
-    <div class="ver-mas-proyectos"><button type="button" class="btn-proyecto-sec" id="verMasProyectos" hidden><i class="fas fa-plus me-2"></i>Ver más proyectos (<span class="ver-mas-total"></span>)</button></div>
+    <div class="ver-mas-proyectos"><button type="button" class="btn-proyecto-sec" id="verMasProyectos" aria-expanded="false" hidden><i class="fas fa-plus me-2"></i><span class="ver-mas-texto">Ver más proyectos</span></button></div>
     <?php endif; ?>
 
     <?php if ($testimonios):
@@ -1159,7 +1158,12 @@ document.addEventListener("DOMContentLoaded", function () {
       const coincide = filtro === 'todos' || areas(t).includes(filtro);
       t.hidden = !coincide || (filtro === 'todos' && !expandido && t.classList.contains('proyecto-extra'));
     });
-    if (verMas) verMas.hidden = !(filtro === 'todos' && !expandido && extras.length);
+    if (verMas) {
+      verMas.hidden = !(filtro === 'todos' && extras.length);
+      verMas.setAttribute('aria-expanded', expandido ? 'true' : 'false');
+      verMas.querySelector('i').className = (expandido ? 'fas fa-minus' : 'fas fa-plus') + ' me-2';
+      verMas.querySelector('.ver-mas-texto').textContent = expandido ? 'Ver menos proyectos' : 'Ver más proyectos (' + extras.length + ')';
+    }
   };
   botones.forEach(function (b) {
     const f = b.dataset.filtro;
@@ -1171,8 +1175,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
   if (verMas) {
-    verMas.querySelector('.ver-mas-total').textContent = extras.length;
-    verMas.addEventListener('click', function () { expandido = true; aplicar(); });
+    verMas.addEventListener('click', function () {
+      expandido = !expandido;
+      aplicar();
+      // Al recoger la lista, se vuelve al comienzo de los proyectos para no quedar más abajo de la página
+      if (!expandido) document.getElementById('proyectos').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   }
   aplicar();
 })();
@@ -1183,7 +1191,7 @@ document.addEventListener("DOMContentLoaded", function () {
   <p class="visor-titulo"></p>
 </div>
 <script>
-// Imágenes de proyectos y del equipo: al tocarlas se ven en grande (se cierra con la X, tocando afuera o con Esc)
+// Imágenes de los proyectos: al tocarlas se ven en grande (se cierra con la X, tocando afuera o con Esc)
 (function () {
   const visor = document.getElementById('visorImagen');
   if (!visor) return;
@@ -1193,7 +1201,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let origen = null;
   const abrir = function (img) {
     origen = img;
-    grande.src = img.currentSrc || img.src;
+    grande.src = img.dataset.grande || img.currentSrc || img.src;
     grande.alt = img.alt;
     titulo.textContent = img.alt;
     visor.hidden = false;
@@ -1206,7 +1214,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.body.style.overflow = '';
     if (origen) origen.focus();
   };
-  document.querySelectorAll('.proyecto-media img, .equipo-foto img').forEach(function (img) {
+  document.querySelectorAll('.proyecto-media img').forEach(function (img) {
     img.tabIndex = 0;
     img.setAttribute('role', 'button');
     img.title = 'Ver en grande';
