@@ -877,6 +877,7 @@ select.form-input option {
 .proyecto-tecnologias { font-size: .82rem; color: #64748b; margin: -4px 0 14px; }
 .ver-mas-proyectos { text-align: center; margin-top: 28px; }
 .ver-mas-proyectos .btn-proyecto-sec { cursor: pointer; background: #fff; }
+.ver-mas-proyectos .btn-proyecto-sec:hover, .ver-mas-proyectos .btn-proyecto-sec:focus-visible { background: #0A2E4F; color: #fff; }   /* igual que los demás botones */
 .ver-mas-proyectos .btn-proyecto-sec[hidden] { display: none; }   /* la clase del botón no debe impedir ocultarlo */
 
 /* Visor de imágenes en grande */
