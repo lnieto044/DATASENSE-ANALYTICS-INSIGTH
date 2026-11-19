@@ -202,7 +202,7 @@ $videos_marcela = array_values(array_filter([
         <div class="team-degree"><i class="fas fa-graduation-cap me-2"></i> Ingeniero de Sistemas · Maestría en Administración con énfasis en Análisis de Datos (en curso)</div>
         <p class="team-desc">Ingeniero de Sistemas con trayectoria en tecnología desde 2013, especializado en analítica y calidad de la información. Ha trabajado en el sector público y en el privado: administró los sistemas de información del Ministerio de las Culturas, validó información académica y laboral en la Gerencia de Prevención del Fraude de Colpensiones y lideró mesa de ayuda bajo ITIL para la banca. Lidera la estrategia de negocio y la visión tecnológica de DataSense, y acompaña a gerencias y entidades a convertir sus datos en decisiones: tableros ejecutivos, verificación de información, analítica avanzada y software a la medida.</p>
         <p class="team-desc"><i class="fas fa-award me-2" style="color:#d4a017"></i><b>Premio Alfonso Palacio Rudas 2026</b> de la Contraloría General de la República, categoría Académico, por una metodología de verificación de información pública.</p>
-        <p class="team-desc"><i class="fas fa-trophy me-2" style="color:#d4a017"></i><b>Primer lugar</b>, junto con Marcela Pacheco Parra, en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca (MinTIC, 2025), y creador de CuentaVoz en la Hackatón Colsubsidio × 30X 2026.</p>
+        <p class="team-desc"><i class="fas fa-trophy me-2" style="color:#d4a017"></i><b>Primer lugar</b>, junto con Marcela Pacheco Parra, en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca (MinTIC, 2025). En 2026 creó CuentaVoz y Kauta en la Hackatón 30X, y Desenmascara en la Hackatón Colombia 5.0.</p>
         <p class="team-desc"><i class="fas fa-screwdriver-wrench me-2"></i>Power BI · SQL Server y MySQL · Python · calidad y cruce de datos · Amazon Cognito y doble factor · ITIL y ANS · desarrollo web y APIs.</p>
         <p class="team-desc mb-0"><i class="fas fa-handshake me-2"></i><b>¿Tu organización necesita decidir con datos?</b> Conversemos sobre tu reto.</p>
         <div class="team-contacto">
@@ -424,6 +424,38 @@ $videos_marcela = array_values(array_filter([
           <p>Solución con la que Marcela Pacheco Parra y Luis Guillermo Nieto Patiño ganaron juntos el primer lugar regional en Boyacá y Cundinamarca en 2025, reconocida por su excelencia, creatividad e innovación: integración de datos en MySQL, pronósticos con modelos de series de tiempo (ARIMA y Prophet), minería de procesos con PM4Py y tableros en Power BI, construida con datos reales y bajo presión de tiempo.</p>
           <div class="proyecto-acciones">
             <a href="#contacto" class="btn-team" data-proyecto="Analítica avanzada con pronósticos" data-servicio="DS">Quiero un proyecto así</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Kauta: Hackatón 30X 2026, reto Blinka -->
+      <article class="proyecto-tarjeta" data-areas="analitica software hackaton">
+        <div class="proyecto-media"><img src="img/proyectos/portadas/kauta.jpg" data-grande="img/proyectos/kauta.jpg" alt="Kauta: panel de cuentas por pagar con las facturas que el agente consulta, pagos exitosos y vencimientos" loading="lazy"></div>
+        <div class="proyecto-cuerpo">
+          <span class="proyecto-cliente"><i class="fas fa-flag"></i>Hackatón 30X · Reto Blinka</span>
+          <span class="proyecto-area"><i class="fas fa-robot"></i>IA aplicada · Finanzas</span>
+          <span class="proyecto-distincion"><i class="fas fa-trophy"></i>Hackatón 30X · 2026</span>
+          <h3>Kauta: agente de cuentas por pagar</h3>
+          <p>Lee facturas en cualquier formato (correo, chat, PDF, foto o XML), las revisa contra 13 reglas de la empresa y paga desde la wallet: paga lo que cumple, frena lo que no y consulta a una persona lo dudoso. La IA solo lee; las decisiones las toma código auditable, con token para aprobar y pagar, aprobación del CEO para montos altos y un registro que nadie puede alterar. Desarrollado en equipo.</p>
+          <div class="proyecto-acciones">
+            <a href="#contacto" class="btn-team" data-proyecto="Kauta (agente de cuentas por pagar)" data-servicio="DSW">Quiero un proyecto así</a>
+            <a href="https://kauta.vercel.app/" class="btn-proyecto-sec" target="_blank" rel="noopener noreferrer"><i class="fas fa-arrow-up-right-from-square"></i>Ver el proyecto</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Desenmascara: Hackatón Colombia 5.0 (2026) -->
+      <article class="proyecto-tarjeta" data-areas="software hackaton">
+        <div class="proyecto-media"><img src="img/proyectos/portadas/desenmascara.jpg" data-grande="img/proyectos/desenmascara.jpg" alt="Desenmascara: pitch del bot antiestafas con la Llamada Verificada y los resultados de la prueba" loading="lazy"></div>
+        <div class="proyecto-cuerpo">
+          <span class="proyecto-cliente"><i class="fas fa-flag"></i>Hackatón Colombia 5.0</span>
+          <span class="proyecto-area"><i class="fas fa-shield-halved"></i>IA aplicada · Prevención de estafas</span>
+          <span class="proyecto-distincion"><i class="fas fa-trophy"></i>Hackatón Colombia 5.0 · 2026</span>
+          <h3>Desenmascara: bot y plataforma antiestafas</h3>
+          <p>Reenvías el mensaje o el número sospechoso a un bot de Telegram y en segundos recibes un semáforo con el porqué; cuando puede, confirma con la fuente: tu familiar o tu banco. Incluye una app de Android que avisa antes de contestar, Llamada Verificada para las entidades, banco de números reportados y un radar de campañas de estafa. En la prueba con mensajes reales de Colombia detectó 20 de 20 estafas, sin falsos positivos.</p>
+          <div class="proyecto-acciones">
+            <a href="#contacto" class="btn-team" data-proyecto="Desenmascara (bot antiestafas)" data-servicio="DSW">Quiero un proyecto así</a>
+            <a href="https://desenmascara.onrender.com/pitch/" class="btn-proyecto-sec" target="_blank" rel="noopener noreferrer"><i class="fas fa-play"></i>Ver el pitch</a>
           </div>
         </div>
       </article>
