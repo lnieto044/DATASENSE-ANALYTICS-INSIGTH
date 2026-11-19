@@ -147,7 +147,8 @@ $videos_marcela = array_values(array_filter([
 })();
 </script>
 
-<section id="inicio" class="hero-pro" style="background-image:url('img/banner.png')">
+<section id="inicio" class="hero-pro hero-fundadores">
+  <img class="hero-foto" src="img/banner.jpg" alt="Marcela Pacheco Parra y Luis Guillermo Nieto Patiño, fundadores de DataSense, analizando un tablero de datos" fetchpriority="high">
   <div class="hero-overlay"></div>
   <div class="hero-content-wrapper">
     <div class="hero-text-box">

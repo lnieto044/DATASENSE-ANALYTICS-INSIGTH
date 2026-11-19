@@ -204,7 +204,7 @@ $csrf = $_SESSION['token'];
         /* ---------------------------------------------------------------- portada */
         /* Fondo: la misma imagen de la portada del sitio, con un velo azul degradado que se mueve despacio */
         .hero-pqrsd { position: relative; overflow: hidden; color: #fff;
-            background-image: linear-gradient(120deg, rgba(10, 46, 79, .94) 0%, rgba(20, 80, 127, .88) 55%, rgba(27, 111, 176, .80) 100%), url('img/banner.png');
+            background-image: linear-gradient(120deg, rgba(10, 46, 79, .94) 0%, rgba(20, 80, 127, .88) 55%, rgba(27, 111, 176, .80) 100%), url('img/banner.jpg');
             background-size: 180% 180%, cover; background-position: 0% 50%, center; background-repeat: no-repeat;
             animation: mover-fondo 18s ease infinite; }
         @keyframes mover-fondo { 0%, 100% { background-position: 0% 50%, center; } 50% { background-position: 100% 50%, center; } }

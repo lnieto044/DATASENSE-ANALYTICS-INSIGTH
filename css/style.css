@@ -74,6 +74,39 @@ h1, h2, h3, h4, h5, h6 { color: var(--ds-blue); font-weight: 700; margin-bottom:
 .hero-text-box h1 { color: #fff; font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; letter-spacing: -1px; }
 .hero-text-box p { color: rgba(255, 255, 255, 0.85); font-size: 1.2rem; margin-bottom: 35px; font-weight: 300; }
 
+/* Portada con la foto de los fundadores: el texto va sobre el azul de la marca y la foto ocupa la derecha,
+   fundida con el azul, para que no quede nadie tapado por el texto */
+.hero-pro.hero-fundadores { overflow: hidden; background: radial-gradient(circle at 18% 30%, rgba(34, 211, 238, .10), transparent 42%),
+  linear-gradient(120deg, #061a2e 0%, #0A2E4F 60%, #0b3a63 100%); }
+.hero-fundadores .hero-foto { position: absolute; right: 0; bottom: 0; left: max(40%, calc(50% - 40px)); width: auto; height: auto;
+  aspect-ratio: 5 / 4; max-height: calc(100% - 78px); object-fit: cover; object-position: 35% 40%; z-index: 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 16%), linear-gradient(180deg, transparent 0%, #000 22%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 16%), linear-gradient(180deg, transparent 0%, #000 22%); mask-composite: intersect; }
+.hero-fundadores .hero-overlay { background: linear-gradient(90deg, rgba(6, 26, 46, .55) 0%, rgba(6, 26, 46, .25) 42%, rgba(6, 26, 46, 0) 60%),
+  linear-gradient(0deg, rgba(6, 26, 46, .5) 0%, rgba(6, 26, 46, 0) 28%); }
+.hero-fundadores .hero-text-box { max-width: 650px; }
+@media (max-width: 1199.98px) {
+  .hero-fundadores .hero-foto { left: 44%; }
+  .hero-fundadores .hero-text-box { max-width: 500px; }
+  .hero-fundadores .hero-text-box h1 { font-size: 2.9rem; }
+}
+/* Tableta y celular: primero el texto y debajo la foto completa */
+@media (max-width: 991.98px) {
+  .hero-pro.hero-fundadores { height: auto; min-height: 0; flex-direction: column; align-items: stretch; padding-top: 120px; }
+  .hero-fundadores .hero-content-wrapper { order: 1; }
+  .hero-fundadores .hero-text-box { max-width: 640px; }
+  .hero-fundadores .hero-text-box h1 { font-size: 2.5rem; }
+  .hero-fundadores .hero-foto { position: relative; order: 2; left: auto; width: 100%; height: auto; aspect-ratio: 3 / 2; max-height: none; margin-top: 10px;
+    object-position: 50% 40%; -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 20%); mask-image: linear-gradient(180deg, transparent 0%, #000 20%);
+    -webkit-mask-composite: source-over; mask-composite: add; }
+  .hero-fundadores .hero-overlay { display: none; }
+}
+@media (max-width: 576px) {
+  .hero-pro.hero-fundadores { padding-top: 104px; }
+  .hero-fundadores .hero-text-box h1 { font-size: 2rem; }
+}
+
 .btn-cta-pro {
   background: var(--ds-green); color: #fff; padding: 15px 40px; border-radius: 50px;
   font-weight: 700; font-size: 1.1rem; display: inline-block; border: none; cursor: pointer;

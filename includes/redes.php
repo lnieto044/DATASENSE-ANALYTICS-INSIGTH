@@ -55,10 +55,10 @@ function urlPaginaActual() {
 }
 
 /**
- * Etiquetas del <head>. $imagen es una ruta del proyecto (por ejemplo img/banner.png) y se vuelve absoluta,
+ * Etiquetas del <head>. $imagen es una ruta del proyecto (por ejemplo img/banner.jpg) y se vuelve absoluta,
  * que es lo único que aceptan las redes. Las medidas de la imagen ayudan a que se vea completa.
  */
-function metaSociales($titulo, $descripcion, $imagen = 'img/banner.png', $tipo = 'website') {
+function metaSociales($titulo, $descripcion, $imagen = 'img/banner.jpg', $tipo = 'website') {
     $base = urlBase();
     $url = urlPaginaActual();
     $img = preg_match('#^https?://#i', (string) $imagen) ? $imagen : $base . ltrim((string) $imagen, '/');
