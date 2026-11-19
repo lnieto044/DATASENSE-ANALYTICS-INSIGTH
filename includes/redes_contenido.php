@@ -150,6 +150,17 @@ function publicacionesListas(PDO $db) {
             'hashtags' => '#ControlFiscal #CalidadDeDatos #SectorPublico #AnaliticaDeDatos #DataSense',
         ],
         [
+            'id' => 'talento-tech', 'redes' => $todas, 'tema_contenido' => 'Reconocimiento',
+            'diseno' => ['plantilla' => 'foto', 'formato' => 'vertical', 'tema' => 'azul', 'imagen' => '../img/equipo/fundadores.jpg',
+                'etiqueta' => 'Primer lugar · Talento Tech 2025',
+                'titulo' => 'Datos que *ganan* retos reales',
+                'texto' => 'Marcela Pacheco Parra y Luis Guillermo Nieto Patiño, primer lugar en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca.',
+                'puntos' => ['Pronósticos con series de tiempo', 'Minería de procesos y tableros en Power BI'],
+                'boton' => 'Conoce el proyecto'],
+            'texto' => "¡Primer lugar! 🏆\n\nNuestros fundadores, Marcela Pacheco Parra y Luis Guillermo Nieto Patiño, ganaron juntos el primer lugar en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca del MinTIC, con reconocimiento a la excelencia, la creatividad y la innovación del proyecto: analítica avanzada con pronósticos, minería de procesos y tableros en Power BI, construida con datos reales y bajo presión de tiempo.\n\n¿Quieres llevar esta analítica a tu organización? Hablemos 👉 {$sitio}#contacto",
+            'hashtags' => '#TalentoTech #MinTIC #AnaliticaDeDatos #Hackathon #DataSense',
+        ],
+        [
             'id' => 'encuesta', 'redes' => $todas, 'tema_contenido' => 'Encuesta',
             'diseno' => ['plantilla' => 'texto', 'formato' => 'cuadrado', 'tema' => 'noche',
                 'etiqueta' => 'Encuesta',

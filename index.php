@@ -180,7 +180,7 @@ $videos_marcela = array_values(array_filter([
         <span class="team-role">Co-Fundadora & CTO</span>
         <div class="team-degree"><i class="fas fa-graduation-cap me-2"></i> Psicóloga (UNAD) · Magíster en Desarrollo Humano (FLACSO)</div>
         <p class="team-desc">Psicóloga y magíster en Desarrollo Humano de FLACSO Argentina, con trayectoria en entidades públicas y privadas: Prosperidad Social, el Fondo Nacional de Gestión del Riesgo de Desastres y el bienestar universitario. Experta en formular, hacer seguimiento y evaluar planes, programas y políticas públicas, con formación en Análisis de Datos certificada por el MinTIC y dominio de Power BI.</p>
-        <p class="team-desc"><i class="fas fa-trophy me-2" style="color:#d4a017"></i><b>Primer lugar</b> en la Hackatón Región 7 Boyacá–Cundinamarca (2025).</p>
+        <p class="team-desc"><i class="fas fa-trophy me-2" style="color:#d4a017"></i><b>Primer lugar</b>, junto con Luis Guillermo Nieto Patiño, en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca (MinTIC, 2025).</p>
         <p class="team-desc mb-0"><i class="fas fa-comments me-2"></i><b>Conferencista en psicología</b> para organizaciones nacionales e internacionales: bienestar, trabajo en equipo, psicología de pareja, orientación vocacional y desarrollo humano.</p>
         <div class="team-contacto">
           <a href="#contacto" class="btn-team">Solicita una conferencia</a>
@@ -202,7 +202,7 @@ $videos_marcela = array_values(array_filter([
         <div class="team-degree"><i class="fas fa-graduation-cap me-2"></i> Ingeniero de Sistemas · Maestría en Administración con énfasis en Análisis de Datos (en curso)</div>
         <p class="team-desc">Ingeniero de Sistemas con trayectoria en tecnología desde 2013, especializado en analítica y calidad de la información. Ha trabajado en el sector público y en el privado: administró los sistemas de información del Ministerio de las Culturas, validó información académica y laboral en la Gerencia de Prevención del Fraude de Colpensiones y lideró mesa de ayuda bajo ITIL para la banca. Lidera la estrategia de negocio y la visión tecnológica de DataSense, y acompaña a gerencias y entidades a convertir sus datos en decisiones: tableros ejecutivos, verificación de información, analítica avanzada y software a la medida.</p>
         <p class="team-desc"><i class="fas fa-award me-2" style="color:#d4a017"></i><b>Premio Alfonso Palacio Rudas 2026</b> de la Contraloría General de la República, categoría Académico, por una metodología de verificación de información pública.</p>
-        <p class="team-desc"><i class="fas fa-trophy me-2" style="color:#d4a017"></i><b>Primer lugar</b> en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca (MinTIC, 2025) y creador de CuentaVoz en la Hackatón Colsubsidio × 30X 2026.</p>
+        <p class="team-desc"><i class="fas fa-trophy me-2" style="color:#d4a017"></i><b>Primer lugar</b>, junto con Marcela Pacheco Parra, en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca (MinTIC, 2025), y creador de CuentaVoz en la Hackatón Colsubsidio × 30X 2026.</p>
         <p class="team-desc"><i class="fas fa-screwdriver-wrench me-2"></i>Power BI · SQL Server y MySQL · Python · calidad y cruce de datos · Amazon Cognito y doble factor · ITIL y ANS · desarrollo web y APIs.</p>
         <p class="team-desc mb-0"><i class="fas fa-handshake me-2"></i><b>¿Tu organización necesita decidir con datos?</b> Conversemos sobre tu reto.</p>
         <div class="team-contacto">
@@ -421,7 +421,7 @@ $videos_marcela = array_values(array_filter([
           <span class="proyecto-area"><i class="fas fa-chart-line"></i>Analítica avanzada</span>
           <span class="proyecto-distincion"><i class="fas fa-trophy"></i>Primer lugar · Hackatón Talento Tech · 2025</span>
           <h3>Analítica avanzada con pronósticos y minería de procesos</h3>
-          <p>Solución ganadora del primer lugar regional en Boyacá y Cundinamarca en 2025, reconocida por su excelencia, creatividad e innovación: integración de datos en MySQL, pronósticos con modelos de series de tiempo (ARIMA y Prophet), minería de procesos con PM4Py y tableros en Power BI, construida con datos reales y bajo presión de tiempo.</p>
+          <p>Solución con la que Marcela Pacheco Parra y Luis Guillermo Nieto Patiño ganaron juntos el primer lugar regional en Boyacá y Cundinamarca en 2025, reconocida por su excelencia, creatividad e innovación: integración de datos en MySQL, pronósticos con modelos de series de tiempo (ARIMA y Prophet), minería de procesos con PM4Py y tableros en Power BI, construida con datos reales y bajo presión de tiempo.</p>
           <div class="proyecto-acciones">
             <a href="#contacto" class="btn-team" data-proyecto="Analítica avanzada con pronósticos" data-servicio="DS">Quiero un proyecto así</a>
           </div>
