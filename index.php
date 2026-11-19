@@ -484,10 +484,7 @@ $videos_marcela = array_values(array_filter([
       </article>
 
       <article class="proyecto-tarjeta" data-areas="humano">
-        <div class="proyecto-media proyecto-media-icono" aria-hidden="true">
-          <i class="fas fa-hands-asl-interpreting"></i>
-          <span>Investigación · FLACSO Argentina</span>
-        </div>
+        <div class="proyecto-media"><img src="img/proyectos/portadas/inclusion-estudiantes-sordos.jpg" alt="Investigación de Marcela Pacheco Parra, magíster en Desarrollo Humano (FLACSO Argentina): inclusión educativa de estudiantes sordos, estudio de caso en Fusagasugá" loading="lazy"></div>
         <div class="proyecto-cuerpo">
           <span class="proyecto-area"><i class="fas fa-seedling"></i>Desarrollo humano</span>
           <h3>Inclusión educativa de estudiantes sordos</h3>
