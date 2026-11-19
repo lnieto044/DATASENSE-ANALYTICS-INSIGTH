@@ -1,0 +1,94 @@
+/* =========================================================================
+   PANEL VIVO: animaciones y respuesta al mouse en todos los módulos del panel
+   Se carga desde includes/sidebar.php (todas las páginas del panel lo incluyen) junto con js/panel_vivo.js.
+   Todo se desactiva si la persona pidió reducir el movimiento en su equipo.
+   ========================================================================= */
+
+/* Barra de carga al cambiar de módulo */
+#ds-progreso { position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 4000; pointer-events: none; opacity: 0;
+  background: linear-gradient(90deg, #3FAE49, #22d3ee, #3FAE49); background-size: 200% 100%; box-shadow: 0 0 10px rgba(63, 174, 73, .6); }
+#ds-progreso.activo { opacity: 1; width: 85%; transition: width 1.6s cubic-bezier(.1, .7, .2, 1), opacity .2s; animation: ds-brillo 1.2s linear infinite; }
+#ds-progreso.fin { opacity: 0; width: 100%; transition: width .25s ease, opacity .35s ease .2s; }
+@keyframes ds-brillo { to { background-position: -200% 0; } }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Entrada de los bloques del módulo, uno tras otro */
+  .ds-entra { animation: ds-entrar .55s cubic-bezier(.2, .7, .2, 1) both; animation-delay: var(--ds-retraso, 0ms); }
+  @keyframes ds-entrar { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+
+  /* Tarjetas que aparecen al bajar en la página */
+  .ds-oculta { opacity: 0; transform: translateY(22px); }
+  .ds-revela { animation: ds-entrar .6s cubic-bezier(.2, .7, .2, 1) both; animation-delay: var(--ds-retraso, 0ms); }
+
+  /* Indicadores: aparecen con un pequeño impulso */
+  .ds-indicador { animation: ds-impulso .6s cubic-bezier(.2, .9, .3, 1.3) both; animation-delay: var(--ds-retraso, 0ms); }
+  @keyframes ds-impulso { from { opacity: 0; transform: translateY(14px) scale(.96); } to { opacity: 1; transform: none; } }
+
+  /* Filas de las tablas en cascada */
+  .ds-fila { animation: ds-fila .45s ease both; animation-delay: var(--ds-retraso, 0ms); }
+  @keyframes ds-fila { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+
+  /* Tarjetas y botones responden al mouse */
+  .main-content .card, .main-content .card-kpi, .main-content [class^="kpi-"], .main-content [class*=" kpi-"] {
+    transition: transform .25s ease, box-shadow .25s ease; }
+  .main-content .card:not(.no-elevar):hover, .main-content .card-kpi:hover, .main-content [class^="kpi-"]:hover, .main-content [class*=" kpi-"]:hover {
+    transform: translateY(-3px); box-shadow: 0 14px 34px rgba(10, 46, 79, .12) !important; }
+  .main-content .modal .card:hover, .main-content .table .card:hover { transform: none; }
+  .main-content .btn:not(.btn-link):not(.btn-close) { transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease, color .2s ease; }
+  .main-content .btn:not(.btn-link):not(.btn-close):hover { transform: translateY(-1px); }
+  .main-content .btn:not(.btn-link):not(.btn-close):active { transform: translateY(0) scale(.97); }
+
+  /* Módulos del inicio: se levantan y su ícono gira un poco */
+  .tarjeta-modulo { transition: transform .22s ease, box-shadow .22s ease; }
+  .tarjeta-modulo:hover { transform: translateY(-4px); box-shadow: 0 12px 26px rgba(10, 46, 79, .14); }
+  .tarjeta-modulo .icono { transition: transform .3s cubic-bezier(.2, .9, .3, 1.4); }
+  .tarjeta-modulo:hover .icono { transform: scale(1.12) rotate(-6deg); }
+
+  /* Menú lateral: el enlace se desliza y su ícono crece; el activo tiene un indicador que entra */
+  .sidebar .nav-link { position: relative; }
+  .sidebar .nav-link i { transition: transform .25s cubic-bezier(.2, .9, .3, 1.4); }
+  .sidebar .nav-link:hover { transform: translateX(4px); }
+  .sidebar .nav-link:hover i { transform: scale(1.18); }
+  .sidebar .nav-link.active::before { content: ''; position: absolute; left: -15px; top: 50%; width: 5px; height: 60%; border-radius: 0 4px 4px 0;
+    background: #86efac; transform: translateY(-50%); animation: ds-indicador-menu .5s cubic-bezier(.2, .9, .3, 1.3) both; }
+  @keyframes ds-indicador-menu { from { height: 0; opacity: 0; } to { height: 60%; opacity: 1; } }
+}
+
+/* Filas de tablas: resaltado al pasar el mouse (también sin animaciones) */
+.main-content .table tbody tr { transition: background-color .15s ease; }
+.main-content .table-hover tbody tr:hover, .main-content .table tbody tr:hover { background-color: rgba(63, 174, 73, .06); }
+
+/* =========================================================================
+   BIENVENIDA DEL INICIO (dashboard)
+   ========================================================================= */
+.ds-bienvenida { position: relative; overflow: hidden; border-radius: 20px; padding: 26px 30px; margin-bottom: 22px; color: #fff;
+  background: linear-gradient(120deg, #0A2E4F 0%, #134574 55%, #0f766e 100%); box-shadow: 0 18px 40px rgba(10, 46, 79, .18); }
+.ds-bienvenida::before, .ds-bienvenida::after { content: ''; position: absolute; border-radius: 50%; pointer-events: none; }
+.ds-bienvenida::before { width: 320px; height: 320px; right: -80px; top: -140px; background: radial-gradient(circle, rgba(134, 239, 172, .28), transparent 70%); }
+.ds-bienvenida::after { width: 260px; height: 260px; left: 38%; bottom: -170px; background: radial-gradient(circle, rgba(34, 211, 238, .22), transparent 70%); }
+.ds-bienvenida-cabeza { position: relative; z-index: 1; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px; margin-bottom: 20px; }
+.ds-saludo { font-size: 1.6rem; font-weight: 800; margin: 0; letter-spacing: -.3px; }
+.ds-saludo .ds-mano { display: inline-block; transform-origin: 70% 80%; }
+.ds-fecha { color: rgba(255, 255, 255, .78); font-size: .92rem; margin: 4px 0 0; }
+.ds-reloj { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 1.05rem; padding: 6px 14px; border-radius: 999px; background: rgba(255, 255, 255, .12);
+  border: 1px solid rgba(255, 255, 255, .18); }
+.ds-pendientes { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+.ds-pendiente { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 14px; text-decoration: none; color: #fff;
+  background: rgba(255, 255, 255, .1); border: 1px solid rgba(255, 255, 255, .16); backdrop-filter: blur(4px); transition: background .2s ease, transform .2s ease; }
+.ds-pendiente:hover { background: rgba(255, 255, 255, .18); color: #fff; transform: translateY(-3px); }
+.ds-pendiente .ds-pendiente-icono { width: 44px; height: 44px; flex-shrink: 0; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; background: rgba(134, 239, 172, .2); color: #86efac; }
+.ds-pendiente b { display: block; font-size: 1.55rem; line-height: 1.1; font-weight: 800; }
+.ds-pendiente small { color: rgba(255, 255, 255, .8); font-size: .8rem; }
+.ds-pendiente.ds-alerta .ds-pendiente-icono { background: rgba(251, 191, 36, .22); color: #fcd34d; }
+@media (prefers-reduced-motion: no-preference) {
+  .ds-saludo .ds-mano { animation: ds-saludar 1.8s ease .5s 1; }
+  @keyframes ds-saludar { 0%, 60%, 100% { transform: rotate(0); } 10%, 30%, 50% { transform: rotate(16deg); } 20%, 40% { transform: rotate(-8deg); } }
+  .ds-bienvenida::before { animation: ds-flotar 9s ease-in-out infinite alternate; }
+  .ds-bienvenida::after { animation: ds-flotar 11s ease-in-out infinite alternate-reverse; }
+  @keyframes ds-flotar { from { transform: translate(0, 0); } to { transform: translate(-40px, 25px); } }
+}
+@media (max-width: 576px) {
+  .ds-bienvenida { padding: 22px 18px; }
+  .ds-saludo { font-size: 1.3rem; }
+}

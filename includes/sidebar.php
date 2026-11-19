@@ -84,6 +84,8 @@ $menu_secciones = [
 ];
 ?>
 
+<link rel="stylesheet" href="../css/panel_vivo.css">
+<script src="../js/panel_vivo.js" defer></script>
 <nav class="sidebar" id="sidebar" aria-label="Menú principal">
 
     <button type="button" class="btn-cerrar-menu" id="btnCerrarMenu" aria-label="Cerrar el menú"><i class="fas fa-times"></i></button>

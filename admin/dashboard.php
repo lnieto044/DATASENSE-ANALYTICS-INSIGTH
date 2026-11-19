@@ -315,6 +315,51 @@ $tendencia = function ($pct, $subir_es_bueno = true) {
         <?php include '../includes/header.php'; ?>
 
         <?php
+        // Bienvenida: saludo según la hora, fecha y los pendientes de hoy de los módulos que este rol puede abrir
+        $hora_actual = (int) date('G');
+        $saludo = $hora_actual < 12 ? 'Buenos días' : ($hora_actual < 19 ? 'Buenas tardes' : 'Buenas noches');
+        $primer_nombre = trim(explode(' ', trim((string) ($_SESSION['admin_nombre'] ?? '')))[0] ?? '');
+        $dias_semana = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+        $meses_anio = [1 => 'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+        $fecha_larga = ucfirst($dias_semana[(int) date('w')]) . ', ' . date('j') . ' de ' . $meses_anio[(int) date('n')] . ' de ' . date('Y');
+        $rol_bienvenida = $_SESSION['admin_rol'] ?? '';
+        $pendientes_hoy = [];
+        $contar_bienvenida = function ($sql) use ($db) {
+            try { return (int) $db->query($sql)->fetchColumn(); } catch (Throwable $e) { return null; }
+        };
+        foreach ([
+            ['gestion_it', 'gestion_it.php', 'fa-headset', 'casos nuevos hoy', "SELECT COUNT(*) FROM soporte_tickets WHERE created_at >= CURDATE()", false],
+            ['gestion_it', 'gestion_it.php', 'fa-hourglass-half', 'casos por atender', "SELECT COUNT(*) FROM soporte_tickets WHERE estado IN ('Registrado', 'Asignado')", true],
+            ['pqrsd', 'pqrsd.php', 'fa-scale-balanced', 'PQRSD en trámite', "SELECT COUNT(*) FROM pqrsd WHERE estado IN ('Radicada', 'En trámite', 'En espera del ciudadano')", false],
+            ['mensajes', 'mensajes.php', 'fa-envelope-open-text', 'mensajes nuevos del sitio', "SELECT COUNT(*) FROM contactos WHERE estado = 'Nuevo'", false],
+            ['facturacion', 'facturacion.php', 'fa-file-invoice-dollar', 'facturas vencidas', "SELECT COUNT(*) FROM facturas WHERE estado = 'Vencido'", true],
+        ] as [$modulo_b, $pagina_b, $icono_b, $texto_b, $sql_b, $alerta_b]) {
+            if (count($pendientes_hoy) >= 4 || !tieneAcceso($rol_bienvenida, $modulo_b, $db)) continue;
+            $valor_b = $contar_bienvenida($sql_b);
+            if ($valor_b !== null) $pendientes_hoy[] = [$pagina_b, $icono_b, $texto_b, $valor_b, $alerta_b && $valor_b > 0];
+        }
+        ?>
+        <section class="ds-bienvenida" aria-label="Bienvenida">
+            <div class="ds-bienvenida-cabeza">
+                <div>
+                    <h1 class="ds-saludo"><?= esc($saludo) ?><?= $primer_nombre !== '' ? ', ' . esc($primer_nombre) : '' ?> <span class="ds-mano" aria-hidden="true">👋</span></h1>
+                    <p class="ds-fecha"><?= esc($fecha_larga) ?> · Esto es lo que espera tu atención hoy</p>
+                </div>
+                <span class="ds-reloj" id="dsReloj" aria-label="Hora actual"><?= date('g:i a') ?></span>
+            </div>
+            <?php if ($pendientes_hoy): ?>
+            <div class="ds-pendientes">
+                <?php foreach ($pendientes_hoy as [$pagina_b, $icono_b, $texto_b, $valor_b, $alerta_b]): ?>
+                <a class="ds-pendiente<?= $alerta_b ? ' ds-alerta' : '' ?>" href="<?= esc($pagina_b) ?>">
+                    <span class="ds-pendiente-icono"><i class="fas <?= esc($icono_b) ?>"></i></span>
+                    <span><b><?= number_format($valor_b, 0, ',', '.') ?></b><small><?= esc($texto_b) ?></small></span>
+                </a>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+        </section>
+
+        <?php
         // Todos los módulos que el rol puede abrir (los mismos del menú lateral), visibles aunque el menú esté oculto
         $colores_seccion = ['Operación y Análisis' => '#0369a1', 'Mesa de Servicios (ITSM)' => '#7c3aed', 'Atención Ciudadana' => '#0d9488',
                             'Facturación y Cartera' => '#15803d', 'Tesorería y Bancos' => '#0f766e', 'Contabilidad e Informes' => '#b45309',
