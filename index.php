@@ -202,7 +202,7 @@ $videos_marcela = array_values(array_filter([
         <div class="team-degree"><i class="fas fa-graduation-cap me-2"></i> Ingeniero de Sistemas · Maestría en Administración con énfasis en Análisis de Datos (en curso)</div>
         <p class="team-desc">Ingeniero de Sistemas con trayectoria en tecnología desde 2013, especializado en analítica y calidad de la información. Ha trabajado en el sector público y en el privado: administró los sistemas de información del Ministerio de las Culturas, validó información académica y laboral en la Gerencia de Prevención del Fraude de Colpensiones y lideró mesa de ayuda bajo ITIL para la banca. Lidera la estrategia de negocio y la visión tecnológica de DataSense, y acompaña a gerencias y entidades a convertir sus datos en decisiones: tableros ejecutivos, verificación de información, analítica avanzada y software a la medida.</p>
         <p class="team-desc"><i class="fas fa-award me-2" style="color:#d4a017"></i><b>Premio Alfonso Palacio Rudas 2026</b> de la Contraloría General de la República, categoría Académico, por una metodología de verificación de información pública.</p>
-        <p class="team-desc"><i class="fas fa-trophy me-2" style="color:#d4a017"></i><b>Primer lugar</b>, junto con Marcela Pacheco Parra, en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca (MinTIC, 2025). En 2026 creó CuentaVoz y Kauta en la Hackatón 30X, y Desenmascara en la Hackatón Colombia 5.0.</p>
+        <p class="team-desc"><i class="fas fa-trophy me-2" style="color:#d4a017"></i><b>Primer lugar</b>, junto con Marcela Pacheco Parra, en la Hackatón Talento Tech Región 7 Boyacá–Cundinamarca (MinTIC, 2025). En 2026 creó CuentaVoz y Kauta en la Hackatón 30X, ReActiva Territorio en la hackatón de Platzi Conf Bogotá y Desenmascara en la Hackatón Colombia 5.0.</p>
         <p class="team-desc"><i class="fas fa-screwdriver-wrench me-2"></i>Power BI · SQL Server y MySQL · Python · calidad y cruce de datos · Amazon Cognito y doble factor · ITIL y ANS · desarrollo web y APIs.</p>
         <p class="team-desc mb-0"><i class="fas fa-handshake me-2"></i><b>¿Tu organización necesita decidir con datos?</b> Conversemos sobre tu reto.</p>
         <div class="team-contacto">
@@ -460,6 +460,26 @@ $videos_marcela = array_values(array_filter([
           <div class="proyecto-acciones">
             <a href="#contacto" class="btn-team" data-proyecto="Desenmascara (bot antiestafas)" data-servicio="DSW">Quiero un proyecto así</a>
             <a href="https://desenmascara.onrender.com/pitch/" class="btn-proyecto-sec" data-abrir-video target="_blank" rel="noopener noreferrer"><i class="fas fa-play"></i>Ver el video</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- ReActiva Territorio: hackatón de Platzi Conf Bogotá (2026) -->
+      <article class="proyecto-tarjeta" data-areas="software publico hackaton">
+        <div class="proyecto-media con-video" style="--reproducir-x: 85%; --reproducir-y: 68%">
+          <img src="img/proyectos/portadas/reactiva-territorio.jpg" data-youtube="ZHtUpvOqVfI" data-pagina="https://reactivaterritorio.web.app/" data-pagina-texto="Visitar la plataforma" alt="ReActiva Territorio: pitch en video de la plataforma de recuperación después del sismo (hackatón de Platzi Conf Bogotá)" loading="lazy">
+          <span class="proyecto-reproducir" aria-hidden="true"><i class="fas fa-play"></i></span>
+          <span class="proyecto-video-etiqueta" aria-hidden="true"><i class="fas fa-video"></i>Pitch en video</span>
+        </div>
+        <div class="proyecto-cuerpo">
+          <span class="proyecto-cliente"><i class="fas fa-flag"></i>Hackatón Platzi Conf · Bogotá</span>
+          <span class="proyecto-area"><i class="fas fa-house-crack"></i>Gestión del riesgo · Recuperación tras desastres</span>
+          <span class="proyecto-distincion"><i class="fas fa-trophy"></i>Hackatón Platzi Conf Bogotá · 2026</span>
+          <h3>ReActiva Territorio: recuperación verificable después de un sismo</h3>
+          <p>Nació del sismo de magnitud 7,4 del 10 de agosto de 2026 en San José del Palmar (Chocó). Los líderes comunitarios registran a las personas y negocios afectados, incluso sin conexión; cada caso aparece en un mapa, se verifica, se prioriza y se relaciona con ofertas de ayuda compatibles mediante reglas explicables. La organización registra la entrega con evidencia, la comunidad confirma el cierre y un tablero muestra los resultados, con alertas y verificación en dos pasos.</p>
+          <div class="proyecto-acciones">
+            <a href="#contacto" class="btn-team" data-proyecto="ReActiva Territorio (recuperación después de desastres)" data-servicio="DSW">Quiero un proyecto así</a>
+            <a href="https://www.youtube.com/watch?v=ZHtUpvOqVfI" class="btn-proyecto-sec" data-abrir-video target="_blank" rel="noopener noreferrer"><i class="fas fa-play"></i>Ver el video</a>
           </div>
         </div>
       </article>
@@ -1226,8 +1246,9 @@ document.addEventListener("DOMContentLoaded", function () {
   <button type="button" class="visor-cerrar" aria-label="Cerrar"><i class="fas fa-xmark"></i></button>
   <img src="" alt="">
   <video controls playsinline preload="none" hidden></video>
+  <iframe class="visor-marco" hidden title="Video del proyecto" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
   <p class="visor-titulo"></p>
-  <a class="visor-enlace" target="_blank" rel="noopener noreferrer" hidden>Abrir la página del pitch<i class="fas fa-arrow-up-right-from-square"></i></a>
+  <a class="visor-enlace" target="_blank" rel="noopener noreferrer" hidden><span>Abrir la página del pitch</span><i class="fas fa-arrow-up-right-from-square"></i></a>
 </div>
 <script>
 // Imágenes de los proyectos: al tocarlas se ven en grande (se cierra con la X, tocando afuera o con Esc).
@@ -1237,20 +1258,28 @@ document.addEventListener("DOMContentLoaded", function () {
   if (!visor) return;
   const grande = visor.querySelector('img');
   const video = visor.querySelector('video');
+  const marco = visor.querySelector('.visor-marco');
   const titulo = visor.querySelector('.visor-titulo');
   const enlace = visor.querySelector('.visor-enlace');
   const cerrar = visor.querySelector('.visor-cerrar');
   let origen = null;
+  // data-video: archivo de video; data-youtube: identificador de un video de YouTube; sin ninguno: imagen
   const abrir = function (img, desde) {
     origen = desde || img;
-    const esVideo = Boolean(img.dataset.video);
-    grande.hidden = esVideo;
-    video.hidden = !esVideo;
-    enlace.hidden = !(esVideo && img.dataset.pagina);
+    const tipo = img.dataset.youtube ? 'youtube' : (img.dataset.video ? 'video' : 'imagen');
+    grande.hidden = tipo !== 'imagen';
+    video.hidden = tipo !== 'video';
+    marco.hidden = tipo !== 'youtube';
+    enlace.hidden = tipo === 'imagen' || !img.dataset.pagina;
+    if (!enlace.hidden) {
+      enlace.href = img.dataset.pagina;
+      enlace.querySelector('span').textContent = img.dataset.paginaTexto || 'Abrir la página del pitch';
+    }
     titulo.textContent = img.alt;
-    visor.setAttribute('aria-label', esVideo ? 'Video del proyecto' : 'Imagen ampliada');
-    if (esVideo) {
-      if (img.dataset.pagina) enlace.href = img.dataset.pagina;
+    visor.setAttribute('aria-label', tipo === 'imagen' ? 'Imagen ampliada' : 'Video del proyecto');
+    if (tipo === 'youtube') {
+      marco.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(img.dataset.youtube) + '?autoplay=1&rel=0&playsinline=1';
+    } else if (tipo === 'video') {
       video.poster = img.currentSrc || img.src;
       video.src = img.dataset.video;
       const intento = video.play();
@@ -1271,9 +1300,17 @@ document.addEventListener("DOMContentLoaded", function () {
       video.removeAttribute('src');
       video.load();   // corta la descarga del video
     }
+    const enMarco = marco.getAttribute('src');
+    if (enMarco && enMarco !== 'about:blank') marco.src = 'about:blank';   // descarga el reproductor: el video de YouTube deja de sonar
     document.body.style.overflow = '';
     if (origen) origen.focus();
   };
+  // El reproductor de YouTube toma el foco al cargar y así Esc ya no llega a esta página: se devuelve a la X
+  marco.addEventListener('load', function () {
+    [0, 400, 1200].forEach(function (ms) {
+      setTimeout(function () { if (!visor.hidden && document.activeElement === marco) cerrar.focus(); }, ms);
+    });
+  });
   video.addEventListener('error', function () {
     if (visor.hidden || !video.getAttribute('src')) return;
     titulo.textContent = 'No se pudo cargar el video aquí. Puedes verlo en la página del pitch.';
@@ -1282,14 +1319,14 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll('.proyecto-media img').forEach(function (img) {
     img.tabIndex = 0;
     img.setAttribute('role', 'button');
-    img.title = img.dataset.video ? 'Ver el video' : 'Ver en grande';
+    img.title = (img.dataset.video || img.dataset.youtube) ? 'Ver el video' : 'Ver en grande';
     img.addEventListener('click', function () { abrir(img); });
     img.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrir(img); } });
   });
   // Botones "Ver el video" de las tarjetas: abren el mismo visor (sin JavaScript, el enlace lleva a la página del pitch)
   document.querySelectorAll('[data-abrir-video]').forEach(function (boton) {
     const tarjeta = boton.closest('.proyecto-tarjeta');
-    const img = tarjeta && tarjeta.querySelector('.proyecto-media img[data-video]');
+    const img = tarjeta && tarjeta.querySelector('.proyecto-media img[data-video], .proyecto-media img[data-youtube]');
     if (!img) return;
     boton.addEventListener('click', function (e) {
       if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
