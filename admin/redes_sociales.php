@@ -590,6 +590,6 @@ window.REDES_DATOS = <?= jsJson(['galeria' => $galeria, 'publicaciones' => $publ
                                   'festivos' => festivosColombia((int) date('Y')) + festivosColombia((int) date('Y') + 1)]) ?>;
 </script>
 <script src="../js/afiches.js?v=4"></script>
-<script src="../js/redes.js?v=4"></script>
+<script src="../js/redes.js?v=5"></script>
 </body>
 </html>
