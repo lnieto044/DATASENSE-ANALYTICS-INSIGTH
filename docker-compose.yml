@@ -40,10 +40,11 @@ services:
       MAIL_ENCRYPTION: none
       MAIL_USER: demo@example.com
       MAIL_PASS: demo
-      SOCIAL_FACEBOOK: https://www.facebook.com/DataSenseAnalyticsCo
+      SOCIAL_FACEBOOK: https://www.facebook.com/profile.php?id=61596608473887
       SOCIAL_INSTAGRAM: https://www.instagram.com/datasenseanalyticsinsigth/
       SOCIAL_LINKEDIN: https://www.linkedin.com/company/datasense-analytics-insights
-      REDES_ENLACE: https://datasense-demo.onrender.com/
+      SOCIAL_WHATSAPP: "573133898638"
+      REDES_ENLACE: https://datasense-analytics-insigth.vercel.app/
     # Docker revisa cada minuto que el sitio y su base respondan (en "docker ps" aparece como healthy o unhealthy)
     healthcheck:
       test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:10000/salud.php"]

@@ -24,9 +24,10 @@ ENV APP_ENV=demo \
     MAIL_ENCRYPTION=none \
     MAIL_USER=demo@example.com \
     MAIL_PASS=demo \
-    SOCIAL_FACEBOOK=https://www.facebook.com/DataSenseAnalyticsCo \
+    SOCIAL_FACEBOOK=https://www.facebook.com/profile.php?id=61596608473887 \
     SOCIAL_INSTAGRAM=https://www.instagram.com/datasenseanalyticsinsigth/ \
-    SOCIAL_LINKEDIN=https://www.linkedin.com/company/datasense-analytics-insights
+    SOCIAL_LINKEDIN=https://www.linkedin.com/company/datasense-analytics-insights \
+    SOCIAL_WHATSAPP=573133898638
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends mariadb-server tzdata \

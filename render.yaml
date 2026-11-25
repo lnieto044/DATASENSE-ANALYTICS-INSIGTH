@@ -35,11 +35,13 @@ services:
         value: demo
       # Redes sociales de DataSense (direcciones públicas): salen en el pie de página y en el canal de PQRSD
       - key: SOCIAL_FACEBOOK
-        value: https://www.facebook.com/DataSenseAnalyticsCo
+        value: https://www.facebook.com/profile.php?id=61596608473887
       - key: SOCIAL_INSTAGRAM
         value: https://www.instagram.com/datasenseanalyticsinsigth/
       - key: SOCIAL_LINKEDIN
         value: https://www.linkedin.com/company/datasense-analytics-insights
+      - key: SOCIAL_WHATSAPP
+        value: "573133898638"
       # Publicación automática en redes: el valor se escribe en Render (Environment), nunca en el repositorio
       - key: META_PAGE_TOKEN
         sync: false
