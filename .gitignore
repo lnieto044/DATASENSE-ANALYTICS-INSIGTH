@@ -15,3 +15,6 @@
 *.log
 Thumbs.db
 .DS_Store
+
+# Videos para redes sociales: se guardan aquí para tenerlos a mano, pero no se suben a GitHub ni al sitio (pesan mucho)
+/videos/

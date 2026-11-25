@@ -28,8 +28,11 @@
  *   LINKEDIN_VERSION=202608    LINKEDIN_API_URL=https://api.linkedin.com
  */
 require_once __DIR__ . '/doble_factor.php';   // cifrarSecreto() y descifrarSecreto()
+require_once __DIR__ . '/utilidades.php';     // urlBase(): dirección de regreso de TikTok
 
-const REDES_AUTO = ['facebook' => 'Facebook', 'instagram' => 'Instagram', 'linkedin' => 'LinkedIn'];
+const REDES_AUTO = ['facebook' => 'Facebook', 'instagram' => 'Instagram', 'linkedin' => 'LinkedIn', 'tiktok' => 'TikTok'];
+// Quién puede ver una publicación de TikTok (la persona elige una de las que TikTok ofrece para su cuenta)
+const TIKTOK_PRIVACIDAD = ['PUBLIC_TO_EVERYONE', 'MUTUAL_FOLLOW_FRIENDS', 'FOLLOWER_OF_CREATOR', 'SELF_ONLY'];
 const REDES_MAX_INTENTOS = 3;
 const REDES_ESTADOS = ['Programada', 'Publicando', 'Publicada', 'Parcial', 'Error', 'Cancelada'];
 
@@ -78,6 +81,10 @@ function asegurarTablasRedes(PDO $db) {
     // huella: resumen del token de la configuración del servidor con el que se conectó (vacío si se pegó en el panel)
     if (!$db->query("SHOW COLUMNS FROM redes_conexiones LIKE 'huella'")->fetch()) {
         $db->exec("ALTER TABLE redes_conexiones ADD COLUMN huella VARCHAR(64) DEFAULT NULL");
+    }
+    // opciones: ajustes de cada red para esa publicación (TikTok: privacidad, comentarios y contenido comercial)
+    if (!$db->query("SHOW COLUMNS FROM redes_programadas LIKE 'opciones'")->fetch()) {
+        $db->exec("ALTER TABLE redes_programadas ADD COLUMN opciones TEXT DEFAULT NULL");
     }
     $listas = true;
 }
@@ -411,6 +418,208 @@ function publicarLinkedin(array $con, $ruta, $texto) {
 }
 
 // ================================================================
+// TIKTOK (Login Kit + Content Posting API, publicación directa de fotos)
+// ================================================================
+// Variables del servidor: TIKTOK_CLIENT_KEY y TIKTOK_CLIENT_SECRET (las de la app en TikTok for Developers; en pruebas,
+// las del Sandbox). Opcional: TIKTOK_REDIRECT_URI si la dirección de regreso no es <sitio>/admin/tiktok_callback.php.
+// La conexión guarda, cifrado, un JSON con el token de acceso (dura 24 horas), el de renovación (dura un año) y la
+// dirección pública del sitio, que el publicador (sin navegador) necesita para que TikTok descargue la foto.
+// Mientras TikTok no apruebe la app (auditoría), solo deja publicar en cuentas privadas y como «Solo yo».
+
+function tiktokConfigurado() {
+    return trim((string) ($_ENV['TIKTOK_CLIENT_KEY'] ?? '')) !== '' && trim((string) ($_ENV['TIKTOK_CLIENT_SECRET'] ?? '')) !== '';
+}
+
+function urlRegresoTiktok() {
+    return trim((string) ($_ENV['TIKTOK_REDIRECT_URI'] ?? '')) ?: urlBase() . 'admin/tiktok_callback.php';
+}
+
+function urlAutorizacionTiktok($estado) {
+    return 'https://www.tiktok.com/v2/auth/authorize/?' . http_build_query([
+        'client_key' => trim((string) $_ENV['TIKTOK_CLIENT_KEY']), 'scope' => 'user.info.basic,video.publish',
+        'response_type' => 'code', 'redirect_uri' => urlRegresoTiktok(), 'state' => $estado,
+    ]);
+}
+
+function apiTiktok($metodo, $ruta, $token, array $op = []) {
+    $op['cabeceras'] = array_merge($op['cabeceras'] ?? [], ['Authorization: Bearer ' . $token]);
+    return pedirHttp($metodo, 'https://open.tiktokapis.com/' . ltrim($ruta, '/'), $op);
+}
+
+// Mensaje legible de un error de TikTok, con los casos que se ven al probar una app sin auditoría
+function errorTiktok(array $r) {
+    if ($r['error'] !== '') return 'No hubo conexión con TikTok: ' . $r['error'];
+    $codigo = (string) ($r['json']['error']['code'] ?? ($r['json']['error'] ?? ''));
+    $mensaje = (string) ($r['json']['error']['message'] ?? ($r['json']['error_description'] ?? ''));
+    $conocidos = [
+        'unaudited_client_can_only_post_to_private_accounts' => 'TikTok todavía no ha aprobado la app: mientras tanto solo deja publicar si la cuenta de TikTok está en privado.',
+        'privacy_level_option_mismatch' => 'TikTok no acepta esa privacidad para esta cuenta. Mientras la app no esté aprobada, elige «Solo yo».',
+        'spam_risk_too_many_posts' => 'TikTok frenó la publicación por demasiadas publicaciones seguidas. Se reintentará más tarde.',
+        'spam_risk_user_banned_from_posting' => 'TikTok no deja publicar en esta cuenta por ahora.',
+        'url_ownership_unverified' => 'TikTok no puede descargar la imagen: falta verificar el dominio del sitio en Content Posting API › Verify domains.',
+        'access_token_invalid' => 'La conexión con TikTok venció o se revocó. Conecta TikTok de nuevo.',
+        'scope_not_authorized' => 'Al conectar TikTok no se aceptó el permiso para publicar. Conecta TikTok de nuevo y acepta todos los permisos.',
+    ];
+    if (isset($conocidos[$codigo])) return $conocidos[$codigo];
+    return 'TikTok respondió ' . $r['codigo'] . ($codigo !== '' && $codigo !== 'ok' ? ' (' . $codigo . ')' : '') . ($mensaje !== '' ? ': ' . mb_substr($mensaje, 0, 250) : '');
+}
+
+function pedirTokenTiktok(array $campos) {
+    return pedirHttp('POST', 'https://open.tiktokapis.com/v2/oauth/token/', [
+        'campos' => http_build_query($campos + ['client_key' => trim((string) $_ENV['TIKTOK_CLIENT_KEY']), 'client_secret' => trim((string) $_ENV['TIKTOK_CLIENT_SECRET'])]),
+        'cabeceras' => ['Content-Type: application/x-www-form-urlencoded', 'Cache-Control: no-cache'],
+    ]);
+}
+
+// Paquete que se guarda cifrado como token de la conexión
+function paqueteTiktok(array $t, $sitio) {
+    return json_encode(['acceso' => $t['access_token'], 'renovacion' => $t['refresh_token'] ?? '', 'sitio' => $sitio,
+        'vence' => time() + (int) ($t['expires_in'] ?? 86400), 'renovacion_vence' => time() + (int) ($t['refresh_expires_in'] ?? 31536000)]);
+}
+
+/**
+ * Cambia el código que devuelve TikTok al autorizar por los tokens y guarda la conexión.
+ */
+function conectarTiktok(PDO $db, $codigo, $usuario_id) {
+    asegurarTablasRedes($db);
+    if (!tiktokConfigurado()) return ['ok' => false, 'mensaje' => 'Faltan TIKTOK_CLIENT_KEY y TIKTOK_CLIENT_SECRET en la configuración del servidor.'];
+    $r = pedirTokenTiktok(['code' => (string) $codigo, 'grant_type' => 'authorization_code', 'redirect_uri' => urlRegresoTiktok()]);
+    if ($r['codigo'] !== 200 || empty($r['json']['access_token'])) return ['ok' => false, 'mensaje' => errorTiktok($r)];
+    $t = $r['json'];
+    if (strpos((string) ($t['scope'] ?? ''), 'video.publish') === false) {
+        return ['ok' => false, 'mensaje' => 'TikTok no dio el permiso para publicar (video.publish). Vuelve a conectar y acepta todos los permisos.'];
+    }
+    $nombre = 'TikTok';
+    $perfil = apiTiktok('GET', 'v2/user/info/', $t['access_token'], ['consulta' => ['fields' => 'open_id,display_name,avatar_url']]);
+    if (!empty($perfil['json']['data']['user']['display_name'])) $nombre = $perfil['json']['data']['user']['display_name'];
+    guardarConexion($db, 'tiktok', $t['open_id'] ?? '', $nombre, paqueteTiktok($t, urlBase()), $usuario_id);
+    return ['ok' => true, 'mensaje' => 'TikTok conectado: ' . $nombre . '.'];
+}
+
+// Token de acceso vigente: si vence en menos de 5 minutos lo renueva con el de renovación y guarda el nuevo
+function tokenTiktok(PDO $db, array $con) {
+    $p = json_decode((string) $con['token'], true);
+    if (!is_array($p) || empty($p['acceso'])) return ['ok' => false, 'error' => 'La conexión con TikTok está incompleta. Conecta TikTok de nuevo.'];
+    if ((int) ($p['vence'] ?? 0) - 300 > time()) return ['ok' => true, 'acceso' => $p['acceso'], 'sitio' => $p['sitio'] ?? ''];
+    if (!tiktokConfigurado() || empty($p['renovacion']) || (int) ($p['renovacion_vence'] ?? 0) < time()) {
+        return ['ok' => false, 'error' => 'La conexión con TikTok venció. Conecta TikTok de nuevo.'];
+    }
+    $r = pedirTokenTiktok(['grant_type' => 'refresh_token', 'refresh_token' => $p['renovacion']]);
+    if ($r['codigo'] !== 200 || empty($r['json']['access_token'])) return ['ok' => false, 'error' => errorTiktok($r)];
+    $paquete = paqueteTiktok($r['json'], $p['sitio'] ?? '');
+    $db->prepare("UPDATE redes_conexiones SET token = ?, actualizado = ? WHERE red = 'tiktok'")->execute([cifrarSecreto($paquete), date('Y-m-d H:i:s')]);
+    return ['ok' => true, 'acceso' => $r['json']['access_token'], 'sitio' => $p['sitio'] ?? ''];
+}
+
+/**
+ * Datos del creador que TikTok exige mostrar antes de publicar: nombre, foto, privacidades permitidas y si la cuenta
+ * tiene apagados los comentarios. Devuelve ['ok', 'creador' => [...]] o ['ok' => false, 'mensaje'].
+ */
+function creadorTiktok(PDO $db) {
+    $con = conexionRed($db, 'tiktok');
+    if (!$con) return ['ok' => false, 'mensaje' => 'TikTok no está conectado.'];
+    $t = tokenTiktok($db, $con);
+    if (!$t['ok']) return ['ok' => false, 'mensaje' => $t['error']];
+    $r = apiTiktok('POST', 'v2/post/publish/creator_info/query/', $t['acceso'], ['json' => new stdClass()]);
+    $d = $r['json']['data'] ?? null;
+    if ($r['codigo'] !== 200 || !is_array($d) || ($r['json']['error']['code'] ?? 'ok') !== 'ok') return ['ok' => false, 'mensaje' => errorTiktok($r)];
+    return ['ok' => true, 'creador' => [
+        'usuario' => (string) ($d['creator_username'] ?? ''), 'nombre' => (string) ($d['creator_nickname'] ?? ''),
+        'foto' => (string) ($d['creator_avatar_url'] ?? ''), 'privacidades' => array_values(array_intersect(TIKTOK_PRIVACIDAD, (array) ($d['privacy_level_options'] ?? []))),
+        'sin_comentarios' => !empty($d['comment_disabled']),
+    ]];
+}
+
+// Valida los ajustes de TikTok que eligió la persona al programar (no hay privacidad por defecto: TikTok exige elegirla)
+function opcionesTiktok(array $tk) {
+    $privacidad = (string) ($tk['privacidad'] ?? '');
+    if (!in_array($privacidad, TIKTOK_PRIVACIDAD, true)) return ['ok' => false, 'mensaje' => 'Elige quién puede ver la publicación en TikTok.'];
+    $marca_propia = !empty($tk['marca_propia']);
+    $contenido_marca = !empty($tk['contenido_marca']);
+    if (!empty($tk['comercial']) && !$marca_propia && !$contenido_marca) {
+        return ['ok' => false, 'mensaje' => 'Si la publicación promociona una marca, indica si es tu marca, contenido de marca o ambas.'];
+    }
+    if ($contenido_marca && $privacidad === 'SELF_ONLY') {
+        return ['ok' => false, 'mensaje' => 'TikTok no permite que el contenido de marca sea privado («Solo yo»).'];
+    }
+    return ['ok' => true, 'mensaje' => '', 'privacidad' => $privacidad, 'comentarios' => !empty($tk['comentarios']),
+            'marca_propia' => $marca_propia, 'contenido_marca' => $contenido_marca];
+}
+
+// Dirección pública y firmada de un afiche de la cola (TikTok descarga la foto desde el sitio verificado)
+function urlPublicaImagenRedes($sitio, $nombre) {
+    return rtrim($sitio, '/') . '/redes_imagen.php?' . http_build_query(['f' => $nombre, 't' => firmaImagenRedes($nombre)]);
+}
+
+function firmaImagenRedes($nombre) {
+    return substr(hash_hmac('sha256', 'redes-imagen|' . basename((string) $nombre), claveCifrado()), 0, 32);
+}
+
+// Título corto para TikTok (hasta 90 caracteres): la primera línea del texto, sin enlaces
+function tituloTiktok($texto) {
+    $linea = trim(strtok(str_replace("\r", '', (string) $texto), "\n") ?: '');
+    $linea = trim(preg_replace('#https?://\S+#', '', $linea));
+    return mb_strlen($linea) > 90 ? rtrim(mb_substr($linea, 0, 89)) . '…' : $linea;
+}
+
+/**
+ * Publica un afiche como foto en TikTok (publicación directa) y espera hasta un minuto a que TikTok la procese.
+ */
+function publicarTiktok(PDO $db, array $con, $nombre_imagen, $texto, array $op) {
+    if (empty($op['privacidad'])) return ['ok' => false, 'error' => 'Falta elegir quién puede verla en TikTok. Prográmala de nuevo.', 'definitivo' => true];
+    $t = tokenTiktok($db, $con);
+    if (!$t['ok']) return ['ok' => false, 'error' => $t['error'], 'definitivo' => true];
+    if ($t['sitio'] === '') return ['ok' => false, 'error' => 'Conecta TikTok de nuevo desde el panel para guardar la dirección del sitio.', 'definitivo' => true];
+
+    $creador = creadorTiktok($db);
+    if (!$creador['ok']) return ['ok' => false, 'error' => $creador['mensaje']];
+    if (!in_array($op['privacidad'], $creador['creador']['privacidades'], true)) {
+        return ['ok' => false, 'error' => 'TikTok no permite esa privacidad para esta cuenta en este momento. Mientras la app no esté aprobada, usa «Solo yo».', 'definitivo' => true];
+    }
+
+    $inicio = apiTiktok('POST', 'v2/post/publish/content/init/', $t['acceso'], ['json' => [
+        'post_info' => [
+            'title' => tituloTiktok($texto), 'description' => mb_substr((string) $texto, 0, 4000),
+            'privacy_level' => $op['privacidad'], 'disable_comment' => empty($op['comentarios']) || $creador['creador']['sin_comentarios'],
+            'auto_add_music' => true, 'brand_organic_toggle' => !empty($op['marca_propia']), 'brand_content_toggle' => !empty($op['contenido_marca']),
+        ],
+        'source_info' => ['source' => 'PULL_FROM_URL', 'photo_cover_index' => 0, 'photo_images' => [urlPublicaImagenRedes($t['sitio'], $nombre_imagen)]],
+        'post_mode' => 'DIRECT_POST', 'media_type' => 'PHOTO',
+    ]]);
+    $id = $inicio['json']['data']['publish_id'] ?? '';
+    if ($inicio['codigo'] !== 200 || $id === '') return ['ok' => false, 'error' => errorTiktok($inicio)];
+
+    $perfil = $creador['creador']['usuario'] !== '' ? 'https://www.tiktok.com/@' . rawurlencode($creador['creador']['usuario']) : '';
+    for ($i = 0; $i < 12; $i++) {
+        sleep(5);
+        $s = apiTiktok('POST', 'v2/post/publish/status/fetch/', $t['acceso'], ['json' => ['publish_id' => $id]]);
+        $estado = (string) ($s['json']['data']['status'] ?? '');
+        if ($estado === 'PUBLISH_COMPLETE') {
+            $publicas = (array) ($s['json']['data']['publicaly_available_post_id'] ?? []);
+            return ['ok' => true, 'id' => $id, 'enlace' => $publicas && $perfil !== '' ? $perfil . '/photo/' . rawurlencode((string) $publicas[0]) : $perfil];
+        }
+        if ($estado === 'FAILED') {
+            return ['ok' => false, 'error' => 'TikTok no pudo publicarla (' . ($s['json']['data']['fail_reason'] ?? 'sin motivo') . ').'];
+        }
+    }
+    // TikTok la recibió y la sigue procesando: queda como enviada para no duplicarla en un reintento
+    return ['ok' => true, 'id' => $id, 'enlace' => $perfil, 'nota' => 'TikTok la está procesando; aparecerá en el perfil en unos minutos.'];
+}
+
+// Revoca el permiso en TikTok al desconectar (si falla, igual se borra la conexión local)
+function revocarTiktok(PDO $db) {
+    $con = conexionRed($db, 'tiktok');
+    $p = $con ? json_decode((string) $con['token'], true) : null;
+    if (is_array($p) && !empty($p['acceso']) && tiktokConfigurado()) {
+        pedirHttp('POST', 'https://open.tiktokapis.com/v2/oauth/revoke/', [
+            'campos' => http_build_query(['client_key' => trim((string) $_ENV['TIKTOK_CLIENT_KEY']), 'client_secret' => trim((string) $_ENV['TIKTOK_CLIENT_SECRET']), 'token' => $p['acceso']]),
+            'cabeceras' => ['Content-Type: application/x-www-form-urlencoded'],
+        ]);
+    }
+    quitarConexion($db, 'tiktok');
+}
+
+// ================================================================
 // COLA
 // ================================================================
 
@@ -431,7 +640,14 @@ function programarPublicacion(PDO $db, array $datos, array $archivo, $usuario_id
     $fecha = DateTime::createFromFormat('Y-m-d H:i', (string) ($datos['fecha'] ?? ''));
     $ahora = new DateTime();
 
-    if (!$redes) return ['ok' => false, 'mensaje' => $tipo === 'historia' ? 'Las historias se publican solo en Instagram.' : 'Elige al menos una red: Facebook, Instagram o LinkedIn.'];
+    if (!$redes) return ['ok' => false, 'mensaje' => $tipo === 'historia' ? 'Las historias se publican solo en Instagram.' : 'Elige al menos una red: Facebook, Instagram, LinkedIn o TikTok.'];
+    $opciones = [];
+    if (in_array('tiktok', $redes, true)) {
+        $tk = json_decode((string) ($datos['tiktok'] ?? ''), true) ?: [];
+        $opciones['tiktok'] = opcionesTiktok($tk);
+        if (!$opciones['tiktok']['ok']) return ['ok' => false, 'mensaje' => $opciones['tiktok']['mensaje']];
+        unset($opciones['tiktok']['ok'], $opciones['tiktok']['mensaje']);
+    }
     if ($tipo === 'feed' && $texto === '') return ['ok' => false, 'mensaje' => 'La publicación no tiene texto.'];
     if (mb_strlen($texto) > 2200) return ['ok' => false, 'mensaje' => 'El texto supera los 2.200 caracteres que acepta Instagram.'];
     if (!$fecha) return ['ok' => false, 'mensaje' => 'La fecha no es válida.'];
@@ -447,9 +663,10 @@ function programarPublicacion(PDO $db, array $datos, array $archivo, $usuario_id
     if (!move_uploaded_file($archivo['tmp_name'], carpetaRedes() . '/' . $nombre)) return ['ok' => false, 'mensaje' => 'No se pudo guardar la imagen en el servidor.'];
     guardarImagenRedes($db, $nombre, carpetaRedes() . '/' . $nombre);
 
-    $db->prepare("INSERT INTO redes_programadas (ref, redes, tipo, fecha, texto, imagen, estado, creado_por, creado) VALUES (?, ?, ?, ?, ?, ?, 'Programada', ?, ?)")
+    $db->prepare("INSERT INTO redes_programadas (ref, redes, tipo, fecha, texto, imagen, estado, creado_por, creado, opciones) VALUES (?, ?, ?, ?, ?, ?, 'Programada', ?, ?, ?)")
        ->execute([mb_substr(preg_replace('/[^a-z0-9-]/', '', strtolower((string) ($datos['ref'] ?? ''))), 0, 40), implode(',', $redes), $tipo,
-                  $fecha->format('Y-m-d H:i:00'), $texto, $nombre, $usuario_id, $ahora->format('Y-m-d H:i:s')]);
+                  $fecha->format('Y-m-d H:i:00'), $texto, $nombre, $usuario_id, $ahora->format('Y-m-d H:i:s'),
+                  $opciones ? json_encode($opciones, JSON_UNESCAPED_UNICODE) : null]);
     return ['ok' => true, 'id' => (int) $db->lastInsertId()];
 }
 
@@ -518,6 +735,8 @@ function procesarColaRedes(PDO $db, $limite = 5, $solo_id = null) {
             try {
                 if ($red === 'facebook') $r = publicarFacebook($con, $ruta, $fila['texto']);
                 elseif ($red === 'instagram') $r = publicarInstagram($con, $conexiones['facebook'], $ruta, $fila['texto'], $fila['tipo']);
+                elseif ($red === 'tiktok') $r = publicarTiktok($db, $con, basename($fila['imagen']), $fila['texto'],
+                                                                (json_decode((string) ($fila['opciones'] ?? ''), true) ?: [])['tiktok'] ?? []);
                 else $r = publicarLinkedin($con, $ruta, $fila['texto']);
             } catch (Throwable $e) {
                 $r = ['ok' => false, 'error' => 'Error interno: ' . $e->getMessage()];

@@ -58,9 +58,6 @@ foreach (['SOCIAL_FACEBOOK' => 'Facebook', 'SOCIAL_INSTAGRAM' => 'Instagram', 'S
           'SOCIAL_YOUTUBE' => 'YouTube', 'SOCIAL_WHATSAPP' => 'WhatsApp'] as $clave => $nombre) {
     if (isset($perfiles[$clave])) $accesos[$nombre] = $perfiles[$clave]['url'];
 }
-// TikTok no se publica desde la plataforma (su API deja privado todo lo que publique una app sin auditar):
-// se programa en TikTok Studio, y la pestaña de publicación automática muestra el perfil y el acceso al estudio
-$usuario_tiktok = isset($accesos['TikTok']) && preg_match('#/@([^/?\#]+)#', $accesos['TikTok'], $m) ? '@' . $m[1] : 'Perfil configurado';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -74,7 +71,7 @@ $usuario_tiktok = isset($accesos['TikTok']) && preg_match('#/@([^/?\#]+)#', $acc
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/admin.css">
-    <link rel="stylesheet" href="../css/redes.css">
+    <link rel="stylesheet" href="../css/redes.css?v=2">
 </head>
 <body class="bg-light">
 
@@ -225,7 +222,7 @@ $usuario_tiktok = isset($accesos['TikTok']) && preg_match('#/@([^/?\#]+)#', $acc
                     <div class="redes-banda">
                         <div>
                             <h3>Se publica solo, sin que nadie lo haga a mano</h3>
-                            <p>Conecta tus cuentas una vez. La plataforma publica cada afiche con su texto en la fecha y la hora del plan, en Facebook, Instagram y LinkedIn.</p>
+                            <p>Conecta tus cuentas una vez. La plataforma publica cada afiche con su texto en la fecha y la hora del plan, en Facebook, Instagram, LinkedIn y TikTok.</p>
                         </div>
                         <div class="auto-robot" id="autoRobot">
                             <i class="fas fa-robot" aria-hidden="true"></i>
@@ -278,23 +275,26 @@ $usuario_tiktok = isset($accesos['TikTok']) && preg_match('#/@([^/?\#]+)#', $acc
                                 </form>
                             </article>
                         </div>
-                        <?php if (isset($accesos['TikTok'])): ?>
                         <div class="col-12">
                             <article class="redes-caja auto-red">
                                 <div class="resp-encabezado">
                                     <span class="pub-redes"><?= $insignias_red(['TikTok']) ?></span>
-                                    <div><h4>TikTok</h4><p>Se programa en TikTok Studio: subes el afiche (como foto) o el video con su texto, activas «Programar» y eliges la fecha, hasta 10 días antes. TikTok solo deja publicar desde otras plataformas a apps que pasan su auditoría; sin ella todo queda privado.</p></div>
+                                    <div><h4>TikTok</h4><p>Publica los afiches como fotos en tu perfil. Conecta tu cuenta una vez con el botón; TikTok renueva el permiso solo durante un año. Mientras TikTok no apruebe la app, solo deja publicar en cuentas privadas y como «Solo yo».</p></div>
                                 </div>
                                 <ul class="auto-cuentas">
-                                    <li><i class="fa-brands fa-tiktok" aria-hidden="true"></i><span>TikTok</span><b><?= esc($usuario_tiktok) ?></b></li>
+                                    <li data-cuenta="tiktok"><i class="fa-brands fa-tiktok" aria-hidden="true"></i><span>TikTok</span><b>Sin conectar</b></li>
                                 </ul>
+                                <p class="auto-servidor con-error" id="notaTiktok" hidden><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Para conectar TikTok faltan <code>TIKTOK_CLIENT_KEY</code> y <code>TIKTOK_CLIENT_SECRET</code> en la configuración del servidor (en Vercel: Environment Variables).</p>
                                 <div class="d-flex gap-2 flex-wrap">
-                                    <a class="btn-pub btn-pub-principal text-decoration-none" href="https://www.tiktok.com/tiktokstudio/upload" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-tiktok" aria-hidden="true"></i> Programar en TikTok Studio</a>
-                                    <a class="btn-pub btn-pub-suave text-decoration-none" href="<?= esc($accesos['TikTok']) ?>" target="_blank" rel="noopener noreferrer"><i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i> Ver perfil</a>
+                                    <a class="btn-pub btn-pub-principal text-decoration-none" id="conectarTiktok" href="tiktok_conectar.php" hidden><i class="fa-brands fa-tiktok" aria-hidden="true"></i> Conectar TikTok</a>
+                                    <button type="button" class="btn-pub btn-pub-suave" data-desconectar="tiktok" hidden><i class="fas fa-plug-circle-xmark" aria-hidden="true"></i> Desconectar</button>
+                                    <a class="btn-pub btn-pub-suave text-decoration-none" href="https://www.tiktok.com/tiktokstudio/upload" target="_blank" rel="noopener noreferrer"><i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i> TikTok Studio</a>
+                                    <?php if (isset($accesos['TikTok'])): ?>
+                                    <a class="btn-pub btn-pub-suave text-decoration-none" href="<?= esc($accesos['TikTok']) ?>" target="_blank" rel="noopener noreferrer"><i class="fas fa-user" aria-hidden="true"></i> Ver perfil</a>
+                                    <?php endif; ?>
                                 </div>
                             </article>
                         </div>
-                        <?php endif; ?>
                     </div>
 
                     <details class="redes-guia mt-4" id="guiaTokens">
@@ -323,6 +323,29 @@ $usuario_tiktok = isset($accesos['TikTok']) && preg_match('#/@([^/?\#]+)#', $acc
                         </div>
                         <button type="button" class="btn-pub btn-pub-verde" id="autoProgramar"><i class="fas fa-robot" aria-hidden="true"></i> Programar el plan para que se publique solo</button>
                         <div class="progress auto-progreso" id="autoProgreso" role="progressbar" aria-label="Programando el plan" hidden><div class="progress-bar bg-success" style="width: 0%"></div></div>
+                    </div>
+
+                    <!-- Ajustes que TikTok exige elegir antes de publicar (sin valores por defecto en la privacidad) -->
+                    <div class="redes-caja tiktok-ajustes mt-3" id="tiktokAjustes" hidden>
+                        <div class="tiktok-creador">
+                            <img id="tkFoto" alt="" hidden>
+                            <div><b>Publicar en TikTok como <span id="tkNombre">…</span></b><span id="tkEstado">Consultando la cuenta en TikTok…</span></div>
+                        </div>
+                        <div class="row g-3 mt-1">
+                            <div class="col-md-6">
+                                <label class="form-label" for="tkPrivacidad">¿Quién puede ver las publicaciones en TikTok?</label>
+                                <select class="form-select" id="tkPrivacidad"><option value="">Elige una opción…</option></select>
+                            </div>
+                            <div class="col-md-6 d-flex flex-column justify-content-end gap-1">
+                                <label class="form-check mb-0"><input class="form-check-input" type="checkbox" id="tkComentarios"> <span class="form-check-label">Permitir comentarios</span></label>
+                                <label class="form-check mb-0"><input class="form-check-input" type="checkbox" id="tkComercial"> <span class="form-check-label">Promociona una marca, un producto o un servicio</span></label>
+                            </div>
+                        </div>
+                        <div class="tiktok-comercial" id="tkComercialOpciones" hidden>
+                            <label class="form-check mb-1"><input class="form-check-input" type="checkbox" id="tkMarcaPropia"> <span class="form-check-label"><b>Tu marca</b>: promocionas tu propia empresa. TikTok la marca como «Contenido promocional».</span></label>
+                            <label class="form-check mb-0"><input class="form-check-input" type="checkbox" id="tkContenidoMarca"> <span class="form-check-label"><b>Contenido de marca</b>: promocionas a otra marca. TikTok la marca como «Colaboración pagada» y no puede ser privada.</span></label>
+                        </div>
+                        <p class="small text-muted mb-0 mt-2" id="tkConsentimiento">Al publicar en TikTok aceptas la <a href="https://www.tiktok.com/legal/page/global/music-usage-confirmation/en" target="_blank" rel="noopener noreferrer">Confirmación de uso de música</a><span id="tkPoliticaMarca" hidden> y la <a href="https://www.tiktok.com/legal/page/global/bc-policy/en" target="_blank" rel="noopener noreferrer">Política de contenido de marca</a></span> de TikTok. Las publicaciones pueden tardar unos minutos en aparecer en el perfil.</p>
                     </div>
 
                     <h3 class="redes-subtitulo">3. Cola de publicación</h3>
@@ -614,9 +637,10 @@ $usuario_tiktok = isset($accesos['TikTok']) && preg_match('#/@([^/?\#]+)#', $acc
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
 window.REDES_DATOS = <?= jsJson(['galeria' => $galeria, 'publicaciones' => $publicaciones, 'pie' => pieAfiches(), 'logo' => '../img/logo.png',
-                                  'festivos' => festivosColombia((int) date('Y')) + festivosColombia((int) date('Y') + 1)]) ?>;
+                                  'festivos' => festivosColombia((int) date('Y')) + festivosColombia((int) date('Y') + 1),
+                                  'aviso' => tomarAviso()]) ?>;
 </script>
 <script src="../js/afiches.js?v=4"></script>
-<script src="../js/redes.js?v=5"></script>
+<script src="../js/redes.js?v=6"></script>
 </body>
 </html>

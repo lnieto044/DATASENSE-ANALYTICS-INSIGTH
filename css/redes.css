@@ -226,3 +226,12 @@
 .redes-guia code { background: #f1f5f9; color: var(--azul); border-radius: 6px; padding: 1px 6px; font-size: .82rem; }
 /* Bootstrap fuerza display:grid en .d-grid; el formulario de una cuenta conectada desde el servidor debe ocultarse */
 .auto-red form[hidden] { display: none !important; }
+
+/* TikTok: ajustes que se eligen antes de publicar (cuenta, privacidad, comentarios y contenido comercial) */
+.tiktok-ajustes { border-left: 4px solid #111111; }
+.tiktok-creador { display: flex; align-items: center; gap: 12px; }
+.tiktok-creador img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.tiktok-creador b { display: block; color: var(--azul); }
+.tiktok-creador span { font-size: .84rem; color: var(--texto-suave); }
+.tiktok-comercial { margin-top: 10px; padding: 10px 14px; border-radius: 12px; background: #f8fafc; border: 1px solid var(--borde-suave); font-size: .86rem; }
+.tiktok-comercial[hidden], .tiktok-ajustes[hidden] { display: none !important; }

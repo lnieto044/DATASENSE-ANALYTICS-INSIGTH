@@ -6,6 +6,7 @@
  * POST accion=conectar_meta           token de Meta (página o usuario administrador)
  * POST accion=conectar_linkedin       token y número de la página de empresa
  * POST accion=desconectar             red
+ * GET  accion=tiktok_creador          cuenta de TikTok conectada y privacidades que permite (se muestran antes de publicar)
  * POST accion=programar               imagen (JPG), texto, fecha (AAAA-MM-DD HH:MM), redes, ref, tipo
  * POST accion=publicar_ahora          lo mismo, sin fecha: se publica en ese momento
  * POST accion=cancelar | reintentar   id
@@ -37,9 +38,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         readfile($ruta);
         exit;
     }
+    if ($accion === 'tiktok_creador') {
+        $r = creadorTiktok($db);
+        responder($r, $r['ok'] ? 200 : 422);
+    }
     $ultima = ultimaRevisionRedes();
     responder(['conexiones' => conexionesRedes($db), 'entorno' => sincronizarConexionesEntorno($db), 'cola' => colaRedes($db),
-               'ultima_revision' => $ultima, 'hace' => $ultima ? time() - $ultima : null]);
+               'ultima_revision' => $ultima, 'hace' => $ultima ? time() - $ultima : null, 'tiktok_configurado' => tiktokConfigurado()]);
 }
 
 $id = (int) ($_POST['id'] ?? 0);
@@ -56,6 +61,7 @@ switch ($accion) {
         if (isset(sincronizarConexionesEntorno($db)[$red === 'instagram' ? 'facebook' : $red])) {
             responder(['ok' => false, 'mensaje' => 'Esta cuenta se conecta con un token de la configuración del servidor: para quitarla, borra ese token del archivo .env (o de Environment en Render).'], 422);
         }
+        if ($red === 'tiktok') { revocarTiktok($db); responder(['ok' => true]); }
         quitarConexion($db, $red);
         if ($red === 'facebook') quitarConexion($db, 'instagram'); // Instagram publica con el token de la página
         responder(['ok' => true]);

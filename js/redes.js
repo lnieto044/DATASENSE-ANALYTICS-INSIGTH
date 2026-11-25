@@ -526,8 +526,8 @@
     // Conecta las cuentas, sube el plan a la cola del servidor y muestra cómo va cada publicación.
     // El servidor publica solo (cron/publicar_redes.php revisa la cola cada minuto).
     const API = 'redes_api.php';
-    const NOMBRE_RED = { facebook: 'Facebook', instagram: 'Instagram', linkedin: 'LinkedIn' };
-    const ICONO_RED = { facebook: ['fa-facebook-f', '#1877f2'], instagram: ['fa-instagram', '#e4405f'], linkedin: ['fa-linkedin-in', '#0a66c2'] };
+    const NOMBRE_RED = { facebook: 'Facebook', instagram: 'Instagram', linkedin: 'LinkedIn', tiktok: 'TikTok' };
+    const ICONO_RED = { facebook: ['fa-facebook-f', '#1877f2'], instagram: ['fa-instagram', '#e4405f'], linkedin: ['fa-linkedin-in', '#0a66c2'], tiktok: ['fa-tiktok', '#111111'] };
     const COLOR_ESTADO = { Programada: 'programada', Publicando: 'publicando', Publicada: 'publicada', Parcial: 'parcial', Error: 'error', Cancelada: 'cancelada' };
     let auto = { conexiones: {}, cola: [], hace: null };
 
@@ -543,10 +543,78 @@
     }
 
     function redesAutomaticas(pub) {
-        const mapa = { Facebook: 'facebook', Instagram: 'instagram', LinkedIn: 'linkedin' };
+        const mapa = { Facebook: 'facebook', Instagram: 'instagram', LinkedIn: 'linkedin', TikTok: 'tiktok' };
         let lista = pub.redes.map(function (r) { return mapa[r]; }).filter(Boolean);
-        if (pub.historia) lista = lista.filter(function (r) { return r === 'instagram'; });
+        if (pub.historia) return lista.filter(function (r) { return r === 'instagram'; });
+        if (lista.indexOf('tiktok') === -1) lista.push('tiktok'); // todos los afiches del feed salen también como foto en TikTok
         return lista;
+    }
+
+    // ---------------------------------------------------------------- TikTok: ajustes que se eligen antes de publicar
+    // TikTok exige mostrar la cuenta, dejar elegir la privacidad (sin opción por defecto), los comentarios y si el
+    // contenido es comercial. Lo elegido aquí se aplica a lo que se programe o publique en esta visita.
+    const PRIVACIDAD_TIKTOK = { PUBLIC_TO_EVERYONE: 'Todo el mundo', MUTUAL_FOLLOW_FRIENDS: 'Amigos (se siguen mutuamente)', FOLLOWER_OF_CREATOR: 'Mis seguidores', SELF_ONLY: 'Solo yo' };
+    let creadorTiktok = null, pidiendoCreador = false;
+
+    function cargarCreadorTiktok() {
+        if (pidiendoCreador) return;
+        pidiendoCreador = true;
+        fetch(API + '?accion=tiktok_creador', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (r) {
+            if (!r.ok) { $('#tkEstado').textContent = r.mensaje || 'No se pudo consultar la cuenta de TikTok.'; return; }
+            creadorTiktok = r.creador;
+            pintarCreadorTiktok();
+        }).catch(function () { $('#tkEstado').textContent = 'No se pudo consultar la cuenta de TikTok.'; })
+          .then(function () { pidiendoCreador = false; });
+    }
+
+    function pintarCreadorTiktok() {
+        const c = creadorTiktok;
+        if (!c) return;
+        $('#tkNombre').textContent = c.nombre || (c.usuario ? '@' + c.usuario : 'tu cuenta');
+        if (/^https:\/\//i.test(c.foto || '')) { $('#tkFoto').src = c.foto; $('#tkFoto').hidden = false; }
+        $('#tkEstado').textContent = (c.usuario ? '@' + c.usuario : '')
+            + (c.privacidades.length === 1 && c.privacidades[0] === 'SELF_ONLY' ? ' · Mientras TikTok no apruebe la app, solo permite «Solo yo».' : '');
+        const sel = $('#tkPrivacidad');
+        const actual = sel.value;
+        sel.innerHTML = '<option value="">Elige una opción…</option>' + c.privacidades.map(function (p) {
+            return '<option value="' + escapar(p) + '">' + escapar(PRIVACIDAD_TIKTOK[p] || p) + '</option>';
+        }).join('');
+        if (c.privacidades.indexOf(actual) !== -1) sel.value = actual;
+        const comentarios = $('#tkComentarios');
+        comentarios.disabled = !!c.sin_comentarios;
+        if (c.sin_comentarios) comentarios.checked = false;
+        ajustarComercialTiktok();
+    }
+
+    // El contenido de marca no puede ser privado: se desactiva «Solo yo» mientras esté marcado
+    function ajustarComercialTiktok() {
+        const comercial = $('#tkComercial').checked;
+        $('#tkComercialOpciones').hidden = !comercial;
+        if (!comercial) { $('#tkMarcaPropia').checked = false; $('#tkContenidoMarca').checked = false; }
+        const deMarca = $('#tkContenidoMarca').checked;
+        $('#tkPoliticaMarca').hidden = !deMarca;
+        const soloYo = $('#tkPrivacidad option[value="SELF_ONLY"]');
+        if (soloYo) {
+            soloYo.disabled = deMarca;
+            if (deMarca && $('#tkPrivacidad').value === 'SELF_ONLY') $('#tkPrivacidad').value = '';
+        }
+    }
+    ['#tkComercial', '#tkMarcaPropia', '#tkContenidoMarca'].forEach(function (sel) { $(sel).addEventListener('change', ajustarComercialTiktok); });
+
+    function ajustesTiktok() {
+        return { privacidad: $('#tkPrivacidad').value, comentarios: $('#tkComentarios').checked, comercial: $('#tkComercial').checked,
+                 marca_propia: $('#tkMarcaPropia').checked, contenido_marca: $('#tkContenidoMarca').checked };
+    }
+    // Qué falta elegir para TikTok ('' si está listo)
+    function faltaTiktok() {
+        const a = ajustesTiktok();
+        if (!a.privacidad) return 'Elige quién puede ver las publicaciones en TikTok (debajo del botón «Programar el plan»).';
+        if (a.comercial && !a.marca_propia && !a.contenido_marca) return 'Indica si la publicación promociona tu marca, contenido de marca o ambas.';
+        return '';
+    }
+    function mostrarAjustesTiktok() {
+        bootstrap.Tab.getOrCreateInstance($('#pestanaAuto')).show();
+        setTimeout(function () { $('#tiktokAjustes').scrollIntoView({ behavior: 'smooth', block: 'center' }); $('#tkPrivacidad').focus(); }, 250);
     }
     function conectadas(lista) { return lista.filter(function (r) { return !!auto.conexiones[r]; }); }
 
@@ -578,6 +646,15 @@
         });
         $('[data-desconectar="facebook"]').hidden = !auto.conexiones.facebook || !!entorno.facebook;
         $('[data-desconectar="linkedin"]').hidden = !auto.conexiones.linkedin || !!entorno.linkedin;
+
+        // TikTok: se conecta con su botón (OAuth) y muestra sus ajustes de publicación cuando está conectado
+        const tiktok = auto.conexiones.tiktok;
+        $('#notaTiktok').hidden = auto.tiktok_configurado !== false;
+        $('#conectarTiktok').hidden = !!tiktok || !auto.tiktok_configurado;
+        $('[data-desconectar="tiktok"]').hidden = !tiktok;
+        $('#tiktokAjustes').hidden = !tiktok;
+        if (tiktok && !creadorTiktok) cargarCreadorTiktok();
+        if (!tiktok) creadorTiktok = null;
 
         // Publicador
         const robot = $('#autoRobot');
@@ -669,7 +746,7 @@
     $$('[data-desconectar]').forEach(function (boton) {
         boton.addEventListener('click', function () {
             const red = boton.getAttribute('data-desconectar');
-            if (!window.confirm('¿Desconectar ' + (red === 'facebook' ? 'Facebook e Instagram' : 'LinkedIn') + '? Lo programado para esa red no se publicará hasta que la conectes de nuevo.')) return;
+            if (!window.confirm('¿Desconectar ' + (red === 'facebook' ? 'Facebook e Instagram' : NOMBRE_RED[red]) + '? Lo programado para esa red no se publicará hasta que la conectes de nuevo.')) return;
             const datos = new FormData();
             datos.append('accion', 'desconectar');
             datos.append('red', red);
@@ -677,15 +754,22 @@
         });
     });
 
+    // Redes a las que va una publicación: las conectadas, y TikTok solo si ya se eligieron sus ajustes
+    function redesDestino(pub) {
+        return conectadas(redesAutomaticas(pub)).filter(function (r) { return r !== 'tiktok' || !faltaTiktok(); });
+    }
+
     // Sube un afiche a la cola: con fecha (programar) o sin ella (publicar ahora)
     function subirPublicacion(pub, accion, fecha) {
         return A.exportar(pub.diseno, 'image/jpeg').then(function (blob) {
             const datos = new FormData();
             const campo = $('#pubTexto-' + pub.id);
+            const redes = redesDestino(pub);
             datos.append('accion', accion);
             datos.append('imagen', blob, pub.id + '.jpg');
             datos.append('texto', campo ? campo.value : pub.texto);
-            datos.append('redes', conectadas(redesAutomaticas(pub)).join(','));
+            datos.append('redes', redes.join(','));
+            if (redes.indexOf('tiktok') !== -1) datos.append('tiktok', JSON.stringify(ajustesTiktok()));
             datos.append('ref', pub.id);
             datos.append('tipo', pub.historia ? 'historia' : 'feed');
             if (fecha) datos.append('fecha', fecha);
@@ -697,6 +781,7 @@
         const boton = this;
         const lista = calendario().filter(function (item) { return conectadas(redesAutomaticas(item.pub)).length > 0; });
         if (!lista.length) { aviso('Conecta al menos una cuenta para programar el plan'); return; }
+        if (auto.conexiones.tiktok && faltaTiktok()) { aviso(faltaTiktok()); mostrarAjustesTiktok(); return; }
         if (!window.confirm('Se programarán ' + lista.length + ' publicaciones, del ' + fechaLarga(lista[0].fecha) + ' al ' + fechaLarga(lista[lista.length - 1].fecha)
             + ', a las ' + hora12(plan.hora) + '. Lo que ya estaba pendiente de este plan se reemplaza. ¿Continuar?')) return;
         const barra = $('#autoProgreso');
@@ -735,9 +820,11 @@
     $$('.pub-tarjeta [data-accion="publicar"]').forEach(function (boton) {
         boton.addEventListener('click', function () {
             const pub = publicaciones[boton.closest('.pub-tarjeta').getAttribute('data-id')];
-            const redes = conectadas(redesAutomaticas(pub));
-            if (!redes.length) return;
-            if (!window.confirm('¿Publicar ahora en ' + redes.map(function (r) { return NOMBRE_RED[r]; }).join(', ') + (pub.historia ? ' (como historia)' : '') + '?')) return;
+            const redes = redesDestino(pub);
+            const sinTiktok = conectadas(redesAutomaticas(pub)).indexOf('tiktok') !== -1 && redes.indexOf('tiktok') === -1;
+            if (!redes.length) { if (sinTiktok) { aviso(faltaTiktok()); mostrarAjustesTiktok(); } return; }
+            if (!window.confirm('¿Publicar ahora en ' + redes.map(function (r) { return NOMBRE_RED[r]; }).join(', ') + (pub.historia ? ' (como historia)' : '') + '?'
+                + (sinTiktok ? '\n\nTikTok no se incluye: primero elige quién puede verla en la pestaña «Publicación automática».' : ''))) return;
             const original = boton.innerHTML;
             boton.disabled = true;
             boton.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Publicando…';
@@ -772,6 +859,11 @@
     $('#planDias').addEventListener('click', function () { setTimeout(pintarAuto, 0); });
 
     cargarAuto();
+    // Aviso que deja el servidor al volver de TikTok (conectada, cancelada o con error)
+    if (DATOS.aviso && DATOS.aviso.texto) {
+        aviso(DATOS.aviso.texto);
+        if (DATOS.aviso.tipo === 'danger' || DATOS.aviso.tipo === 'warning') setTimeout(function () { window.alert(DATOS.aviso.texto); }, 300);
+    }
     // La cola se actualiza sola cada 30 segundos mientras la página está visible
     setInterval(function () { if (!document.hidden) cargarAuto(); }, 30000);
 
