@@ -41,6 +41,7 @@ $perfiles = redesSociales();
 $iconos_red = [
     'Facebook' => ['fa-facebook-f', '#1877f2'], 'Instagram' => ['fa-instagram', '#e4405f'],
     'LinkedIn' => ['fa-linkedin-in', '#0a66c2'], 'WhatsApp' => ['fa-whatsapp', '#25d366'],
+    'TikTok' => ['fa-tiktok', '#111111'], 'YouTube' => ['fa-youtube', '#ff0000'],
 ];
 $insignias_red = function (array $redes) use ($iconos_red) {
     $html = '';
@@ -53,9 +54,13 @@ $insignias_red = function (array $redes) use ($iconos_red) {
 };
 // Las redes en orden: primero las que ya tienen perfil configurado
 $accesos = [];
-foreach (['SOCIAL_FACEBOOK' => 'Facebook', 'SOCIAL_INSTAGRAM' => 'Instagram', 'SOCIAL_LINKEDIN' => 'LinkedIn', 'SOCIAL_WHATSAPP' => 'WhatsApp'] as $clave => $nombre) {
+foreach (['SOCIAL_FACEBOOK' => 'Facebook', 'SOCIAL_INSTAGRAM' => 'Instagram', 'SOCIAL_LINKEDIN' => 'LinkedIn', 'SOCIAL_TIKTOK' => 'TikTok',
+          'SOCIAL_YOUTUBE' => 'YouTube', 'SOCIAL_WHATSAPP' => 'WhatsApp'] as $clave => $nombre) {
     if (isset($perfiles[$clave])) $accesos[$nombre] = $perfiles[$clave]['url'];
 }
+// TikTok no se publica desde la plataforma (su API deja privado todo lo que publique una app sin auditar):
+// se programa en TikTok Studio, y la pestaña de publicación automática muestra el perfil y el acceso al estudio
+$usuario_tiktok = isset($accesos['TikTok']) && preg_match('#/@([^/?\#]+)#', $accesos['TikTok'], $m) ? '@' . $m[1] : 'Perfil configurado';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -120,6 +125,11 @@ foreach (['SOCIAL_FACEBOOK' => 'Facebook', 'SOCIAL_INSTAGRAM' => 'Instagram', 'S
                             <a class="btn-red" href="https://business.facebook.com/latest/content_calendar" target="_blank" rel="noopener noreferrer" style="--color-red: #1877f2">
                                 <i class="fa-brands fa-meta" aria-hidden="true"></i> Planificador de Meta
                             </a>
+                            <?php if (isset($accesos['TikTok'])): ?>
+                            <a class="btn-red" href="https://www.tiktok.com/tiktokstudio/upload" target="_blank" rel="noopener noreferrer" style="--color-red: #111111">
+                                <i class="fa-brands fa-tiktok" aria-hidden="true"></i> TikTok Studio
+                            </a>
+                            <?php endif; ?>
                             <?php foreach ($accesos as $nombre => $url): if ($nombre === 'WhatsApp') continue; ?>
                             <a class="btn-red" href="<?= esc($url) ?>" target="_blank" rel="noopener noreferrer" style="--color-red: <?= esc($iconos_red[$nombre][1]) ?>">
                                 <i class="fa-brands <?= esc($iconos_red[$nombre][0]) ?>" aria-hidden="true"></i> <?= esc($nombre) ?>
@@ -268,6 +278,23 @@ foreach (['SOCIAL_FACEBOOK' => 'Facebook', 'SOCIAL_INSTAGRAM' => 'Instagram', 'S
                                 </form>
                             </article>
                         </div>
+                        <?php if (isset($accesos['TikTok'])): ?>
+                        <div class="col-12">
+                            <article class="redes-caja auto-red">
+                                <div class="resp-encabezado">
+                                    <span class="pub-redes"><?= $insignias_red(['TikTok']) ?></span>
+                                    <div><h4>TikTok</h4><p>Se programa en TikTok Studio: subes el afiche (como foto) o el video con su texto, activas «Programar» y eliges la fecha, hasta 10 días antes. TikTok solo deja publicar desde otras plataformas a apps que pasan su auditoría; sin ella todo queda privado.</p></div>
+                                </div>
+                                <ul class="auto-cuentas">
+                                    <li><i class="fa-brands fa-tiktok" aria-hidden="true"></i><span>TikTok</span><b><?= esc($usuario_tiktok) ?></b></li>
+                                </ul>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <a class="btn-pub btn-pub-principal text-decoration-none" href="https://www.tiktok.com/tiktokstudio/upload" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-tiktok" aria-hidden="true"></i> Programar en TikTok Studio</a>
+                                    <a class="btn-pub btn-pub-suave text-decoration-none" href="<?= esc($accesos['TikTok']) ?>" target="_blank" rel="noopener noreferrer"><i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i> Ver perfil</a>
+                                </div>
+                            </article>
+                        </div>
+                        <?php endif; ?>
                     </div>
 
                     <details class="redes-guia mt-4" id="guiaTokens">
