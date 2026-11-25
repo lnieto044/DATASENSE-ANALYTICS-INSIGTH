@@ -40,6 +40,8 @@ services:
         value: https://www.instagram.com/datasenseanalyticsinsigth/
       - key: SOCIAL_LINKEDIN
         value: https://www.linkedin.com/company/datasense-analytics-insights
+      - key: SOCIAL_TIKTOK
+        value: https://www.tiktok.com/@datasenseanalytics
       - key: SOCIAL_WHATSAPP
         value: "573133898638"
       # Publicación automática en redes: el valor se escribe en Render (Environment), nunca en el repositorio

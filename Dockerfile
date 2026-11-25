@@ -27,6 +27,7 @@ ENV APP_ENV=demo \
     SOCIAL_FACEBOOK=https://www.facebook.com/profile.php?id=61596608473887 \
     SOCIAL_INSTAGRAM=https://www.instagram.com/datasenseanalyticsinsigth/ \
     SOCIAL_LINKEDIN=https://www.linkedin.com/company/datasense-analytics-insights \
+    SOCIAL_TIKTOK=https://www.tiktok.com/@datasenseanalytics \
     SOCIAL_WHATSAPP=573133898638
 
 RUN apt-get update \
