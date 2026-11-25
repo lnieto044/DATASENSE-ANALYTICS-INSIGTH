@@ -30,8 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($accion === 'imagen') {
         $stmt = $db->prepare("SELECT imagen FROM redes_programadas WHERE id = ?");
         $stmt->execute([(int) ($_GET['id'] ?? 0)]);
-        $ruta = carpetaRedes() . '/' . basename((string) $stmt->fetchColumn());
-        if (!is_file($ruta)) { http_response_code(404); exit; }
+        $ruta = rutaImagenRedes($db, $stmt->fetchColumn());
+        if (!$ruta) { http_response_code(404); exit; }
         header('Content-Type: image/jpeg');
         header('Cache-Control: private, max-age=86400');
         readfile($ruta);

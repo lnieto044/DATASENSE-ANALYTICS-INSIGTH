@@ -177,7 +177,7 @@ function pieTienda(PDO $db) {
                 </div>
             </div>
         </div>
-        <div class="tienda-footer-legal">© <?= date('Y') ?> DataSense Analytics Insights · Precios en pesos colombianos con IVA incluido.</div>
+        <div class="tienda-footer-legal">© <?= date('Y') ?> DataSense Analytics Insights · Precios en pesos colombianos con IVA incluido. · <a href="privacidad.php">Política de privacidad</a> · <a href="terminos.php">Términos de uso</a></div>
     </div>
 </footer>
 

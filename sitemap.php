@@ -17,6 +17,8 @@ $paginas = [
     ['', 'weekly', '1.0'],
     ['tienda.php', 'daily', '0.9'],
     ['pqrsd.php', 'monthly', '0.8'],
+    ['privacidad.php', 'yearly', '0.4'],
+    ['terminos.php', 'yearly', '0.4'],
     ['admin/login.php', 'yearly', '0.3'],
 ];
 

@@ -68,11 +68,49 @@ function asegurarTablasRedes(PDO $db) {
         publicado DATETIME DEFAULT NULL,
         KEY idx_redes_estado_fecha (estado, fecha)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
+    // Copia de cada afiche en la base (en base64): en Vercel la carpeta uploads se borra cuando el servidor se reinicia,
+    // y sin esta copia una publicación programada para otro día se quedaría sin imagen
+    $db->exec("CREATE TABLE IF NOT EXISTS redes_imagenes (
+        imagen VARCHAR(80) NOT NULL PRIMARY KEY,
+        datos MEDIUMTEXT CHARACTER SET ascii NOT NULL,
+        creado DATETIME NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
     // huella: resumen del token de la configuración del servidor con el que se conectó (vacío si se pegó en el panel)
     if (!$db->query("SHOW COLUMNS FROM redes_conexiones LIKE 'huella'")->fetch()) {
         $db->exec("ALTER TABLE redes_conexiones ADD COLUMN huella VARCHAR(64) DEFAULT NULL");
     }
     $listas = true;
+}
+
+// Guarda en la base la copia de un afiche que ya está en la carpeta de redes
+function guardarImagenRedes(PDO $db, $nombre, $ruta) {
+    $datos = @file_get_contents($ruta);
+    if ($datos === false || $datos === '') return false;
+    try {
+        $db->prepare("REPLACE INTO redes_imagenes (imagen, datos, creado) VALUES (?, ?, ?)")
+           ->execute([$nombre, base64_encode($datos), date('Y-m-d H:i:s')]);
+        return true;
+    } catch (Throwable $e) {
+        error_log('No se pudo guardar en la base la copia del afiche ' . $nombre . ': ' . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Ruta local de un afiche de la cola. Si el archivo ya no está en el servidor (Vercel lo reinició), lo vuelve a escribir
+ * desde la copia de la base. Devuelve null si no hay imagen en ninguno de los dos lados.
+ */
+function rutaImagenRedes(PDO $db, $nombre) {
+    $nombre = basename((string) $nombre);
+    if ($nombre === '') return null;
+    $ruta = carpetaRedes() . '/' . $nombre;
+    if (is_file($ruta)) return $ruta;
+    asegurarTablasRedes($db);
+    $stmt = $db->prepare("SELECT datos FROM redes_imagenes WHERE imagen = ?");
+    $stmt->execute([$nombre]);
+    $datos = base64_decode((string) $stmt->fetchColumn(), true);
+    if (!$datos || @file_put_contents($ruta, $datos) === false) return null;
+    return $ruta;
 }
 
 /**
@@ -407,6 +445,7 @@ function programarPublicacion(PDO $db, array $datos, array $archivo, $usuario_id
 
     $nombre = bin2hex(random_bytes(16)) . '.jpg';
     if (!move_uploaded_file($archivo['tmp_name'], carpetaRedes() . '/' . $nombre)) return ['ok' => false, 'mensaje' => 'No se pudo guardar la imagen en el servidor.'];
+    guardarImagenRedes($db, $nombre, carpetaRedes() . '/' . $nombre);
 
     $db->prepare("INSERT INTO redes_programadas (ref, redes, tipo, fecha, texto, imagen, estado, creado_por, creado) VALUES (?, ?, ?, ?, ?, ?, 'Programada', ?, ?)")
        ->execute([mb_substr(preg_replace('/[^a-z0-9-]/', '', strtolower((string) ($datos['ref'] ?? ''))), 0, 40), implode(',', $redes), $tipo,
@@ -438,6 +477,18 @@ function procesarColaRedes(PDO $db, $limite = 5, $solo_id = null) {
     $db->prepare("UPDATE redes_programadas SET estado = 'Programada' WHERE estado = 'Publicando' AND bloqueado_en < ?")
        ->execute([date('Y-m-d H:i:s', time() - 900)]);
 
+    // De vez en cuando se borran de la base las copias de afiches que ya no se van a publicar: las terminadas hace más
+    // de 45 días (el panel muestra hasta esa fecha) y las que no tienen publicación en la cola
+    if (mt_rand(1, 60) === 1) {
+        try {
+            $db->prepare("DELETE FROM redes_imagenes WHERE imagen NOT IN (SELECT imagen FROM redes_programadas
+                          WHERE estado IN ('Programada', 'Publicando') OR fecha >= ?) AND creado < ?")
+               ->execute([date('Y-m-d H:i:s', time() - 45 * 86400), date('Y-m-d H:i:s', time() - 86400)]);
+        } catch (Throwable $e) {
+            error_log('Limpieza de afiches de redes: ' . $e->getMessage());
+        }
+    }
+
     $sql = "SELECT id FROM redes_programadas WHERE estado = 'Programada' AND fecha <= ? AND (proximo IS NULL OR proximo <= ?)";
     $params = [$ahora, $ahora];
     if ($solo_id !== null) { $sql .= " AND id = ?"; $params[] = (int) $solo_id; }
@@ -457,11 +508,11 @@ function procesarColaRedes(PDO $db, $limite = 5, $solo_id = null) {
 
         $fila = $db->query("SELECT * FROM redes_programadas WHERE id = " . (int) $id)->fetch(PDO::FETCH_ASSOC);
         $resultado = json_decode((string) $fila['resultado'], true) ?: [];
-        $ruta = carpetaRedes() . '/' . basename($fila['imagen']);
+        $ruta = rutaImagenRedes($db, $fila['imagen']);
 
         foreach (explode(',', $fila['redes']) as $red) {
             if (!empty($resultado[$red]['ok'])) continue; // ya salió en esa red en un intento anterior
-            if (!is_file($ruta)) { $resultado[$red] = ['ok' => false, 'error' => 'No se encontró la imagen del afiche.', 'definitivo' => true]; continue; }
+            if (!$ruta) { $resultado[$red] = ['ok' => false, 'error' => 'No se encontró la imagen del afiche.', 'definitivo' => true]; continue; }
             $con = $conexiones[$red] ?? null;
             if (!$con) { $resultado[$red] = ['ok' => false, 'error' => REDES_AUTO[$red] . ' no está conectado.', 'definitivo' => true]; continue; }
             try {

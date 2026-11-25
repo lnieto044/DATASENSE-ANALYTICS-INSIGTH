@@ -969,7 +969,8 @@ $videos_marcela = array_values(array_filter([
       </div>
     </div>
     <div class="footer-abajo">
-      <p>© <?= date('Y') ?> DataSense Analytics Insights. Todos los derechos reservados. · Hecho en Colombia</p>
+      <p>© <?= date('Y') ?> DataSense Analytics Insights. Todos los derechos reservados. · Hecho en Colombia ·
+        <a href="privacidad.php">Política de privacidad</a> · <a href="terminos.php">Términos de uso</a></p>
       <div class="footer-compartir"><?= botonesCompartir('Conoce la plataforma de DataSense Analytics Insights: tableros, soporte con tiempos medidos y canal de PQRSD.', '', 'Comparte') ?></div>
     </div>
   </div>

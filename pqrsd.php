@@ -507,6 +507,8 @@ $csrf = $_SESSION['token'];
 
 <footer class="pie text-center py-4">
     © <?= date('Y') ?> DataSense Analytics Insights · Canal de PQRSD ·
+    <a href="privacidad.php" class="text-decoration-none">Política de privacidad</a> ·
+    <a href="terminos.php" class="text-decoration-none">Términos de uso</a> ·
     <a href="index.php" class="text-decoration-none">Volver al sitio</a>
     <div class="d-flex flex-wrap justify-content-center align-items-center gap-3 mt-3"><?= iconosRedes('Síguenos') ?></div>
 </footer>
